@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Tatyana Suglobova](https://up.htmlacademy.ru/ecmascript/15/user/246103).
-* Наставник: `Неизвестно`.
+* Наставник: `Максим Волков`.
 
 ---
 
@@ -23,6 +23,7 @@ _`.editorconfig`, `.gitattributes`._
 <img width="769" alt="Press 'Fork'" src="https://cloud.githubusercontent.com/assets/259739/20264045/a1ddbf40-aa7a-11e6-9a1a-724a1c0123c8.png">
 
 Получится вот так:
+A
 
 <img width="769" alt="Forked" src="https://cloud.githubusercontent.com/assets/259739/20264122/f63219a6-aa7a-11e6-945a-89818fc7c014.png">
 
