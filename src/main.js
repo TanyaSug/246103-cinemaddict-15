@@ -1,9 +1,10 @@
 import {createSiteMenuTemplate} from './view/site-menu.js';
 import {createUserStatusTemplate} from './view/user-status.js';
 import {createFilmFilterTemplate} from './view/film-filter.js';
-import {createFilmCardTemplate} from './view/film-card.js';
+import {createFilmCardTemplate} from './view/film-list.js';
 // import {createFilmStatsTemplate} from './view/film-stats.js';
 import {createFooterStatsTemplate} from './view/footer-statistics.js';
+import {createFilmListButtonTemplate} from './view/film-show-more-button.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
