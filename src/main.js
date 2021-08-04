@@ -4,7 +4,7 @@ import {createFilmFilterTemplate} from './view/film-filter.js';
 import {createFilmCardTemplate} from './view/film-list.js';
 // import {createFilmStatsTemplate} from './view/film-stats.js';
 import {createFooterStatsTemplate} from './view/footer-statistics.js';
-
+// import {generateFilmCard} from './mock/film-card-mock.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -15,9 +15,10 @@ render(siteHeader, createUserStatusTemplate(), 'beforeend');
 
 const siteMainElement = document.querySelector('.main');
 
-render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
+// render(siteMainElement, filmCard(), 'beforeend');
+render(siteMainElement, createSiteMenuTemplate({}), 'beforeend');
 render(siteMainElement, createFilmFilterTemplate(), 'beforeend');
-render(siteMainElement, createFilmCardTemplate(), 'beforeend');
+render(siteMainElement, createFilmCardTemplate({}), 'beforeend');
 // render(siteMainElement, createFilmStatsTemplate(), 'beforeend');
 
 const footerContainer = document.querySelector('.footer');

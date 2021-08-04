@@ -7,7 +7,7 @@ export const createFilmCardTemplate = () => (
 
       <div class="films-list__container">
    ${
-  [...Array(5).fill(null)].map(filmCard).join('')
+  [...Array(5).fill(null)].map(() => filmCard({})).join('')
   }
 
       </div>
