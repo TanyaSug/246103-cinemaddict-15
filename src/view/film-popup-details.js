@@ -1,9 +1,9 @@
 export const createFilmPopupDetails = ({
-  ageRating, title, alternativeTitle, totalRating, directorName, writerNames, actorNames, releaseDate, runtime, realeseCountry, genres, description},
+  ageRating, title, alternativeTitle, posters, totalRating, director, writers, actors, releaseDate, runtime, releaseCountry, genres, description},
 ) => (
   `<div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/the-great-flamarion.jpg" alt="">
+          <img class="film-details__poster-img" src=${posters} alt="">
 
           <p class="film-details__age">${ageRating}</p>
         </div>
@@ -23,15 +23,15 @@ export const createFilmPopupDetails = ({
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">${directorName}</td>
+              <td class="film-details__cell">${director}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${writerNames}</td>
+              <td class="film-details__cell">${writers}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${actorNames}</td>
+              <td class="film-details__cell">${actors}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
@@ -43,13 +43,11 @@ export const createFilmPopupDetails = ({
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${realeseCountry}</td>
+              <td class="film-details__cell">${releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
               <td class="film-details__cell">
-                <span class="film-details__genre">${genres}/span>
-                <span class="film-details__genre">${genres}</span>
                 <span class="film-details__genre">${genres}</span></td>
             </tr>
           </table>

@@ -1,21 +1,30 @@
-import {generateDirector, generateFilmTitle, generateWriters, generateActors, generateReleaseCountry, generateGenres, generateFilmDescription, generateRuntime} from './film-card-mock';
+import {
+  generateDirector,
+  generateFilmPoster,
+  generateFilmTitle,
+  generateWriters,
+  generateActors,
+  generateReleaseCountry,
+  generateGenres,
+  generateFilmDescription,
+  generateRuntime,
+  generateFilmAgeRating
+} from './film-card-mock';
 import {getRandomInteger} from '../utils';
 
 export const createFilmInfo = () => ({
   title: generateFilmTitle(),
   alternativeTitle: generateFilmTitle(),
   totalRating: getRandomInteger(1, 10),
-  poster: 'images/posters/blue-blazes.jpg',
-  ageRating: getRandomInteger(1, 10),
+  posters: generateFilmPoster(),
+  ageRating: generateFilmAgeRating(),
   director: generateDirector(),
   writers: generateWriters(),
   actors: generateActors(),
-  release: {
-    'date': new Date().toISOString(),
-    'releaseCountry': generateReleaseCountry(),
-  },
+  releaseDate: new Date().toISOString(),
+  releaseCountry: generateReleaseCountry(),
   runtime: generateRuntime(),
-  genre: generateGenres(),
+  genres: generateGenres(),
   description: generateFilmDescription(),
 });
-console.log(createFilmInfo());
+

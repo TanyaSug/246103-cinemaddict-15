@@ -1,5 +1,5 @@
 export const filmCard = ({
-  title, totalRating, releaseDate, runtime, genre, poster = './images/posters/the-dance-of-life.jpg', description, commentsCount},
+  title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount},
 ) => (
   `<article class="film-card">
           <h3 class="film-card__title">${title}</h3>
@@ -7,9 +7,9 @@ export const filmCard = ({
           <p class="film-card__info">
             <span class="film-card__year">${releaseDate}</span>
             <span class="film-card__duration">${runtime}</span>
-            <span class="film-card__genre">${genre}</span>
+            <span class="film-card__genre">${genres}</span>
           </p>
-          <img src=${poster} alt="" class="film-card__poster">
+          <img src=${posters} alt="" class="film-card__poster">
           <p class="film-card__description">${description}</p>
           <a class="film-card__comments">${commentsCount} comments</a>
           <div class="film-card__controls">

@@ -64,6 +64,19 @@ const releaseCountry = [
   'Australia',
   'China,',
 ];
+const posters = [
+  './images/posters/the-dance-of-life.jpg',
+  './images/posters/santa-claus-conquers-the-martians.jpg',
+  './images/posters/the-great-flamarion.jpg',
+  './images/posters/the-man-with-the-golden-arm.jpg',
+];
+const ageRatings = [
+  '7+',
+  '13+',
+  '16+',
+];
+export const generateFilmAgeRating = () => getRandomElement(ageRatings);
+export const generateFilmPoster = () => getRandomElement(posters);
 export const generateFilmTitle = () => getRandomElement(titles);
 export const generateDirector = () => getRandomElement(directors);
 export const generateWriters = () => getRandomSubset(writers, getRandomInteger(1, 3)).toString();
@@ -72,4 +85,4 @@ export const generateFilmDescription = () => getRandomSubset(description, getRan
 export const generateRuntime = () => getRandomElement(runtime);
 export const generateGenres = () => getRandomElement(genres);
 export const generateReleaseCountry = () => getRandomElement(releaseCountry);
-console.log(generateFilmDescription());
+
