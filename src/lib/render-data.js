@@ -1,7 +1,7 @@
 import {render} from './render';
 import {createSiteMenuTemplate} from '../view/site-menu';
 import {createFilmFilterTemplate} from '../view/film-filter';
-import {createFilmCardTemplate} from '../view/film-list-container';
+import {createFilmCardTemplate, moreButtonHandler} from '../view/film-list-container';
 import {createFooterStatsTemplate} from '../view/footer-statistics';
 import {createUserStatusTemplate} from '../view/user-status';
 import {createFilmCardTopRatedAndCommented} from '../view/film-card-top-rated';
@@ -16,8 +16,9 @@ export const renderData = (data, siteHeader, siteMainElement, footerStats) => {
   render(siteHeader, createUserStatusTemplate(), 'beforeend');
   render(siteMainElement, createSiteMenuTemplate(siteMenuMock), 'beforeend');
   render(siteMainElement, createFilmFilterTemplate(), 'beforeend');
-  render(siteMainElement, createFilmCardTemplate(), 'beforeend');
+  render(siteMainElement, createFilmCardTemplate(5), 'beforeend');
   render(siteMainElement, createFilmListButtonTemplate(), 'beforeend');
+  moreButtonHandler();
   render(siteMainElement, createFilmCardTopRatedAndCommented({}), 'beforeend');
   render(siteMainElement, createFilmPopupDetails(filmData), 'beforeend');
   render(footerStats, createFooterStatsTemplate(), 'beforeend');
