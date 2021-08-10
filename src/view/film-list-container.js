@@ -2,8 +2,9 @@ import {filmCard} from './film-card';
 import {filmData} from '../mock/create-1-film';
 import {render} from '../lib/render';
 import {siteMainElement} from '../main';
+import {createElement} from '../lib/render';
 
-export const createFilmCardTemplate = (count) => (
+const createFilmCardTemplate = (count= 5) => (
   `<section class="films">
     <section class="films-list">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
@@ -13,6 +14,28 @@ export const createFilmCardTemplate = (count) => (
     </section>
 </section>`
 );
+
+export default class FilmCard {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 
 export const moreButtonHandler = () => {
   const FILMS_QUANTITY = 23;
