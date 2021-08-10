@@ -1,22 +1,24 @@
-import {filmCard} from './film-card';
-import {filmData} from '../mock/create-1-film';
+// import {filmCard} from './film-card';
+// import {filmData} from '../mock/create-1-film';
 import {render} from '../lib/render';
 import {siteMainElement} from '../main';
 import {createElement} from '../lib/render';
+import Film1Card from './film-card';
 
-const createFilmCardTemplate = (count= 5) => (
+const createFilmCardTemplate = () => (
   `<section class="films">
     <section class="films-list">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
       <div class="films-list__container">
-   ${[...Array(count).fill(null)].map(() => filmCard(filmData)).join('')};
       </div>
     </section>
 </section>`
 );
 
-export default class FilmCard {
-  constructor() {
+export default class FilmListContainer {
+  constructor(data, count = 5) {
+    this.data = data;
+    this.count = count;
     this._element = null;
   }
 
@@ -26,10 +28,20 @@ export default class FilmCard {
 
   getElement() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate());
+      this._element = this.createElement();
     }
 
     return this._element;
+  }
+
+  createElement () {
+    const result = createElement(this.getTemplate());
+    const container = result.querySelector('.films-list__container');
+    this.data
+      .slice(0, this.count)
+      .map((film) => new Film1Card(film.filmInfo))
+      .forEach((filmView) => container.appendChild(filmView.getElement()));
+    return container;
   }
 
   removeElement() {

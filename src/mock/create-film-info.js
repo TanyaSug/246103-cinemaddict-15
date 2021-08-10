@@ -11,6 +11,7 @@ import {
   generateFilmAgeRating
 } from './film-card-mock';
 import {getRandomInteger} from '../utils';
+import {getCommentsCount} from './create-comment-mock';
 
 export const createFilmInfo = () => ({
   title: generateFilmTitle(),
@@ -26,5 +27,6 @@ export const createFilmInfo = () => ({
   runtime: generateRuntime(),
   genres: generateGenres(),
   description: generateFilmDescription(),
+  commentsCount: getCommentsCount(),
 });
 
