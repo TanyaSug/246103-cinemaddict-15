@@ -24,33 +24,42 @@ export const filmCard = ({
 
 export default class Film1Card {
   constructor({
-    title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount}) {
-    this.data = {
+    title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount,
+    onClick}) {
+    this._onClick = onClick;
+    this._data = {
       title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount};
     this._element = null;
-    this.handlePosterClick = this.handlePosterClick.bind(this);
+    this._handleHotPointClicks = this._handleHotPointClicks.bind(this);
   }
 
   getTemplate() {
-    return filmCard(this.data);
+    return filmCard(this._data);
   }
 
-  handlePosterClick() {
-console.log(this);
+  _handleHotPointClicks() {
+    this._onClick();
   }
 
-  createElement() {
+  _attachEventHandlers(element) {
+    const poster = element.querySelector('.film-card__poster');
+    const title = element.querySelector('.film-card__title');
+    const comments = element.querySelector('.film-card__comments');
+    poster.addEventListener('click', this._handleHotPointClicks);
+    title.addEventListener('click', this._handleHotPointClicks);
+    comments.addEventListener('click', this._handleHotPointClicks);
+  }
+
+  _createElement() {
     const result = createElement(this.getTemplate());
-    const poster = result.querySelector('.film-card__poster');
-    poster.addEventListener('click', this.handlePosterClick);
+    this._attachEventHandlers(result);
     return result;
   }
 
   getElement() {
     if (!this._element) {
-      this._element = this.createElement();
+      this._element = this._createElement();
     }
-
     return this._element;
   }
 
@@ -58,3 +67,24 @@ console.log(this);
     this._element = null;
   }
 }
+
+// handleCardDetailsClick() {
+//     this._element.appendChild(new FilmPopupView(filmData).getElement());
+//     // renderElement(siteMainElement, new FilmPopupView(filmData).getElement(), RenderPosition.BEFOREEND);
+//   }
+//
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createElement(this.getTemplate());
+//     }
+//
+//     const poster = this._element.querySelector('.film-card__poster');
+//     const title = this._element.querySelector('.film-card__title');
+//     const comments = this._element.querySelector('.film-card__comments');
+//
+//     [poster, title, comments].forEach((element) => {
+//       element.addEventListener('click', this.handleCardDetailsClick);
+//     });
+//
+//     return this._element;
+//   }

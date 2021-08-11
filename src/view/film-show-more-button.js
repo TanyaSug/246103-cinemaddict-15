@@ -1,10 +1,14 @@
-import {createElement} from '../lib/render';
+import {createElement, renderElement, RenderPosition} from '../lib/render';
+// import {siteMainElement} from '../main';
+import FilmListContainerView from './film-list-container';
 
 const BUTTON_LABEL = 'Show more';
 const createShowMoreButtonTemplate = () => `<button class="films-list__show-more">${BUTTON_LABEL}</button>`;
 
 export default class ShowMoreButton {
-  constructor() {
+  constructor(data) {
+    this.data = data;
+
     this._element = null;
   }
 
@@ -17,10 +21,72 @@ export default class ShowMoreButton {
       this._element = createElement(this.getTemplate());
     }
 
+    const FILMS_QUANTITY = 23;
+    const FILMS_IN_ROW = 5;
+    const REST_OF_FILMS = FILMS_QUANTITY % FILMS_IN_ROW;
+
+    let filmsCount = FILMS_QUANTITY;
+    this._element.addEventListener('click', (evt) => {
+      evt.preventDefault();
+
+      if (filmsCount > 0) {
+        const count = filmsCount > REST_OF_FILMS
+          ? FILMS_IN_ROW : REST_OF_FILMS;
+
+        const filmListContainer = document.querySelector('.films-list__container');
+
+        if (filmListContainer) {
+          renderElement(filmListContainer, new FilmListContainerView(this.data, count)
+            .getElement(), RenderPosition.BEFOREEND);
+        }
+
+
+        filmsCount -= count;
+
+        if (filmsCount === 0) {
+          this.removeElement();
+        }
+      }
+
+    });
+
     return this._element;
   }
 
   removeElement() {
-    this._element = null;
+    if (this._element) {
+      this._element.remove();
+    }
   }
 }
+
+//
+// export const moreButtonHandler = () => {
+//   const FILMS_QUANTITY = 23;
+//   const FILMS_IN_ROW = 5;
+//   const REST_OF_FILMS = FILMS_QUANTITY % FILMS_IN_ROW;
+//
+//   let filmsCount = FILMS_QUANTITY;
+//
+//
+//   const loadMoreButton = siteMainElement.querySelector('.films-list__show-more');
+//   const filmListContainer = siteMainElement.querySelector('.films-list__container');
+//
+//   loadMoreButton.addEventListener('click', (evt) => {
+//     evt.preventDefault();
+//
+//     if (filmsCount > 0) {
+//       const count = filmsCount > REST_OF_FILMS
+//         ? FILMS_IN_ROW : REST_OF_FILMS;
+//
+//       renderElement(filmListContainer, createFilmCardTemplate(), 'beforeend');
+//
+//       filmsCount -= count;
+//
+//       if(filmsCount === 0) {
+//         loadMoreButton.remove();
+//       }
+//     }
+//
+//   });
+// };
