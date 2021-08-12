@@ -26,8 +26,10 @@ export const createCommentMock = () => (
   {
     id: getRandomInteger(1, 20),
     author: getRandomElement(authors),
-    comment: getRandomElement(comments),
+    commentsCount: getRandomElement(comments),
     date: '2019/12/31 23:59',
     emotion: getRandomElement(emotions),
   }
 );
+
+export const getCommentsCount = () => getRandomInteger(1, 30);

@@ -9,3 +9,4 @@ export const create1Film = (index) => ({
   userDetails: createUserDetails(index),
 });
 export const filmData = createFilmInfo();
+
