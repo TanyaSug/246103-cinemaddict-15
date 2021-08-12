@@ -29,7 +29,7 @@ const createNewCommentTemplate = () => (
               <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
             </label>
           </div>
-        </div>\``
+        </div>`
 );
 
 export default class PopupAddNewComment {

@@ -1,7 +1,3 @@
-// import {filmCard} from './film-card';
-// import {filmData} from '../mock/create-1-film';
-// import {render} from '../lib/render';
-// import {siteMainElement} from '../main';
 import {createElement} from '../lib/render';
 import Film1Card from './film-card';
 

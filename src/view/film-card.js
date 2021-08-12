@@ -69,24 +69,3 @@ export default class Film1Card {
     this._element = null;
   }
 }
-
-// handleCardDetailsClick() {
-//     this._element.appendChild(new FilmPopupView(filmData).getElement());
-//     // renderElement(siteMainElement, new FilmPopupView(filmData).getElement(), RenderPosition.BEFOREEND);
-//   }
-//
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createElement(this.getTemplate());
-//     }
-//
-//     const poster = this._element.querySelector('.film-card__poster');
-//     const title = this._element.querySelector('.film-card__title');
-//     const comments = this._element.querySelector('.film-card__comments');
-//
-//     [poster, title, comments].forEach((element) => {
-//       element.addEventListener('click', this.handleCardDetailsClick);
-//     });
-//
-//     return this._element;
-//   }

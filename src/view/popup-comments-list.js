@@ -1,5 +1,4 @@
 import {createElement} from '../lib/render';
-import Popup1Comment from './popup-1-comment';
 
 
 const createCommentsListTemplate = () => (

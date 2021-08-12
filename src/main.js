@@ -1,9 +1,6 @@
 import {renderData} from './lib/render-data';
 import {loadData} from './api/load-data';
-// import {renderElement, RenderPosition} from './lib/render';
 import FilmPopup from './view/film-popup';
-// import FilmFilterView from './view/film-filter';
-// import PopupCommentsContainer from './view/popup-comments-container';
 
 
 const siteHeader = document.querySelector('.header');
