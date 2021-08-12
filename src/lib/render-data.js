@@ -14,14 +14,13 @@ import {countUserDetails} from './counters-reducer';
 // import {createFilmCardMostCommented} from '../view/film-card-most-commented';
 
 
-
 export const renderData = ({data, siteHeader, siteMainElement, footerStats, onFilmSelect}) => {
   const counters = data.reduce(countUserDetails, {watchlistCount: 0, historyCount: 0, favoritesCount: 0});
   renderElement(siteHeader, new UserStatusView().getElement(), RenderPosition.BEFOREEND);
   renderElement(siteMainElement, new SiteMenuView(counters).getElement(), RenderPosition.BEFOREEND);
   renderElement(siteMainElement, new FilmFilterView().getElement(), RenderPosition.BEFOREEND);
   renderElement(siteMainElement, new FilmListContainerView({data, onSelect: onFilmSelect}).getElement(), RenderPosition.BEFOREEND);
-  renderElement(siteMainElement, new ShowMoreButtonView(data).getElement(), RenderPosition.BEFOREEND);
+  renderElement(siteMainElement, new ShowMoreButtonView({data, onSelect: onFilmSelect}).getElement(), RenderPosition.BEFOREEND);
   renderElement(siteMainElement, new FilmCardTopRatedAndCommentedView().getElement(), RenderPosition.BEFOREEND);
   renderElement(footerStats, new FooterStatisticsView().getElement(), RenderPosition.BEFOREEND);
 };

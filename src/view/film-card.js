@@ -1,5 +1,6 @@
 import {createElement} from '../lib/render';
 
+
 export const filmCard = ({
   title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount},
 ) => (
@@ -45,6 +46,7 @@ export default class Film1Card {
     const poster = element.querySelector('.film-card__poster');
     const title = element.querySelector('.film-card__title');
     const comments = element.querySelector('.film-card__comments');
+
     poster.addEventListener('click', this._handleHotPointClicks);
     title.addEventListener('click', this._handleHotPointClicks);
     comments.addEventListener('click', this._handleHotPointClicks);

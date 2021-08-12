@@ -6,9 +6,9 @@ const BUTTON_LABEL = 'Show more';
 const createShowMoreButtonTemplate = () => `<button class="films-list__show-more">${BUTTON_LABEL}</button>`;
 
 export default class ShowMoreButton {
-  constructor(data) {
+  constructor({data, onSelect}) {
     this.data = data;
-
+    this.onSelect = onSelect;
     this._element = null;
   }
 
@@ -36,7 +36,7 @@ export default class ShowMoreButton {
         const filmListContainer = document.querySelector('.films-list__container');
 
         if (filmListContainer) {
-          renderElement(filmListContainer, new FilmListContainerView(this.data, count)
+          renderElement(filmListContainer, new FilmListContainerView({data: this.data, count, onSelect: this.onSelect})
             .getElement(), RenderPosition.BEFOREEND);
         }
 
