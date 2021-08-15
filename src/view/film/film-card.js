@@ -1,4 +1,5 @@
-import {createElement} from '../lib/render';
+import AbstractView from '../abstract';
+import {createElement} from '../../lib/render';
 
 
 export const filmCard = ({
@@ -23,14 +24,14 @@ export const filmCard = ({
         </article>`
 );
 
-export default class Film1Card {
+export default class Film1Card extends AbstractView{
   constructor({
     title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount,
     onClick}) {
+    super();
     this._onClick = onClick;
     this._data = {
       title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount};
-    this._element = null;
     this._handleHotPointClicks = this._handleHotPointClicks.bind(this);
   }
 
@@ -63,9 +64,5 @@ export default class Film1Card {
       this._element = this._createElement();
     }
     return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

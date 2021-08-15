@@ -1,4 +1,6 @@
-export const createFilmStatsTemplate = () => (
+import AbstractView from './abstract';
+
+const createFilmStatsTemplate = () => (
   ` <section class="statistic">
     <p class="statistic__rank">
       Your rank
@@ -46,3 +48,10 @@ export const createFilmStatsTemplate = () => (
 
   </section>`
 );
+
+export default class FilmStatistic extends AbstractView {
+
+  getTemplate() {
+    return createFilmStatsTemplate();
+  }
+}

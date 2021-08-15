@@ -1,6 +1,6 @@
 import {filmCard} from './film-card';
-import {filmData} from '../mock/create-1-film';
-import {createElement} from '../lib/render';
+import {filmData} from '../../mock/create-1-film';
+import AbstractView from '../abstract';
 
 const createFilmCardTopRatedAndCommented = () => (
   `<section class="films">
@@ -19,24 +19,9 @@ const createFilmCardTopRatedAndCommented = () => (
   </section>`
 );
 
-export default class FilmCardTopRatedAndCommented {
-  constructor() {
-    this._element = null;
-  }
+export default class FilmCardTopRatedAndCommented extends AbstractView  {
 
   getTemplate() {
     return createFilmCardTopRatedAndCommented();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

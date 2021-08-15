@@ -1,4 +1,5 @@
-import {createElement} from '../lib/render';
+import AbstractView from '../abstract';
+import {createElement} from '../../lib/render';
 import Film1Card from './film-card';
 
 const createFilmCardTemplate = () => (
@@ -11,12 +12,12 @@ const createFilmCardTemplate = () => (
 </section>`
 );
 
-export default class FilmListContainer {
+export default class FilmListContainer extends AbstractView {
   constructor({data, count = 5, onSelect}) {
+    super();
     this._data = data;
     this._count = count;
     this._onSelect = onSelect;
-    this._element = null;
   }
 
   getTemplate() {
@@ -45,10 +46,6 @@ export default class FilmListContainer {
           onClick:() => this._handleFilmSelect(film)}))
       .forEach((filmView) => container.appendChild(filmView.getElement()));
     return container;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
