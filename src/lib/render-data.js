@@ -2,16 +2,11 @@ import {renderElement, RenderPosition} from './render';
 import UserStatusView from '../view/user-status';
 import SiteMenuView from '../view/site-menu';
 import FilmFilterView from '../view/film-filter';
-import FilmListContainerView from '../view/film-list-container';
+import FilmListContainerView from '../view/film/film-list-container';
 import ShowMoreButtonView from '../view/film-show-more-button';
-import FilmCardTopRatedAndCommentedView from '../view/film-card-top-rated';
-// import {moreButtonHandler} from '../view/film-list-container';
+import FilmCardTopRatedAndCommentedView from '../view/film/film-card-top-rated';
 import FooterStatisticsView from '../view/footer-statistics';
-// import FilmPopupView from '../view/film-popup-details';
-// import {filmData} from '../mock/create-1-film';
 import {countUserDetails} from './counters-reducer';
-// import FilmListContainer from '../view/film-list-container';
-// import {createFilmCardMostCommented} from '../view/film-card-most-commented';
 
 
 export const renderData = ({data, siteHeader, siteMainElement, footerStats, onFilmSelect}) => {

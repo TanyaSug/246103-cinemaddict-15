@@ -1,6 +1,6 @@
-import {createElement} from '../lib/render';
+import AbstractView from '../abstract';
 
-const createNewCommentTemplate = () => (
+const createPopupNewCommentTemplate = () => (
   `<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label"></div>
 
@@ -32,24 +32,9 @@ const createNewCommentTemplate = () => (
         </div>`
 );
 
-export default class PopupAddNewComment {
-  constructor() {
-    this._element = null;
-  }
+export default class PopupAddNewComment extends AbstractView {
 
   getTemplate() {
-    return createNewCommentTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createPopupNewCommentTemplate();
   }
 }

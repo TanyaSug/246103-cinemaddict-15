@@ -1,4 +1,5 @@
-import {createElement} from '../lib/render';
+import AbstractView from '../abstract';
+import {createElement} from '../../lib/render';
 
 const createFilmPopupTemplate = (data) => (
   `<section class="film-details"><form class="film-details__inner" action="" method="get">
@@ -166,10 +167,10 @@ const createFilmPopupTemplate = (data) => (
   </section>`
 );
 
-export default class FilmPopup{
+export default class FilmPopup extends AbstractView{
   constructor(data) {
+    super();
     this._data = data;
-    this._element = null;
   }
 
   getTemplate() {
@@ -199,10 +200,6 @@ export default class FilmPopup{
     if (this._element) {
       document.body.removeChild(this._element);
     }
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

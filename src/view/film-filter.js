@@ -1,4 +1,4 @@
-import {createElement} from '../lib/render';
+import AbstractView from './abstract';
 
 const createFilmFilterTemplate = () => (
   `<ul class="sort">
@@ -8,24 +8,9 @@ const createFilmFilterTemplate = () => (
   </ul>`
 );
 
-export default class FilmFilter {
-  constructor() {
-    this._element = null;
-  }
+export default class FilmFilter extends AbstractView  {
 
   getTemplate() {
     return createFilmFilterTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

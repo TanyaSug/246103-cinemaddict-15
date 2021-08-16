@@ -1,15 +1,15 @@
 import {createElement} from '../lib/render';
-import {createFilmPopupCard} from './film-popup-card';
 
-
-export default class FilmPopupDetails {
-  constructor(data) {
-    this._data = data;
+export default class Abstract {
+  constructor() {
+    if (new.target === Abstract) {
+      throw new Error('Can\'t instantiate Abstract, only concrete one.');
+    }
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmPopupCard();
+    throw new Error('Abstract method not implemented: getTemplate');
   }
 
   getElement() {
@@ -24,4 +24,3 @@ export default class FilmPopupDetails {
     this._element = null;
   }
 }
-

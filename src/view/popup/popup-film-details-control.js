@@ -1,6 +1,6 @@
-import {createElement} from '../lib/render';
+import AbstractView from '../abstract';
 
-const createFilmDetailsControlTemplate = () => (
+const createPopupFilmDetailsControlTemplate = () => (
   `<section class="film-details__controls">
         <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
         <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
@@ -8,24 +8,9 @@ const createFilmDetailsControlTemplate = () => (
       </section>`
 );
 
-export default class FilmDetailsControl {
-  constructor() {
-    this._element = null;
-  }
+export default class PopupFilmDetailsControl extends AbstractView {
 
   getTemplate() {
-    return createFilmDetailsControlTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createPopupFilmDetailsControlTemplate();
   }
 }

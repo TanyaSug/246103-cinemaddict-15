@@ -1,4 +1,4 @@
-import {createElement} from '../lib/render';
+import AbstractView from './abstract';
 
 const createSiteMenuTemplate = (watchlistCount, historyCount, favoritesCount) =>
   `<nav class="main-navigation">
@@ -12,27 +12,15 @@ const createSiteMenuTemplate = (watchlistCount, historyCount, favoritesCount) =>
   </nav>`;
 
 
-export default class SiteMenu {
+export default class SiteMenu extends AbstractView {
   constructor({watchlistCount, historyCount, favoritesCount}) {
+    super();
     this._watchlistCount = watchlistCount;
     this.historyCount = historyCount;
     this.favoritesCount = favoritesCount;
-    this._element = null;
   }
 
   getTemplate() {
     return createSiteMenuTemplate(this._watchlistCount, this.historyCount, this.favoritesCount);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
