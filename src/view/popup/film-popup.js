@@ -1,6 +1,8 @@
 import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
 
+const makeActiveClassName = (flag) => flag ? 'film-details__control-button--active' : '';
+
 const createFilmPopupTemplate = (data) => (
   `<section class="film-details"><form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
@@ -67,9 +69,9 @@ const createFilmPopupTemplate = (data) => (
       </div>
 
       <section class="film-details__controls">
-        <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-        <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-        <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+        <button type="button" class="film-details__control-button ${makeActiveClassName(data.userDetails.watchlist)} film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
+        <button type="button" class="film-details__control-button ${makeActiveClassName(data.userDetails.alreadyWatched)} film-details__control-button--watched" id="watched" name="watched">Already watched</button>
+        <button type="button" class="film-details__control-button ${makeActiveClassName(data.userDetails.favorite)} film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
       </section>
     </div>
 
@@ -171,7 +173,44 @@ export default class FilmPopup extends AbstractView{
   constructor(data) {
     super();
     this._data = data;
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
   }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickWatched();
+  }
+
+  _favoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickFavorite();
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickWatchlist();
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    const watchedFilm = this.getElement().querySelector('#watched');
+    watchedFilm.addEventListener('click', this._watchedClickHandler);
+  }
+
+  setFavoritesClickHandler(callback) {
+    this._callback.favoritesClick = callback;
+    const favoriteFilm = this.getElement().querySelector('#favorite');
+    favoriteFilm.addEventListener('click', this._favoritesClickHandler);
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    const watchlistFilm = this.getElement().querySelector('#watchlist');
+    watchlistFilm.addEventListener('click', this._watchlistClickHandler);
+  }
+
 
   getTemplate() {
     return createFilmPopupTemplate(this._data);

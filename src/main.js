@@ -8,6 +8,16 @@ export const siteMainElement = document.querySelector('.main');
 const footerContainer = document.querySelector('.footer');
 const footerStats = footerContainer.querySelector('.footer__statistics');
 const showPopup = (film) => new FilmPopup(film).appendPopUp();
+// const closePopup = (film) => new FilmPopup(film).removePopUp();
+
+// const escapePressedHandler = (evt) => {
+//   if ( evt.key === 'Escape' || evt.key === 'Esc') {
+//     evt.preventDefault();
+//     closePopup();
+//     document.removeEventListener('keydown', escapePressedHandler);
+//   }
+// };
+
 
 loadData()
   .then((data) => renderData(

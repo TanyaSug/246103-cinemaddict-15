@@ -2,7 +2,7 @@ import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
 import Film1Card from './film-card';
 
-const createFilmCardTemplate = () => (
+const createFilmsListContainerTemplate = () => (
   `<section class="films">
     <section class="films-list">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
@@ -12,7 +12,7 @@ const createFilmCardTemplate = () => (
 </section>`
 );
 
-export default class FilmListContainer extends AbstractView {
+export default class FilmsListContainer extends AbstractView {
   constructor({data, count = 5, onSelect}) {
     super();
     this._data = data;
@@ -21,7 +21,7 @@ export default class FilmListContainer extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmCardTemplate();
+    return createFilmsListContainerTemplate();
   }
 
   getElement() {
@@ -43,7 +43,8 @@ export default class FilmListContainer extends AbstractView {
       .map((film) => new Film1Card(
         {
           ...film.filmInfo,
-          onClick:() => this._handleFilmSelect(film)}))
+          onClick:() => this._handleFilmSelect(film),
+        }))
       .forEach((filmView) => container.appendChild(filmView.getElement()));
     return container;
   }

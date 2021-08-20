@@ -2,10 +2,9 @@ import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
 
 
-export const filmCard = ({
-  title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount},
-) => (
-  `<article class="film-card">
+export const createFilmCardTemplate = (filmData) => {
+  const {title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount} = filmData;
+  return `<article class="film-card">
           <h3 class="film-card__title">${title || ''}</h3>
           <p class="film-card__rating">${totalRating || ''}</p>
           <p class="film-card__info">
@@ -21,22 +20,23 @@ export const filmCard = ({
             <button class="film-card__controls-item film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
             <button class="film-card__controls-item film-card__controls-item--favorite" type="button">Mark as favorite</button>
           </div>
-        </article>`
-);
+        </article>`;
+};
 
-export default class Film1Card extends AbstractView{
-  constructor({
-    title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount,
-    onClick}) {
+export default class Film1Card extends AbstractView {
+  constructor(props) {
+    const {onClick, ...filmData} = props;
     super();
+    this._filmData = filmData;
     this._onClick = onClick;
-    this._data = {
-      title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount};
     this._handleHotPointClicks = this._handleHotPointClicks.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
   }
 
   getTemplate() {
-    return filmCard(this._data);
+    return createFilmCardTemplate(this._filmData);
   }
 
   _handleHotPointClicks() {
@@ -51,6 +51,39 @@ export default class Film1Card extends AbstractView{
     poster.addEventListener('click', this._handleHotPointClicks);
     title.addEventListener('click', this._handleHotPointClicks);
     comments.addEventListener('click', this._handleHotPointClicks);
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickWatched();
+  }
+
+  _favoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickFavorite();
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.clickWatchlist();
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    const watchedFilm = this.getElement().querySelector('.film-card__controls-item--mark-as-watched');
+    watchedFilm.addEventListener('click', this._watchedClickHandler);
+  }
+
+  setFavoritesClickHandler(callback) {
+    this._callback.favoritesClick = callback;
+    const favoriteFilm = this.getElement().querySelector('.film-card__controls-item--favorite');
+    favoriteFilm.addEventListener('click', this._favoritesClickHandler);
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    const watchlistFilm = this.getElement().querySelector('.film-card__controls-item--add-to-watchlist');
+    watchlistFilm.addEventListener('click', this._watchlistClickHandler);
   }
 
   _createElement() {

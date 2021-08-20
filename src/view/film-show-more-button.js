@@ -1,14 +1,15 @@
 import {createElement, renderElement, RenderPosition} from '../lib/render';
 import FilmListContainerView from './film/film-list-container';
+import AbstractView from './abstract';
 
 const BUTTON_LABEL = 'Show more';
 const createShowMoreButtonTemplate = () => `<button class="films-list__show-more">${BUTTON_LABEL}</button>`;
 
-export default class ShowMoreButton {
+export default class ShowMoreButton extends AbstractView {
   constructor({data, onSelect}) {
+    super();
     this.data = data;
     this.onSelect = onSelect;
-    this._element = null;
   }
 
   getTemplate() {
