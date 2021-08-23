@@ -10,6 +10,10 @@ import {countUserDetails} from './counters-reducer';
 
 
 export const renderData = ({data, siteHeader, siteMainElement, footerStats, onFilmSelect}) => {
+  
+  // const p = new FilmsList(container, data);
+  // p.Execute();
+  
   const counters = data.reduce(countUserDetails, {watchlistCount: 0, historyCount: 0, favoritesCount: 0});
   renderElement(siteHeader, new UserStatusView(), RenderPosition.BEFOREEND);
   renderElement(siteMainElement, new SiteMenuView(counters), RenderPosition.BEFOREEND);
