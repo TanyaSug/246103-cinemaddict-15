@@ -1,6 +1,7 @@
-import {createElement, renderElement, RenderPosition} from '../lib/render';
+import {createElement, renderElement} from '../lib/render';
 import FilmListContainerView from './film/film-list-container';
 import AbstractView from './abstract';
+import {RenderPosition} from '../lib/consts';
 
 const BUTTON_LABEL = 'Show more';
 const createShowMoreButtonTemplate = () => `<button class="films-list__show-more">${BUTTON_LABEL}</button>`;

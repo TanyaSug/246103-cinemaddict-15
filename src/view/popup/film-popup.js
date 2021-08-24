@@ -232,7 +232,7 @@ export default class FilmPopup extends AbstractView{
   }
 
   appendPopUp() {
-    document.body.appendChild(this.getElement());
+     document.body.appendChild(this.getElement());
   }
 
   removePopUp() {

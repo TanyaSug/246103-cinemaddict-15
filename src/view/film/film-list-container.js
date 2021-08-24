@@ -12,8 +12,10 @@ const createFilmsListContainerTemplate = () => (
 </section>`
 );
 
+const noop = () => undefined;
 export default class FilmsListContainer extends AbstractView {
-  constructor({data, count = 5, onSelect}) {
+  constructor(props) {
+    const {data, count = 5, onSelect = noop} = props;
     super();
     this._data = data;
     this._count = count;
@@ -35,9 +37,7 @@ export default class FilmsListContainer extends AbstractView {
     this._onSelect(film);
   }
 
-  _createElement () {
-    const result = createElement(this.getTemplate());
-    const container = result.querySelector('.films-list__container');
+  _createElementWithRealData (container) {
     this._data
       .slice(0, this._count)
       .map((film) => new Film1Card(
@@ -47,6 +47,27 @@ export default class FilmsListContainer extends AbstractView {
         }))
       .forEach((filmView) => container.appendChild(filmView.getElement()));
     return container;
+  }
+
+  _createElementWithoutData (container) {
+    const child = document.createTextNode('Loading...');
+    container.appendChild(child);
+    return container;
+  }
+
+  _fillContainer (container) {
+    if (Array.isArray(this._data)) {
+      return this._createElementWithRealData(container);
+    }
+    return this._createElementWithoutData(container);
+  }
+
+  _createElement () {
+    const result = createElement(this.getTemplate());
+    this._fillContainer(
+      result.querySelector('.films-list__container'),
+    );
+    return result;
   }
 }
 

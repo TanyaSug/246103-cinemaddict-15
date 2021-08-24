@@ -13,7 +13,8 @@ const createSiteMenuTemplate = (watchlistCount, historyCount, favoritesCount) =>
 
 
 export default class SiteMenu extends AbstractView {
-  constructor({watchlistCount, historyCount, favoritesCount}) {
+  constructor(props) {
+    const {watchlistCount, historyCount, favoritesCount} = props;
     super();
     this._watchlistCount = watchlistCount;
     this.historyCount = historyCount;
