@@ -1,5 +1,6 @@
 import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
+import {onEscKeyDown} from '../../main';
 
 const makeActiveClassName = (flag) => flag ? 'film-details__control-button--active' : '';
 
@@ -11,59 +12,57 @@ const createFilmPopupTemplate = (data) => (
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/the-great-flamarion.jpg" alt="">
+          <img class="film-details__poster-img" src=${data.filmInfo.posters} alt="">
 
-          <p class="film-details__age">18+</p>
+          <p class="film-details__age">${data.filmInfo.ageRating}</p>
         </div>
 
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
               <h3 class="film-details__title">${data.filmInfo.title}</h3>
-              <p class="film-details__title-original">Original: The Great Flamarion</p>
+              <p class="film-details__title-original">${data.filmInfo.alternativeTitle}</p>
             </div>
 
             <div class="film-details__rating">
-              <p class="film-details__total-rating">8.9</p>
+              <p class="film-details__total-rating">${data.filmInfo.totalRating}</p>
             </div>
           </div>
 
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">Anthony Mann</td>
+              <td class="film-details__cell">${data.filmInfo.director}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">Anne Wigton, Heinz Herald, Richard Weil</td>
+              <td class="film-details__cell">${data.filmInfo.writers}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">Erich von Stroheim, Mary Beth Hughes, Dan Duryea</td>
+              <td class="film-details__cell">${data.filmInfo.actors}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">30 March 1945</td>
+              <td class="film-details__cell">${data.filmInfo.releaseDate}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">1h 18m</td>
+              <td class="film-details__cell">${data.filmInfo.runtime}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">USA</td>
+              <td class="film-details__cell">${data.filmInfo.releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">Genre</td>
               <td class="film-details__cell">
-                <span class="film-details__genre">Drama</span>
-                <span class="film-details__genre">Film-Noir</span>
-                <span class="film-details__genre">Mystery</span></td>
+                <span class="film-details__genre">${data.filmInfo.genres}</span></td>
             </tr>
           </table>
 
           <p class="film-details__film-description">
-            The film opens following a murder at a cabaret in Mexico City in 1936, and then presents the events leading up to it in flashback. The Great Flamarion (Erich von Stroheim) is an arrogant, friendless, and misogynous marksman who displays his trick gunshot act in the vaudeville circuit. His show features a beautiful assistant, Connie (Mary Beth Hughes) and her drunken husband Al (Dan Duryea), Flamarion's other assistant. Flamarion falls in love with Connie, the movie's femme fatale, and is soon manipulated by her into killing her no good husband during one of their acts.
+         ${data.filmInfo.description}
           </p>
         </div>
       </div>
@@ -77,7 +76,7 @@ const createFilmPopupTemplate = (data) => (
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${data.filmInfo.commentsCount}</span></h3>
 
         <ul class="film-details__comments-list">
           <li class="film-details__comment">
@@ -220,6 +219,8 @@ export default class FilmPopup extends AbstractView{
     const result = createElement(this.getTemplate());
     result.querySelector('.film-details__close-btn').addEventListener('click', () => {
       this.removePopUp();
+      document.body.classList.remove('hide-overflow');
+      document.removeEventListener('keydown', onEscKeyDown);
     });
     return result;
   }
@@ -232,7 +233,9 @@ export default class FilmPopup extends AbstractView{
   }
 
   appendPopUp() {
-     document.body.appendChild(this.getElement());
+    document.body.appendChild(this.getElement());
+    document.body.classList.add('hide-overflow');
+    document.addEventListener('keydown', onEscKeyDown);
   }
 
   removePopUp() {

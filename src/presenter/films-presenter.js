@@ -1,7 +1,7 @@
 import UserStatusView from '../view/user-status';
-import SiteMenuView from '../view/site-menu';
-import FilmFilterView from '../view/film-filter';
-import FilmsListContainerView from '../view/film/film-list-container';
+// import FilmsFilterView from '../view/films-filter';
+// import FilmsSortView from '../view/films-sort';
+import FilmsListContainerView from '../view/film/films-list-container';
 import ShowMoreButtonView from '../view/film-show-more-button';
 import FilmCardTopRatedAndCommentedView from '../view/film/film-card-top-rated';
 import FooterStatisticsView from '../view/footer-statistics';
@@ -12,35 +12,38 @@ import FilmsLoadingView from '../view/films-loading';
 import {RenderPosition} from '../lib/consts';
 import {loadData} from '../api/load-data';
 import {computeUserRating} from '../lib/compute-user-rating';
+import FilmPopup from '../view/popup/film-popup';
 
 
 export default class FilmsListPresenter {
-  constructor(container, data) {
-    this._container = container;
-    this._userStatusComponent = new UserStatusView(computeUserRating(this._data));
-    this._siteMenuComponent = new SiteMenuView();
-    this._filmFilterComponent = new FilmFilterView();
+  constructor(mainContainer, data) {
+    this._container = mainContainer;
+    this._data = data;
+    this._originalData = data;
+    this._userStatusComponent = null;
+    this._filmsFilterComponent = null;
+    this._filmsSortComponent = null;
     this._filmsLoading = new FilmsLoadingView();
-    this._filmListComponent = new FilmsListContainerView();
-    this._film1CardComponent = new Film1CardView();
+    this._filmListComponent = null;
+    // this._film1CardComponent = new Film1CardView();
+    this._filmPopupComponent = null;
     this._filmListEmptyComponent = new FilmsListEmptyView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._filmCardTopRatedAndCommentedComponent = new FilmCardTopRatedAndCommentedView();
     this._footerStatisticsComponent = new FooterStatisticsView();
-    this._data = data;
-    this._originalData = data;
     this._onDataReceived = this._onDataReceived.bind(this);
   }
 
 
   _renderUserStatus() {
-    renderElement(this._container, this._userStatusComponent, RenderPosition.BEFOREEND);
+    this._userStatusComponent = new UserStatusView(computeUserRating(this._data));
+    renderElement(this._container, this._userStatusComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderSiteMenu() {}
+  _renderFilmsFilter() {}
 
-  _renderFilmFilter() {
-    renderElement(this._container, this._filmFilterComponent, RenderPosition.BEFOREEND);
+  _renderFilmsSort() {
+    renderElement(this._container, this._filmsSortComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilmsLoading() {
@@ -48,6 +51,8 @@ export default class FilmsListPresenter {
   }
 
   _renderFilmsList() {
+    this._filmListComponent = new FilmsListContainerView(
+      {data: this._data, onSelect: (film) => this._renderPopup(film), onSelcet1: (her) => method(her) });
     renderElement(this._container, this._filmListComponent, RenderPosition.BEFOREEND);
   }
 
@@ -59,51 +64,67 @@ export default class FilmsListPresenter {
 
   _renderShowMoreButton() {}
 
+  _renderPopup(film) {
+    this._filmPopupComponent = new FilmPopup(film);
+    this._filmPopupComponent.appendPopUp();
+  }
+
+
   _renderFilmCardTopRatedAndCommented() {}
 
   _renderFooterStatistics() {
     renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 
-  _onDataLoaded(data){
+  _onDataLoaded(data) {
     this._originalData = data;
     this._data;
     this. _render();
   }
 
-  _sortByRating(){
-    const newData = this._originalData.sort(compareByRating);
-    this._data = newData;
-    this. _render();
-  }
+  // _sortByRating() {
+  //   const newData = this._originalData.sort(compareByRating);
+  //   this._data = newData;
+  //   this. _render();
+  // }
 
-  _filterByWatched(){
-    const newData = this._originalData.filter(isWitched);
-    this._data = newData;
-    this. _render();
-  }
+  // _filterByWatched() {
+  //   const newData = this._originalData.filter(isWitched);
+  //   this._data = newData;
+  //   this. _render();
+  // }
 
   _render(){
-    if (this._data === null) {
+    if (this._data === undefined) {
       this._renderFilmsLoading();
       return;
     }
+
     if (Array.isArray(this._data)) {
       if (this._data.length <= 0) {
         this._renderFilmsListEmpty();
+      } else {
+        this._renderUserStatus();
+        this._renderFilmsList();
+        this._renderFooterStatistics();
       }
-      //нарисовать фильмы
     }
   }
 
   _onDataReceived(data) {
-    this._clearContainer();
+    // this._clearContainer();
     this._data = data;
     this._render();
   }
 
   _beginLoadData() {
     loadData().then(this._onDataReceived).catch(() => undefined);
+  }
+
+  _method(value) {
+    if(value === 'wat') {
+      this._data = {};
+    }
   }
 
   execute() {

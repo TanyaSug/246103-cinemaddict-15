@@ -2,24 +2,25 @@ import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
 import Film1Card from './film-card';
 
+
 const createFilmsListContainerTemplate = () => (
-  `<section class="films">
-    <section class="films-list">
+  `<section class="films-list">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-      <div class="films-list__container">
-      </div>
-    </section>
-</section>`
+      <div class="films-list__container"></div>
+  </section>`
 );
+
 
 const noop = () => undefined;
 export default class FilmsListContainer extends AbstractView {
   constructor(props) {
-    const {data, count = 5, onSelect = noop} = props;
+    const {data, count = 5, onSelect = noop, onSelect1 = noop} = props;
     super();
     this._data = data;
     this._count = count;
     this._onSelect = onSelect;
+    this._onSelect1 = onSelect1;
+    this._handleFilmSelect = this._handleFilmSelect.bind(this);
   }
 
   getTemplate() {
@@ -37,15 +38,28 @@ export default class FilmsListContainer extends AbstractView {
     this._onSelect(film);
   }
 
+  _handleFilmSelect1(film) {
+    this._onSelect1(film);
+  }
+
   _createElementWithRealData (container) {
     this._data
       .slice(0, this._count)
-      .map((film) => new Film1Card(
-        {
-          ...film.filmInfo,
-          onClick:() => this._handleFilmSelect(film),
-        }))
-      .forEach((filmView) => container.appendChild(filmView.getElement()));
+      .map((film) => {
+        const filmCard = new Film1Card(
+          { ...film.filmInfo });
+
+        const element = filmCard.getElement();
+        filmCard.setPopupClickHandler(() => {
+          this._handleFilmSelect(film);
+        });
+        filmCard.setFavoritesClickHandler(() => this._handleFilmSelect1(film));
+
+        return element;
+      })
+      .forEach((element) => {
+        container.appendChild(element);
+      });
     return container;
   }
 
