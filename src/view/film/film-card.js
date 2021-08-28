@@ -1,22 +1,25 @@
 import AbstractView from '../abstract';
-import {createElement} from '../../lib/render';
+import {createElement, replace} from '../../lib/render';
+import {DESCRIPTION_LENGTH, FilmClickIds} from '../../lib/consts';
+import dayjs from 'dayjs';
 
 
 export const createFilmCardTemplate = (filmData) => {
-  const {title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount, isFavorite, isWatchlist, isWatched} = filmData;
-  const favoriteClassName = isFavorite ? 'film-card__controls-item--active' : '';
-  const watchlistClassName = isWatchlist ? 'film-card__controls-item--active' : '';
-  const watchedClassName = isWatched ? 'film-card__controls-item--active' : '';
+  const {filmInfo: {title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount}, userDetails: {watchlist, alreadyWatched, favorite}} = filmData;
+  const setDescriptionView = (filmDescription) => filmDescription.length <= DESCRIPTION_LENGTH ? filmDescription : `${filmDescription.slice(0, DESCRIPTION_LENGTH)}...`;
+  const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
+  const watchlistClassName = watchlist ? 'film-card__controls-item--active' : '';
+  const watchedClassName = alreadyWatched ? 'film-card__controls-item--active' : '';
   return `<article class="film-card">
           <h3 class="film-card__title">${title || ''}</h3>
           <p class="film-card__rating">${totalRating || ''}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${releaseDate || ''}</span>
+            <span class="film-card__year">${dayjs(releaseDate).format('YYYY')} || ''}</span>
             <span class="film-card__duration">${runtime || ''}</span>
             <span class="film-card__genre">${genres || ''}</span>
           </p>
           <img src=${posters} alt="" class="film-card__poster">
-          <p class="film-card__description">${description || ''}</p>
+          <p class="film-card__description">${setDescriptionView(description) || ''}</p>
           <a class="film-card__comments">${commentsCount} comments</a>
           <div class="film-card__controls">
             <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button">Add to watchlist</button>
@@ -26,7 +29,7 @@ export const createFilmCardTemplate = (filmData) => {
         </article>`;
 };
 
-export default class Film1Card extends AbstractView {
+export default class  FilmCard extends AbstractView {
   constructor(props) {
     const {...filmData} = props;
     super();
@@ -69,17 +72,17 @@ export default class Film1Card extends AbstractView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickWatched();
+    this._callback.watchedClick();
   }
 
   _favoritesClickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickFavorite();
+    this._callback.favoritesClick();
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickWatchlist();
+    this._callback.watchlistClick();
   }
 
   setPopupClickHandler(callback) {
@@ -102,5 +105,28 @@ export default class Film1Card extends AbstractView {
     this._callback.watchlistClick = callback;
     const watchlistFilm = this.getElement().querySelector('.film-card__controls-item--add-to-watchlist');
     watchlistFilm.addEventListener('click', this._watchlistClickHandler);
+  }
+
+  clearListeners() {
+    if(this._element && Object.keys(this._callback).length > 0) {
+      this._element.removeEventListener('click', this._callback.popupClick);
+      this._element.removeEventListener('click', this._callback.favoritesClick);
+      this._element.removeEventListener('click', this._callback.watchlistClick);
+      this._element.removeEventListener('click', this._callback.watchedClick);
+    } else {
+      throw Error('Element is not found');
+    }
+  }
+
+  updateElement(newFilmClass, updatedFilmData, handler) {
+    this.clearListeners();
+
+    this._filmData = updatedFilmData;
+    newFilmClass.setPopupClickHandler(() => handler(FilmClickIds.POP_UP, updatedFilmData));
+    newFilmClass.setFavoritesClickHandler(() => handler(FilmClickIds.FAVORITES, updatedFilmData));
+    newFilmClass.setWatchlistClickHandler(() => handler(FilmClickIds.WATCH_LIST, updatedFilmData));
+    newFilmClass.setWatchedClickHandler(() => handler(FilmClickIds.WATCHED, updatedFilmData));
+
+    replace(newFilmClass, this);
   }
 }

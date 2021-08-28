@@ -1,26 +1,29 @@
 import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
-import Film1Card from './film-card';
+import FilmCard from './film-card';
+import {FilmClickIds, FILMS_COUNT} from '../../lib/consts';
 
 
 const createFilmsListContainerTemplate = () => (
   `<section class="films-list">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+
       <div class="films-list__container"></div>
   </section>`
 );
 
 
 const noop = () => undefined;
-export default class FilmsListContainer extends AbstractView {
+export default class FilmsList extends AbstractView {
   constructor(props) {
-    const {data, count = 5, onSelect = noop, onSelect1 = noop} = props;
+    const {data, onSelect = noop, onRender} = props;
     super();
     this._data = data;
-    this._count = count;
+    // this._count = count;
     this._onSelect = onSelect;
-    this._onSelect1 = onSelect1;
+    this._onRender = onRender;
     this._handleFilmSelect = this._handleFilmSelect.bind(this);
+    this._container = null;
   }
 
   getTemplate() {
@@ -34,33 +37,34 @@ export default class FilmsListContainer extends AbstractView {
     return this._element;
   }
 
-  _handleFilmSelect(film) {
-    this._onSelect(film);
+  _handleFilmSelect(key, film) {
+    this._onSelect(key, film);
   }
 
-  _handleFilmSelect1(film) {
-    this._onSelect1(film);
-  }
-
-  _createElementWithRealData (container) {
+  _createElementWithRealData (container, startIndex = 0, count = FILMS_COUNT) {
     this._data
-      .slice(0, this._count)
+      .slice(startIndex, startIndex + count)
       .map((film) => {
-        const filmCard = new Film1Card(
-          { ...film.filmInfo });
+        const filmCard = new FilmCard(film);
 
+        this._onRender(film.id, filmCard);
         const element = filmCard.getElement();
-        filmCard.setPopupClickHandler(() => {
-          this._handleFilmSelect(film);
-        });
-        filmCard.setFavoritesClickHandler(() => this._handleFilmSelect1(film));
-
+        filmCard.setPopupClickHandler(() => this._handleFilmSelect(FilmClickIds.POP_UP, film));
+        filmCard.setFavoritesClickHandler(() => this._handleFilmSelect(FilmClickIds.FAVORITES, film));
+        filmCard.setWatchlistClickHandler(() => this._handleFilmSelect(FilmClickIds.WATCH_LIST, film));
+        filmCard.setWatchedClickHandler(() => this._handleFilmSelect(FilmClickIds.WATCHED, film));
         return element;
       })
       .forEach((element) => {
         container.appendChild(element);
       });
     return container;
+  }
+
+  addMoreFilms(startIndex, count) {
+    if(this._container) {
+      this._createElementWithRealData(this._container, startIndex, count);
+    }
   }
 
   _createElementWithoutData (container) {
@@ -70,6 +74,8 @@ export default class FilmsListContainer extends AbstractView {
   }
 
   _fillContainer (container) {
+    this._container = container;
+
     if (Array.isArray(this._data)) {
       return this._createElementWithRealData(container);
     }

@@ -26,6 +26,8 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
+// not replace class, but replace a child of old element, by new one
+// newChild and oldChild are classes
 export const replace = (newChild, oldChild) => {
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();
@@ -37,7 +39,7 @@ export const replace = (newChild, oldChild) => {
 
   const parent = oldChild.parentElement;
 
-  if (parent === null || oldChild === null || newChild === null) {
+  if (parent === null || newChild === null) {
     throw new Error('Can\'t replace unexisting elements');
   }
 
