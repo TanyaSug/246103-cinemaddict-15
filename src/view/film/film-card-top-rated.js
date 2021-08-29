@@ -1,27 +1,24 @@
-import {filmCard} from './film-card';
+import FilmCardView from './film-card';
 import {filmData} from '../../mock/create-1-film';
 import AbstractView from '../abstract';
 
-const createFilmCardTopRatedAndCommented = () => (
-  `<section class="films">
-    <section class="films-list films-list--extra">
+const filmCard = new FilmCardView(filmData);
+const createFilmCardTopRated= () => (
+  `<section class="films-list films-list--extra">
      <h2 class= "films-list__title">Top rated</h2>
      <div class="films-list__container">
-   ${[...Array(2).fill(null)].map(() => filmCard(filmData)).join('')}
+     ${filmCard.getElement()}${filmCard.getElement()}
      </div>
-    </section>
-     <section class="films-list films-list--extra">
-      <h2 class="films-list__title">Most commented</h2>
-      <div class="films-list__container">
-    ${[...Array(2).fill(null)].map(() => filmCard(filmData)).join('')}
-      </div>
-     </section>
-  </section>`
+   </section>`
 );
 
-export default class FilmCardTopRatedAndCommented extends AbstractView  {
+export default class FilmCardTopRated extends AbstractView  {
+  constructor(filmsData) {
+    super();
+    this._filmData = filmsData;
+  }
 
   getTemplate() {
-    return createFilmCardTopRatedAndCommented();
+    return createFilmCardTopRated(this._filmData);
   }
 }

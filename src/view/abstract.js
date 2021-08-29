@@ -6,6 +6,7 @@ export default class Abstract {
       throw new Error('Can\'t instantiate Abstract, only concrete one.');
     }
     this._element = null;
+    this._callback = {};
   }
 
   getTemplate() {
@@ -14,10 +15,25 @@ export default class Abstract {
 
   getElement() {
     if (!this._element) {
-      this._element = createElement(this.getTemplate());
+      this._element = this._createElement(this.getTemplate());
     }
-
     return this._element;
+  }
+
+  // attachEvents(element) {}
+  //
+  // dataBind(element) {}
+
+  _createElement() {
+    const template = this.getTemplate();
+    const element = createElement(template);
+    this._initializeElement(element);
+    return element;
+  }
+
+  _initializeElement() {
+    // attachEvents(element);
+    // dataBind(element);
   }
 
   removeElement() {

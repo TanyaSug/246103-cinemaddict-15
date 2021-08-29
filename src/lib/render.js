@@ -1,21 +1,22 @@
-export const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-};
+import Abstract from '../view/abstract';
+import {RenderPosition} from './consts';
 
-export const renderElement = (container, element, place) => {
+
+export const renderElement = (container, child, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+  if (child instanceof Abstract) {
+    child = child.getElement();
+  }
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(child);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(element);
+      container.append(child);
       break;
   }
-};
-
-export const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
 };
 
 export const createElement = (template) => {
@@ -23,4 +24,33 @@ export const createElement = (template) => {
   newElement.innerHTML = template;
 
   return newElement.firstChild;
+};
+
+// not replace class, but replace a child of old element, by new one
+// newChild and oldChild are classes
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
+export const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error('Can remove only components');
+  }
+
+  component.getElement().remove();
+  component.removeElement();
 };
