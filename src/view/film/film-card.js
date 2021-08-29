@@ -1,5 +1,5 @@
 import AbstractView from '../abstract';
-import {createElement, replace} from '../../lib/render';
+import {createElement} from '../../lib/render';
 import {DESCRIPTION_LENGTH, FilmClickIds} from '../../lib/consts';
 import dayjs from 'dayjs';
 
@@ -72,17 +72,17 @@ export default class  FilmCard extends AbstractView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchedClick();
+    this._callback.watchedClick(this._filmData);
   }
 
   _favoritesClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoritesClick();
+    this._callback.favoritesClick(this._filmData);
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchlistClick();
+    this._callback.watchlistClick(this._filmData);
   }
 
   setPopupClickHandler(callback) {
@@ -107,26 +107,39 @@ export default class  FilmCard extends AbstractView {
     watchlistFilm.addEventListener('click', this._watchlistClickHandler);
   }
 
-  clearListeners() {
-    if(this._element && Object.keys(this._callback).length > 0) {
-      this._element.removeEventListener('click', this._callback.popupClick);
-      this._element.removeEventListener('click', this._callback.favoritesClick);
-      this._element.removeEventListener('click', this._callback.watchlistClick);
-      this._element.removeEventListener('click', this._callback.watchedClick);
-    } else {
-      throw Error('Element is not found');
-    }
-  }
+  // clearListeners() {
+  //   if(this._element && Object.keys(this._callback).length > 0) {
+  //     this._element.removeEventListener('click', this._callback.popupClick);
+  //     this._element.removeEventListener('click', this._callback.favoritesClick);
+  //     this._element.removeEventListener('click', this._callback.watchlistClick);
+  //     this._element.removeEventListener('click', this._callback.watchedClick);
+  //   } else {
+  //     throw Error('Element is not found');
+  //   }
+  // }
 
-  updateElement(newFilmClass, updatedFilmData, handler) {
-    this.clearListeners();
-
+  // updateElement(newFilmClass, updatedFilmData, handler) {
+  updateElement(key, updatedFilmData) {
+    // this.clearListeners();
+    const ACTIVE_CLASS = 'film-card__controls-item--active';
     this._filmData = updatedFilmData;
-    newFilmClass.setPopupClickHandler(() => handler(FilmClickIds.POP_UP, updatedFilmData));
-    newFilmClass.setFavoritesClickHandler(() => handler(FilmClickIds.FAVORITES, updatedFilmData));
-    newFilmClass.setWatchlistClickHandler(() => handler(FilmClickIds.WATCH_LIST, updatedFilmData));
-    newFilmClass.setWatchedClickHandler(() => handler(FilmClickIds.WATCHED, updatedFilmData));
 
-    replace(newFilmClass, this);
+    if (key === FilmClickIds.WATCH_LIST) {
+      this._element.querySelector('.film-card__controls-item--add-to-watchlist')
+        .classList.toggle(ACTIVE_CLASS);
+    } else if (key === FilmClickIds.WATCHED) {
+      this._element.querySelector('.film-card__controls-item--mark-as-watched')
+        .classList.toggle(ACTIVE_CLASS);
+    } else if (key === FilmClickIds.FAVORITES) {
+      this._element.querySelector('.film-card__controls-item--favorite')
+        .classList.toggle(ACTIVE_CLASS);
+    }
+
+    // newFilmClass.setPopupClickHandler(() => handler(FilmClickIds.POP_UP, updatedFilmData));
+    // newFilmClass.setFavoritesClickHandler(() => handler(FilmClickIds.FAVORITES, updatedFilmData));
+    // newFilmClass.setWatchlistClickHandler(() => handler(FilmClickIds.WATCH_LIST, updatedFilmData));
+    // newFilmClass.setWatchedClickHandler(() => handler(FilmClickIds.WATCHED, updatedFilmData));
+
+    // replace(newFilmClass, this);
   }
 }

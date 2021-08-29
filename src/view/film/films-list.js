@@ -22,8 +22,8 @@ export default class FilmsList extends AbstractView {
     // this._count = count;
     this._onSelect = onSelect;
     this._onRender = onRender;
-    this._handleFilmSelect = this._handleFilmSelect.bind(this);
     this._container = null;
+    this._handleFilmSelect = this._handleFilmSelect.bind(this);
   }
 
   getTemplate() {
@@ -50,9 +50,9 @@ export default class FilmsList extends AbstractView {
         this._onRender(film.id, filmCard);
         const element = filmCard.getElement();
         filmCard.setPopupClickHandler(() => this._handleFilmSelect(FilmClickIds.POP_UP, film));
-        filmCard.setFavoritesClickHandler(() => this._handleFilmSelect(FilmClickIds.FAVORITES, film));
-        filmCard.setWatchlistClickHandler(() => this._handleFilmSelect(FilmClickIds.WATCH_LIST, film));
-        filmCard.setWatchedClickHandler(() => this._handleFilmSelect(FilmClickIds.WATCHED, film));
+        filmCard.setFavoritesClickHandler((updatedFilm) => this._handleFilmSelect(FilmClickIds.FAVORITES, updatedFilm));
+        filmCard.setWatchlistClickHandler((updatedFilm) => this._handleFilmSelect(FilmClickIds.WATCH_LIST, updatedFilm));
+        filmCard.setWatchedClickHandler((updatedFilm) => this._handleFilmSelect(FilmClickIds.WATCHED, updatedFilm));
         return element;
       })
       .forEach((element) => {

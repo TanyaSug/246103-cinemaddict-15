@@ -24,4 +24,4 @@ export const updateItem = (items, update) => {
   ];
 };
 
-export const clone = (obj) =>  JSON.parse(JSON.stringify(obj))
+export const clone = (obj) =>  JSON.parse(JSON.stringify(obj));

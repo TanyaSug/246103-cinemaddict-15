@@ -1,6 +1,6 @@
 import AbstractView from '../abstract';
-import {createElement} from '../../lib/render';
 import dayjs from 'dayjs';
+import {FilmClickIds} from '../../lib/consts';
 
 
 const makeActiveClassName = (flag) => flag ? 'film-details__control-button--active' : '';
@@ -171,28 +171,29 @@ const createFilmPopupTemplate = (filmData) => (
 );
 
 export default class FilmPopup extends AbstractView{
-  constructor(data) {
+  constructor(filmData) {
     super();
-    this._data = data;
+    this._filmData = filmData;
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this.removePopUp = this.removePopUp.bind(this);
   }
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickWatched();
+    this._callback.watchedClick(this._filmData);
   }
 
   _favoritesClickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickFavorite();
+    this._callback.favoritesClick(this._filmData);
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickWatchlist();
+    this._callback.watchlistClick(this._filmData);
   }
 
   setWatchedClickHandler(callback) {
@@ -215,18 +216,7 @@ export default class FilmPopup extends AbstractView{
 
 
   getTemplate() {
-    return createFilmPopupTemplate(this._data);
-  }
-
-  _createElement () {
-    const result = createElement(this.getTemplate());
-    // result.querySelector('.film-details__close-btn')
-    //   .addEventListener('click', () => {
-    //     this.removePopUp();
-    //   });
-    // document.addEventListener('keydown', this._onEscKeyDown);
-
-    return result;
+    return createFilmPopupTemplate(this._filmData);
   }
 
   getElement() {
@@ -240,7 +230,6 @@ export default class FilmPopup extends AbstractView{
     if ( evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.removePopUp();
-      document.removeEventListener('keydown', this._onEscKeyDown);
     }
   }
 
@@ -248,19 +237,46 @@ export default class FilmPopup extends AbstractView{
     document.body.appendChild(this.getElement());
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDown);
-    this._element.querySelector('.film-details__close-btn')
-      .addEventListener('click', () => {
-        this.removePopUp();
-        document.removeEventListener('keydown', this.removePopUp);
-      });
+    document.querySelector('.film-details__close-btn')
+      .addEventListener('click', this.removePopUp);
   }
 
   removePopUp() {
     if (this._element) {
+      this.clearListeners();
       document.body.removeChild(this._element);
       document.body.classList.remove('hide-overflow');
-      document.removeEventListener('keydown', this.removePopUp);
+    }
+  }
 
+  clearListeners() {
+    if(this._element && Object.keys(this._callback).length > 0) {
+      this._element.removeEventListener('click', this._callback.favoritesClick);
+      this._element.removeEventListener('click', this._callback.watchlistClick);
+      this._element.removeEventListener('click', this._callback.watchedClick);
+
+      document.removeEventListener('keydown', this._onEscKeyDown);
+      document.querySelector('.film-details__close-btn')
+        .removeEventListener('click', this.removePopUp);
+
+    } else {
+      throw Error('Element is not found');
+    }
+  }
+
+  updateElement(key, updatedFilmData) {
+    this._filmData = updatedFilmData;
+    const ACTIVE_CLASS = 'film-details__control-button--active';
+
+    if (key === FilmClickIds.WATCH_LIST) {
+      this._element.querySelector('.film-details__control-button--watchlist')
+        .classList.toggle(ACTIVE_CLASS);
+    } else if (key === FilmClickIds.WATCHED) {
+      this._element.querySelector('.film-details__control-button--watched')
+        .classList.toggle(ACTIVE_CLASS);
+    } else if (key === FilmClickIds.FAVORITES) {
+      this._element.querySelector('.film-details__control-button--favorite')
+        .classList.toggle(ACTIVE_CLASS);
     }
   }
 }
