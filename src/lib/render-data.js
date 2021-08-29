@@ -15,13 +15,13 @@
 //   const renderElement = new FilmsListPresenter(container, data);
 //   renderElement.execute();
 // };
-  // const counters = data.reduce(countUserDetails, {watchlistCount: 0, historyCount: 0, favoritesCount: 0});
-  // renderElement(siteHeader, new UserStatusView(), RenderPosition.BEFOREEND);
-  // renderElement(siteMainElement, new SiteMenuView(counters), RenderPosition.BEFOREEND);
-  // renderElement(siteMainElement, new FilmFilterView(), RenderPosition.BEFOREEND);
-  // renderElement(siteMainElement, new FilmListContainerView({data, onSelect: onFilmSelect}), RenderPosition.BEFOREEND);
-  // renderElement(siteMainElement, new ShowMoreButtonView({data, onSelect: onFilmSelect}), RenderPosition.BEFOREEND);
-  // // renderElement(siteMainElement, new FilmCardTopRatedAndCommentedView(), RenderPosition.BEFOREEND);
-  // renderElement(footerStats, new FooterStatisticsView(), RenderPosition.BEFOREEND);
+// const counters = data.reduce(countUserDetails, {watchlistCount: 0, historyCount: 0, favoritesCount: 0});
+// renderElement(siteHeader, new UserStatusView(), RenderPosition.BEFOREEND);
+// renderElement(siteMainElement, new SiteMenuView(counters), RenderPosition.BEFOREEND);
+// renderElement(siteMainElement, new FilmFilterView(), RenderPosition.BEFOREEND);
+// renderElement(siteMainElement, new FilmListContainerView({data, onSelect: onFilmSelect}), RenderPosition.BEFOREEND);
+// renderElement(siteMainElement, new ShowMoreButtonView({data, onSelect: onFilmSelect}), RenderPosition.BEFOREEND);
+// // renderElement(siteMainElement, new FilmCardTopRatedAndCommentedView(), RenderPosition.BEFOREEND);
+// renderElement(footerStats, new FooterStatisticsView(), RenderPosition.BEFOREEND);
 
 
