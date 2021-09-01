@@ -66,7 +66,7 @@ export default class MainPresenter {
   //   this. _render();
   // }
 
-  _render(){
+  _render() {
     if (this._data === undefined) {
       this._renderFilmsLoading();
       return;

@@ -9,7 +9,7 @@ import ShowMoreButtonView from '../view/film-show-more-button';
 // import FilmCardTopRatedView from '../view/film/film-card-top-rated';
 // import FilmCardMostCommentedView from '../view/film/film-card-most-commented';
 import FilmPopupView from '../view/popup/film-popup';
-// import FilmCardView from '../view/film/film-card';
+import PopupPresenter from './popup-presenter';
 import {updateItem} from '../utils';
 import {createSiteMenuMock} from '../mock/create-site-menu-mock';
 // import FilmCard from '../view/film/film-card';
@@ -24,6 +24,7 @@ export default class FilmsPresenter {
     this._filmsSortComponent = null;
     this._filmsContainer = null;
     this._filmListComponent = null;
+    this._popupPresenter = null;
     this._filmPopupComponent = null;
     this._filmCardTopRatedComponent = null;
     this._filmCardMostCommentedComponent = null;
@@ -73,8 +74,6 @@ export default class FilmsPresenter {
     renderElement(this._filmsContainer, this._filmListComponent, RenderPosition.BEFOREEND);
   }
 
-  _addMoreFilmsList() {}
-
   _handleSortTypeChange() {}
 
   _handleMoreButtonClick() {
@@ -106,7 +105,7 @@ export default class FilmsPresenter {
   //   this._filmCardTopRatedComponent = new FilmCardTopRatedView(this._filmsData);
   //   renderElement(this._filmsContainer, this._filmCardTopRatedComponent, RenderPosition.BEFOREEND);
   // }
-  //
+
   // _renderFilmCardMostCommented() {
   //   this._filmCardMostCommentedComponent = new FilmCardMostCommentedView(this._filmsData);
   //   renderElement(this._filmsContainer, this._filmCardMostCommentedComponent, RenderPosition.BEFOREEND);

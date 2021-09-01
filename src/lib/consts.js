@@ -40,3 +40,10 @@ export const FilmClickIds = {
 export const FILMS_COUNT = 5;
 
 export const DESCRIPTION_LENGTH = 140;
+
+export const EMOTIONS = [
+  'smile',
+  'sleeping',
+  'puke',
+  'angry',
+];
