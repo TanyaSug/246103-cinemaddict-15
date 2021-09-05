@@ -21,6 +21,12 @@ export default class MainPresenter {
     this._filmListEmptyComponent = null;
     this._footerStatisticsComponent = null;
     this._onDataReceived = this._onDataReceived.bind(this);
+
+    // во время работы программе придется "помнить"
+    // выбор пользователя в отношении сортировки и фильтрации
+    // кому как не презентеру об этом знать.
+    this._sortOrder = null;
+    this._filterBy = null;
   }
 
 
@@ -49,12 +55,6 @@ export default class MainPresenter {
     renderElement(this._container, this._footerStatisticsComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _onDataLoaded(data) {
-    this._originalData = data;
-    this._data;
-    this. _render();
-  }
-
   // _sortByRating() {
   //   const newData = this._originalData.sort(compareByRating);
   //   this._data = newData;
@@ -68,6 +68,9 @@ export default class MainPresenter {
   // }
 
   _render() {
+    // трудности рисования компонентов не столько в рисовании,
+    // сколько в удалении их с экрана во время замены на другие
+    // об этом надо помнить.
     if (this._data === undefined) {
       this._renderFilmsLoading();
       return;
@@ -86,6 +89,9 @@ export default class MainPresenter {
 
   _onDataReceived(data) {
     // this._clearContainer();
+    // в случае если данные получены с сервера
+    // мы их считаем образцом и запоминаем в _originalData
+    this._originalData = data; //Теперь сотрировка будет работать нормально
     this._data = data;
     this._render();
   }
