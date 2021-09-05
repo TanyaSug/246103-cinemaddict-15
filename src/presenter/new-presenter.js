@@ -97,7 +97,7 @@ export default class NewPresenter {
   _renderFilmsList() {
     this._filmsListComponent = new FilmsListContainerView();
     renderElement(this._filmsContainer, this._filmsListComponent, RenderPosition.BEFOREEND);
-    this._addFilms();
+    this._addFilms(/*startIndex???*/ /*count???*/);
   }
 
   _addFilms(starIndex, count) {

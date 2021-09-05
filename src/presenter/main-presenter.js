@@ -1,7 +1,16 @@
-import {loadData} from '../api/load-data';
-import {remove, renderElement} from '../lib/render';
-import {RenderPosition} from '../lib/consts';
-import {computeUserRating} from '../lib/compute-user-rating';
+import {
+  loadData
+} from '../api/load-data';
+import {
+  remove,
+  renderElement
+} from '../lib/render';
+import {
+  RenderPosition
+} from '../lib/consts';
+import {
+  computeUserRating
+} from '../lib/compute-user-rating';
 // import FilmsPresenter from './films-presenter';
 import UserStatusView from '../view/user-status';
 import FilmsListEmptyView from '../view/film/films-list-empty';
@@ -47,7 +56,7 @@ export default class MainPresenter {
 
   _renderFilmsListEmpty() {
     this._filmListEmptyComponent = new FilmsListEmptyView();
-    renderElement(this._container, this._filmListEmptyComponent, RenderPosition.AFTERBEGIN);
+    renderElement(this._container, this._filmListEmptyComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFooterStatistics() {
@@ -66,26 +75,44 @@ export default class MainPresenter {
   //   this._data = newData;
   //   this. _render();
   // }
-  _clearViewByName(name){
-    if(this[name] !== null){
+  _clearViewByName(name) {
+    if (this[name] !== null) {
       const view = this[name];
       this[name] = null;
       remove(view);
     }
   }
 
-  _clearPopupPresenter(){
-    if(this._filmsPresenter !== null){
+  _clearPopupPresenter() {
+    if (this._filmsPresenter !== null) {
       this._filmsPresenter.destroy();
       this._filmsPresenter = null;
     }
   }
 
-  _clearViews(){
+  _clearViews() {
     this._clearViewByName('_userStatusComponent');
     this._clearViewByName('_filmsLoading');
     this._clearViewByName('_filmListEmptyComponent');
     this._clearViewByName('_footerStatisticsComponent');
+  }
+
+  _presentLoading() {
+    this._renderUserStatus();
+    this._renderFilmsLoading();
+    this._renderFooterStatistics();
+  }
+
+  _presentEmpty() {
+    this._renderUserStatus();
+    this._renderFilmsListEmpty();
+    this._renderFooterStatistics();
+  }
+
+  _presentData() {
+    this._renderFooterStatistics();
+    this._renderFilmsPresenter();
+    this._renderUserStatus();
   }
 
   _render() {
@@ -93,21 +120,15 @@ export default class MainPresenter {
     // сколько в удалении их с экрана во время замены на другие
     // об этом надо помнить.
     this._clearViews();
-    if (this._data === undefined) {
-      this._renderUserStatus();
-      this._renderFilmsLoading();
-      this._renderFooterStatistics();
-      return;
-    }
 
     if (Array.isArray(this._data)) {
       if (this._data.length <= 0) {
-        this._renderFilmsListEmpty();
+        this._presentEmpty();
       } else {
-        this._renderFooterStatistics();
-        this._renderFilmsPresenter();
-        this._renderUserStatus();
+        this._presentData();
       }
+    } else {
+      this._presentLoading();
     }
   }
 
@@ -116,12 +137,14 @@ export default class MainPresenter {
     // в случае если данные получены с сервера
     // мы их считаем образцом и запоминаем в _originalData
     this._originalData = data; //Теперь сотрировка будет работать нормально
-    this._data = data;
+    this._data = data.slice();
     this._render();
   }
 
   _beginLoadData() {
-    loadData().then(()=>{}).catch(() => undefined);
+    loadData().then((data) => {
+      this._onDataReceived(data);
+    }).catch(() => undefined);
   }
 
   execute() {
