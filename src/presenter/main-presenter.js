@@ -1,5 +1,5 @@
 import {loadData} from '../api/load-data';
-import {renderElement} from '../lib/render';
+import {remove, renderElement} from '../lib/render';
 import {RenderPosition} from '../lib/consts';
 import {computeUserRating} from '../lib/compute-user-rating';
 // import FilmsPresenter from './films-presenter';
@@ -42,7 +42,7 @@ export default class MainPresenter {
 
   _renderFilmsLoading() {
     this._filmsLoading = new FilmsLoadingView();
-    renderElement(this._container, this._filmsLoading, RenderPosition.AFTERBEGIN);
+    renderElement(this._container, this._filmsLoading, RenderPosition.BEFOREEND);
   }
 
   _renderFilmsListEmpty() {
@@ -52,7 +52,7 @@ export default class MainPresenter {
 
   _renderFooterStatistics() {
     this._footerStatisticsComponent = new FooterStatisticsView();
-    renderElement(this._container, this._footerStatisticsComponent, RenderPosition.AFTERBEGIN);
+    renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 
   // _sortByRating() {
@@ -66,13 +66,37 @@ export default class MainPresenter {
   //   this._data = newData;
   //   this. _render();
   // }
+  _clearViewByName(name){
+    if(this[name] !== null){
+      const view = this[name];
+      this[name] = null;
+      remove(view);
+    }
+  }
+
+  _clearPopupPresenter(){
+    if(this._filmsPresenter !== null){
+      this._filmsPresenter.destroy();
+      this._filmsPresenter = null;
+    }
+  }
+
+  _clearViews(){
+    this._clearViewByName('_userStatusComponent');
+    this._clearViewByName('_filmsLoading');
+    this._clearViewByName('_filmListEmptyComponent');
+    this._clearViewByName('_footerStatisticsComponent');
+  }
 
   _render() {
     // трудности рисования компонентов не столько в рисовании,
     // сколько в удалении их с экрана во время замены на другие
     // об этом надо помнить.
+    this._clearViews();
     if (this._data === undefined) {
+      this._renderUserStatus();
       this._renderFilmsLoading();
+      this._renderFooterStatistics();
       return;
     }
 
@@ -97,7 +121,7 @@ export default class MainPresenter {
   }
 
   _beginLoadData() {
-    loadData().then(this._onDataReceived).catch(() => undefined);
+    loadData().then(()=>{}).catch(() => undefined);
   }
 
   execute() {
