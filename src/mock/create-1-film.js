@@ -10,4 +10,4 @@ export const create1Film = (index) => ({
   comments: createCommentMock(),
 });
 export const filmData = create1Film(0);
-export const filmComment = createCommentMock();
+

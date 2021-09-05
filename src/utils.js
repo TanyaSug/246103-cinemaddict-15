@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const getRandomInteger = (min, max) => {
   const lower = Math.ceil(Math.min(min, max));
   const upper = Math.floor(Math.max(min, max));
@@ -25,3 +27,34 @@ export const updateItem = (items, update) => {
 };
 
 export const clone = (obj) =>  JSON.parse(JSON.stringify(obj));
+
+
+const getWeightForNullData = (dataA, dataB) => {
+  if (dataA === null && dataB === null) {
+    return 0;
+  }
+
+  if (dataA === null) {
+    return 1;
+  }
+
+  if (dataB === null) {
+    return -1;
+  }
+
+  return null;
+};
+
+export const getSortedByRating = (filmA, filmB) => {
+  if (filmA.filmInfo.totalRating > filmB.filmInfo.totalRating) {
+    return -1;
+  }
+  if (filmA.filmInfo.totalRating < filmB.filmInfo.totalRating) {
+    return 1;
+  }
+  return 0;
+};
+
+export const sortByDate = (filmA, filmB) => dayjs(filmA.filmInfo.releaseDate).diff(dayjs(filmB.filmInfo.releaseDate));
+
+

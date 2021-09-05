@@ -11,7 +11,7 @@ export const FilterNames = {
   STATS:'stats',
 };
 
-export const SortNames = {
+export const SortType = {
   BY_DEFAULT: 'default',
   BY_DATE: 'date',
   BY_RATING: 'rating',

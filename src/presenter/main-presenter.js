@@ -2,11 +2,12 @@ import {loadData} from '../api/load-data';
 import {renderElement} from '../lib/render';
 import {RenderPosition} from '../lib/consts';
 import {computeUserRating} from '../lib/compute-user-rating';
-import FilmsPresenter from './films-presenter';
+// import FilmsPresenter from './films-presenter';
 import UserStatusView from '../view/user-status';
 import FilmsListEmptyView from '../view/film/films-list-empty';
 import FilmsLoadingView from '../view/films-loading';
 import FooterStatisticsView from '../view/footer-statistics';
+import NewPresenter from './new-presenter';
 
 
 export default class MainPresenter {
@@ -29,8 +30,8 @@ export default class MainPresenter {
   }
 
   _renderFilmsPresenter() {
-    this._filmsPresenter = new FilmsPresenter(this._container, this._data);
-    this._filmsPresenter.execute();
+    this._filmsPresenter = new NewPresenter(this._container, this._data);
+    this._filmsPresenter.execute(this._data);
   }
 
   _renderFilmsLoading() {

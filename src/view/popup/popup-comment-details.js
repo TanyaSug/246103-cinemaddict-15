@@ -5,8 +5,9 @@ import dayjs from 'dayjs';
 const BUTTON_NAME = 'Delete';
 const BUTTON_NAME_DELETING = 'Deleting';
 
-const createCommentDetailsTemplate = (comment) => (
-  `<li class="film-details__comment">
+const createCommentDetailsTemplate = (comments) => {
+  const commentsList = comments.map((comment) => (
+    `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
             </span>
@@ -19,12 +20,19 @@ const createCommentDetailsTemplate = (comment) => (
               </p>
             </div>
           </li>`
-);
+  )).join('');
+
+  return(
+    `<ul class="film-details__comments-list">${commentsList}</ul>`
+  );
+};
 
 export default class PopupCommentDetails extends Smart{
-  constructor(comment) {
+  constructor(comments) {
     super();
-    this._data = PopupCommentDetails.parseDataToState(comment);
+
+    this._data = PopupCommentDetails.parseDataToState(comments);
+    this._deleteButtonHandler = this._deleteButtonHandler.bind(this);
 
   }
 
@@ -32,7 +40,24 @@ export default class PopupCommentDetails extends Smart{
     return createCommentDetailsTemplate(this._data);
   }
 
-  static parseDataToState(data) {
-    return Object.assign({}, data, {isDeleting: false});
+  _deleteButtonHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteButton(PopupCommentDetails.parseStateToData(this._data));
+  }
+
+  setDeleteButtonHandler(callback) {
+    this._callback.deleteButton = callback;
+    this.getElement().querySelector('.film-details__comment-delete')
+      .addEventListener('click', this._deleteButtonHandler);
+
+  }
+
+  static parseDataToState(comments) {
+    return comments.map((comment) =>
+      Object.assign({}, comment, { isDeleting: false }));
+  }
+
+  static parseStateToData(film) {
+    film = Object.assign({}, film);
   }
 }

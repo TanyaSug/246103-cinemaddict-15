@@ -1,11 +1,11 @@
 import AbstractView from './abstract';
-import {SortNames} from '../lib/consts';
+import {SortType} from '../lib/consts';
 
 const createFilmsSortTemplate = () => (
   `<ul class="sort">
-    <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortNames.BY_DEFAULT}">Sort by default</a></li>
-    <li><a href="#" class="sort__button" data-sort-type="${SortNames.BY_DATE}">Sort by date</a></li>
-    <li><a href="#" class="sort__button" data-sort-type="${SortNames.BY_RATING}">Sort by rating</a></li>
+    <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.BY_DEFAULT}">Sort by default</a></li>
+    <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_DATE}">Sort by date</a></li>
+    <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_RATING}">Sort by rating</a></li>
   </ul>`
 );
 
@@ -29,7 +29,6 @@ export default class FilmsSort extends AbstractView  {
 
   setSortChangeHandler(callback) {
     this._callback.sortTypeChange = callback;
-    this.getElement()
-      .addEventListener('click', this._sortChangeHandler);
+    this.getElement().addEventListener('click', this._sortChangeHandler);
   }
 }

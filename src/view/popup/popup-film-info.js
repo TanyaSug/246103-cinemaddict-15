@@ -1,18 +1,18 @@
 import AbstractView from '../abstract';
 import dayjs from 'dayjs';
 import {FilmClickIds} from '../../lib/consts';
-import PopupCommentsView from './comments-container';
+// import PopupCommentsView from './comments-container';
 // import {createPopupCommentsContainerTemplate} from './comments-container';
 
-// const commentsContainer = createPopupCommentsContainerTemplate();
-const commentsContainer = new PopupCommentsView().getTemplate();
+// // const commentsContainer = createPopupCommentsContainerTemplate();
+// const commentsContainer = new PopupCommentsView().getTemplate();
 
 const makeActiveClassName = (flag) => flag ? 'film-details__control-button--active' : '';
 
 const createFilmPopupTemplate = (filmData) => (
-  `<section class="film-details">
-   <form class="film-details__inner" action="" method="get">
-    <div class="film-details__top-container">
+  // <section class="film-details">
+  //  <form class="film-details__inner" action="" method="get">
+  `<div class="film-details__top-container">
       <div class="film-details__close">
         <button class="film-details__close-btn" type="button">close</button>
       </div>
@@ -79,36 +79,34 @@ const createFilmPopupTemplate = (filmData) => (
         <button type="button" class="film-details__control-button ${makeActiveClassName(filmData.userDetails.alreadyWatched)} film-details__control-button--watched" id="watched" name="watched">Already watched</button>
         <button type="button" class="film-details__control-button ${makeActiveClassName(filmData.userDetails.favorite)} film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
       </section>
-    </div>
-    ${commentsContainer}
-  </form>
-  </section>`
+    </div>`
+  //   ${commentsContainer}
+  // </form>
+  // </section>`
 );
 
-export default class FilmPopup extends AbstractView{
+export default class PopupFilmInfo extends AbstractView{
   constructor(filmData) {
     super();
     this._filmData = filmData;
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
-    this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this.removePopUp = this.removePopUp.bind(this);
   }
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchedClick(this._filmData);
+    this._callback.watchedClick(FilmClickIds.WATCHED, this._filmData);
   }
 
   _favoritesClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoritesClick(this._filmData);
+    this._callback.favoritesClick(FilmClickIds.FAVORITES,this._filmData);
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchlistClick(this._filmData);
+    this._callback.watchlistClick(FilmClickIds.WATCH_LIST, this._filmData);
   }
 
   setWatchedClickHandler(callback) {
@@ -134,53 +132,19 @@ export default class FilmPopup extends AbstractView{
     return createFilmPopupTemplate(this._filmData);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = this._createElement();
-    }
-    return this._element;
-  }
-
-  _onEscKeyDown(evt)  {
-    if ( evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.removePopUp();
-    }
-  }
-
-  appendPopUp() {
-    document.body.appendChild(this.getElement());
-    document.body.classList.add('hide-overflow');
-    document.addEventListener('keydown', this._onEscKeyDown);
-    document.querySelector('.film-details__close-btn')
-      .addEventListener('click', this.removePopUp);
-  }
-
-  removePopUp() {
-    if (this._element) {
-      this.clearListeners();
-      document.body.removeChild(this._element);
-      document.body.classList.remove('hide-overflow');
-    }
-  }
-
   clearListeners() {
     if(this._element && Object.keys(this._callback).length > 0) {
       this._element.removeEventListener('click', this._callback.favoritesClick);
       this._element.removeEventListener('click', this._callback.watchlistClick);
       this._element.removeEventListener('click', this._callback.watchedClick);
 
-      document.removeEventListener('keydown', this._onEscKeyDown);
-      document.querySelector('.film-details__close-btn')
-        .removeEventListener('click', this.removePopUp);
-
     } else {
       throw Error('Element is not found');
     }
   }
 
-  updateElement(key, updatedPopupData) {
-    this._filmData = updatedPopupData;
+  toggleUserControls(key, filmData) {
+    this._filmData = filmData;
     const ACTIVE_CLASS = 'film-details__control-button--active';
 
     if (key === FilmClickIds.WATCH_LIST) {

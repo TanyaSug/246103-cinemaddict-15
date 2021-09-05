@@ -1,4 +1,4 @@
-import AbstractView from '../abstract';
+import SmartView from './smart';
 import {EMOTIONS} from '../../lib/consts';
 
 const emotionsList = EMOTIONS.map((emotion) =>
@@ -8,12 +8,12 @@ const emotionsList = EMOTIONS.map((emotion) =>
   </label>`,
 ).join('');
 
-const createNewCommentTemplate = (commentText) => (
+const createNewCommentTemplate = () => (
   `<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label"></div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentText}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
           </label>
 
           <div class="film-details__emoji-list">
@@ -21,9 +21,21 @@ const createNewCommentTemplate = (commentText) => (
   </div>
 </div>`
 );
-export default class PopupNewComment extends AbstractView {
+export default class PopupNewComment extends SmartView {
+  constructor() {
+    super();
+    this._data = PopupNewComment.parseDataToState();
+  }
 
   getTemplate() {
     return createNewCommentTemplate();
+  }
+
+  static parseDataToState(comment) {
+    return Object.assign({},comment);
+  }
+
+  static parseStateToData(film) {
+    film = Object.assign({}, film);
   }
 }
