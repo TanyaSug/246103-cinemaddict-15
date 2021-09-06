@@ -72,6 +72,22 @@ export const getSortedByRating = (filmA, filmB) => {
   return compareFilmInfo(filmA.filmInfo, filmB.filmInfo);
 };
 
+const compareByComments = (commentsA, commentsB)=>{
+  const weight = getWeightForNullData(commentsA,commentsB);
+  if(weight !== null){
+    return weight;
+  }
+  return commentsB.length - commentsA.length;
+};
+
+export const getSortedByCommentsCount = (filmA, filmB)=>{
+  const weight = getWeightForNullData(filmA,filmB);
+  if(weight !== null){
+    return weight;
+  }
+  return compareByComments(filmA.comments, filmB.comments);
+};
+
 export const sortByDate = (filmA, filmB) => dayjs(filmA.filmInfo.releaseDate).diff(dayjs(filmB.filmInfo.releaseDate));
 
 

@@ -44,8 +44,8 @@ export default class MainPresenter {
     renderElement(this._container, this._userStatusComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderFilmsPresenter() {
-    this._filmsPresenter = new NewPresenter(this._container, this._data);
+  _executeFilmsPresenter() {
+    this._filmsPresenter = new NewPresenter(this._container);
     this._filmsPresenter.execute(this._data);
   }
 
@@ -111,7 +111,7 @@ export default class MainPresenter {
 
   _presentData() {
     this._renderFooterStatistics();
-    this._renderFilmsPresenter();
+    this._executeFilmsPresenter();
     this._renderUserStatus();
   }
 
@@ -144,7 +144,7 @@ export default class MainPresenter {
   _beginLoadData() {
     loadData().then((data) => {
       this._onDataReceived(data);
-    }).catch(() => undefined);
+    }).catch((er) => {window['console'].log(er);});
   }
 
   execute() {
