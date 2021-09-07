@@ -21,6 +21,8 @@ export default class MainPresenter {
     this._filmListEmptyComponent = null;
     this._footerStatisticsComponent = null;
     this._onDataReceived = this._onDataReceived.bind(this);
+    this._sortOrder = null;
+    this._filterBy = null;
   }
 
 
@@ -41,18 +43,18 @@ export default class MainPresenter {
 
   _renderFilmsListEmpty() {
     this._filmListEmptyComponent = new FilmsListEmptyView();
-    renderElement(this._container, this._filmListEmptyComponent, RenderPosition.AFTERBEGIN);
+    renderElement(this._container, this._filmListEmptyComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFooterStatistics() {
     this._footerStatisticsComponent = new FooterStatisticsView();
-    renderElement(this._container, this._footerStatisticsComponent, RenderPosition.AFTERBEGIN);
+    renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 
   _onDataLoaded(data) {
     this._originalData = data;
     this._data;
-    this. _render();
+    this._render();
   }
 
   // _sortByRating() {
@@ -67,7 +69,30 @@ export default class MainPresenter {
   //   this. _render();
   // }
 
+  _clearViewByName() {
+    if(this[name] !== null) {
+      const view = this[name];
+      this[name] = null;
+      return view;
+    }
+  }
+
+  _clearFilmsPresenter() {
+    if(this._filmsPresenter !== null) {
+      this._filmsPresenter.destroy();
+      this._filmsPresenter = null;
+    }
+  }
+
+  _clearViews() {
+    this._clearViewByName('_userStatusComponent');
+    this._clearViewByName('_filmsLoading');
+    this._clearViewByName('_filmListEmptyComponent');
+    this._clearViewByName('_footerStatisticsComponent');
+  }
+
   _render() {
+    this._clearViews();
     if (this._data === undefined) {
       this._renderFilmsLoading();
       return;
@@ -84,8 +109,29 @@ export default class MainPresenter {
     }
   }
 
+  // _render() {
+  //   this._clearViews();
+  //   if (this._data === undefined) {
+  //     this._renderUserStatus();
+  //     this._renderFilmsLoading();
+  //     this._renderFooterStatistics();
+  //     return;
+  //   }
+  //
+  //   if (Array.isArray(this._data)) {
+  //     if (this._data.length <= 0) {
+  //       this._renderFilmsListEmpty();
+  //     } else {
+  //       this._renderFooterStatistics();
+  //       this._renderFilmsPresenter();
+  //       this._renderUserStatus();
+  //     }
+  //   }
+  // }
+
   _onDataReceived(data) {
     // this._clearContainer();
+    this._originalData = data;
     this._data = data;
     this._render();
   }

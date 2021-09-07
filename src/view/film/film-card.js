@@ -52,9 +52,8 @@ export default class  FilmCard extends AbstractView {
   // }
 
   _createElement() {
-    const result = createElement(this.getTemplate());
     // this._attachEventHandlers(result);
-    return result;
+    return createElement(this.getTemplate());
   }
 
   _handlePopupPointClicks(evt) {

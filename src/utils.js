@@ -45,14 +45,28 @@ const getWeightForNullData = (dataA, dataB) => {
   return null;
 };
 
+const compareRating = (ratingA, ratingB) => {
+  const weight = getWeightForNullData(ratingA, ratingB);
+  if(weight !== null) {
+    return weight;
+  }
+  return ratingB - ratingA;
+};
+
+const compareFilmInfo = (infoA, infoB) => {
+  const weight = getWeightForNullData(infoA, infoB);
+  if(weight !== null) {
+    return weight;
+  }
+  return compareRating(infoA.totalRating, infoB.totalRating);
+};
+
 export const getSortedByRating = (filmA, filmB) => {
-  if (filmA.filmInfo.totalRating > filmB.filmInfo.totalRating) {
-    return -1;
+  const weight = getWeightForNullData(filmA, filmB);
+  if(weight !== null) {
+    return weight;
   }
-  if (filmA.filmInfo.totalRating < filmB.filmInfo.totalRating) {
-    return 1;
-  }
-  return 0;
+  return compareFilmInfo(filmA.filmInfo, filmB.filmInfo);
 };
 
 export const sortByDate = (filmA, filmB) => dayjs(filmA.filmInfo.releaseDate).diff(dayjs(filmB.filmInfo.releaseDate));

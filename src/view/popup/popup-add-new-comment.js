@@ -8,34 +8,78 @@ const emotionsList = EMOTIONS.map((emotion) =>
   </label>`,
 ).join('');
 
-const createNewCommentTemplate = () => (
-  `<div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label"></div>
+const createNewCommentTemplate = ({emotion, text}) => {
+  const img = emotion ? `<img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">` : '';
+  const comment = text || '';
+  return (
+    `<div class="film-details__new-comment">
+          <div class="film-details__add-emoji-label">
+            ${img}
+          </div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
           ${emotionsList}
   </div>
 </div>`
-);
+  );
+};
+
 export default class PopupNewComment extends SmartView {
   constructor() {
     super();
-    this._data = PopupNewComment.parseDataToState();
+    // this._data = {};
+    // this._data = PopupNewComment.parseDataToState();
+    this._emotionIconChangeHandler = this._emotionIconChangeHandler.bind(this);
+    this._commentChangeHandler = this._commentChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createNewCommentTemplate();
+    return createNewCommentTemplate(this._data);
   }
 
-  static parseDataToState(comment) {
-    return Object.assign({},comment);
+  _emotionIconChangeHandler(evt) {
+    evt.preventDefault();
+    const update = {
+      emotion: evt.target.value,
+    };
+
+    this.updateData(update);
   }
 
-  static parseStateToData(film) {
-    film = Object.assign({}, film);
+  _commentChangeHandler(evt) {
+    evt.preventDefault();
+    const update = {
+      text: evt.target.value,
+    };
+
+    this.updateData(update, true);
   }
+
+  setCommentChangeHandler() {
+    this.getElement().querySelector('textarea')
+      .addEventListener('input', this._commentChangeHandler);
+  }
+
+  setEmotionChangeHandler() {
+    this.getElement().querySelectorAll('input').forEach((element) => {
+      element.addEventListener('change', this._emotionIconChangeHandler);
+    });
+  }
+
+  restoreHandlers() {
+    this.setEmotionChangeHandler();
+    this.setCommentChangeHandler();
+  }
+
+  // static parseDataToState(update) {
+  //   return Object.assign({},this._data, update);
+  // }
+  //
+  // static parseStateToData(film) {
+  //   film = Object.assign({}, film);
+  // }
 }
