@@ -37,7 +37,7 @@ export const FilmClickIds = {
   WATCH_LIST: 3,
 };
 
-export const FILMS_COUNT = 5;
+export const FILM_LIST_PAGE_SIZE = 5;
 
 export const DESCRIPTION_LENGTH = 140;
 
@@ -47,3 +47,7 @@ export const EMOTIONS = [
   'puke',
   'angry',
 ];
+
+
+export const TOP_RATED = 'Top Rated';
+export const MOST_COMMENTED = 'Most Commented';

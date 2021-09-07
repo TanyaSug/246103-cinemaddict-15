@@ -45,14 +45,47 @@ const getWeightForNullData = (dataA, dataB) => {
   return null;
 };
 
+const compareRating = (ratingA, ratingB)=>{
+  const weight = getWeightForNullData(ratingA,ratingB);
+  if(weight !== null){
+    return weight;
+  }
+  return ratingB-ratingA;
+};
+
+const  compareFilmInfo =(infoA,infoB)=>{
+  const weight = getWeightForNullData(infoA,infoB);
+  if (weight !== null){
+    return weight;
+  }
+  return compareRating(infoA.totalRating, infoB.totalRating);
+};
+
 export const getSortedByRating = (filmA, filmB) => {
-  if (filmA.filmInfo.totalRating > filmB.filmInfo.totalRating) {
-    return -1;
+  //выражение вида xxx.yyy.zzz в академии часто попадается, но в жизни это очень опасно
+  //если окажется, что yyy еще никто не присвоил ничего полезного, то "ааа! все сломалось";
+  //поэтому и предложенное изменение.
+  const weigth = getWeightForNullData(filmA,filmB);
+  if(weigth !== null){
+    return weigth;
   }
-  if (filmA.filmInfo.totalRating < filmB.filmInfo.totalRating) {
-    return 1;
+  return compareFilmInfo(filmA.filmInfo, filmB.filmInfo);
+};
+
+const compareByComments = (commentsA, commentsB)=>{
+  const weight = getWeightForNullData(commentsA,commentsB);
+  if(weight !== null){
+    return weight;
   }
-  return 0;
+  return commentsB.length - commentsA.length;
+};
+
+export const getSortedByCommentsCount = (filmA, filmB)=>{
+  const weight = getWeightForNullData(filmA,filmB);
+  if(weight !== null){
+    return weight;
+  }
+  return compareByComments(filmA.comments, filmB.comments);
 };
 
 export const sortByDate = (filmA, filmB) => dayjs(filmA.filmInfo.releaseDate).diff(dayjs(filmB.filmInfo.releaseDate));

@@ -3,6 +3,12 @@ import {RenderPosition} from './consts';
 
 
 export const renderElement = (container, child, place) => {
+  if(!container){
+    throw new Error('container');
+  }
+  if(!child){
+    throw new Error('child');
+  }
   if (container instanceof Abstract) {
     container = container.getElement();
   }
