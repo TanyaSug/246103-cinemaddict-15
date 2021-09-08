@@ -1,18 +1,19 @@
 import AbstractView from '../abstract';
 import dayjs from 'dayjs';
 import {FilmClickIds} from '../../lib/consts';
-// import PopupCommentsView from './comments-container';
-// import {createPopupCommentsContainerTemplate} from './comments-container';
 
-// // const commentsContainer = createPopupCommentsContainerTemplate();
-// const commentsContainer = new PopupCommentsView().getTemplate();
 
 const makeActiveClassName = (flag) => flag ? 'film-details__control-button--active' : '';
 
-const createFilmPopupTemplate = (filmData) => (
-  // <section class="film-details">
-  //  <form class="film-details__inner" action="" method="get">
-  `<div class="film-details__top-container">
+const createGenresTemplate = (genres) => genres
+  .map((genre) => `<span class="film-details__genre">${genre}</span>`)
+  .join('');
+
+
+const createFilmPopupTemplate = (filmData) => {
+  const genreTitle = filmData.filmInfo.genres.length > 1 ? 'Genres' : 'Genre';
+  const genresList = createGenresTemplate(filmData.filmInfo.genres);
+  return `<div class="film-details__top-container">
       <div class="film-details__close">
         <button class="film-details__close-btn" type="button">close</button>
       </div>
@@ -61,9 +62,9 @@ const createFilmPopupTemplate = (filmData) => (
               <td class="film-details__cell">${filmData.filmInfo.releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genre</td>
+              <td class="film-details__term">${genreTitle}</td>
               <td class="film-details__cell">
-              <span class="film-details__genre">${filmData.filmInfo.genres}</span>
+              ${genresList}
                 </td>
             </tr>
           </table>
@@ -79,11 +80,8 @@ const createFilmPopupTemplate = (filmData) => (
         <button type="button" class="film-details__control-button ${makeActiveClassName(filmData.userDetails.alreadyWatched)} film-details__control-button--watched" id="watched" name="watched">Already watched</button>
         <button type="button" class="film-details__control-button ${makeActiveClassName(filmData.userDetails.favorite)} film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
       </section>
-    </div>`
-  //   ${commentsContainer}
-  // </form>
-  // </section>`
-);
+    </div>`;
+};
 
 export default class PopupFilmInfo extends AbstractView{
   constructor(filmData) {

@@ -47,15 +47,15 @@ export default class MainPresenter {
   }
 
   _renderFooterStatistics() {
-    this._footerStatisticsComponent = new FooterStatisticsView();
+    this._footerStatisticsComponent = new FooterStatisticsView(this._data.length);
     renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 
-  _onDataLoaded(data) {
-    this._originalData = data;
-    this._data;
-    this._render();
-  }
+  // _onDataLoaded(data) {
+  //   this._originalData = data;
+  //   this._data;
+  //   this._render();
+  // }
 
   // _sortByRating() {
   //   const newData = this._originalData.sort(compareByRating);
@@ -132,12 +132,14 @@ export default class MainPresenter {
   _onDataReceived(data) {
     // this._clearContainer();
     this._originalData = data;
-    this._data = data;
+    this._data = data.slice();
     this._render();
   }
 
   _beginLoadData() {
-    loadData().then(this._onDataReceived).catch(() => undefined);
+    loadData().then((data) => {
+      this._onDataReceived(data);
+    }).catch(() => undefined);
   }
 
   execute() {

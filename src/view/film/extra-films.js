@@ -1,11 +1,9 @@
-// import FilmCardView from './film-card';
-// import {filmData} from '../../mock/create-1-film';
 import AbstractView from '../abstract';
 
-// const filmCard = new FilmCardView(filmData);
-const createFilmCardTopRated= () => (
+
+const createFilmCardTopRated= (heading) => (
   `<section class="films-list films-list--extra">
-     <h2 class= "films-list__title">Top rated</h2>
+     <h2 class= "films-list__title">${heading}</h2>
      <div class="films-list__container">
 
      </div>
@@ -13,12 +11,13 @@ const createFilmCardTopRated= () => (
 );
 
 export default class ExtraFilms extends AbstractView  {
-  constructor() {
+  constructor(heading) {
     super();
+    this._heading = heading;
   }
 
   getTemplate() {
-    return createFilmCardTopRated();
+    return createFilmCardTopRated(this._heading);
   }
 
   getInnerPoint() {

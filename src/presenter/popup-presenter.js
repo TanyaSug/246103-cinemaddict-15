@@ -40,7 +40,7 @@ export default class PopupPresenter {
   }
 
   _renderCommentsContainer() {
-    this._commentsContainer = new PopupCommentsContainerView();
+    this._commentsContainer = new PopupCommentsContainerView(this._filmData.comments.length);
     // const commentsContainerInnerPoint = this._commentsContainer.getInnerPoint();
     renderElement(this._popupContainer, this._commentsContainer, RenderPosition.BEFOREEND);
   }
@@ -61,14 +61,7 @@ export default class PopupPresenter {
       const popupComment = new PopupCommentDetailsView(comment);
       popupComment.setDeleteButtonHandler(this._handleDeleteButton);
       renderElement(this._popupCommentsListComponent, popupComment, RenderPosition.BEFOREEND);
-    })
-    // this._popupCommentDetailsComponent = new PopupCommentDetailsView(this._filmData.comments);
-    // const commentsList = this._filmData.comments;
-    //
-    // commentsList.map((comment) => {
-    //   comment.setDeleteButtonHandler(this._handleDeleteButton);
-    //   renderElement(this._popupCommentsListComponent, commentsList, RenderPosition.BEFOREEND);
-    // });
+    });
   }
 
   _renderNewComment() {

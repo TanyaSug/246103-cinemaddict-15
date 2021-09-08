@@ -9,7 +9,7 @@ const emotionsList = EMOTIONS.map((emotion) =>
 ).join('');
 
 const createNewCommentTemplate = ({emotion, text}) => {
-  const img = emotion ? `<img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">` : '';
+  const img = emotion ? `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="${emotion}">` : '';
   const comment = text || '';
   return (
     `<div class="film-details__new-comment">
@@ -31,8 +31,6 @@ const createNewCommentTemplate = ({emotion, text}) => {
 export default class PopupNewComment extends SmartView {
   constructor() {
     super();
-    // this._data = {};
-    // this._data = PopupNewComment.parseDataToState();
     this._emotionIconChangeHandler = this._emotionIconChangeHandler.bind(this);
     this._commentChangeHandler = this._commentChangeHandler.bind(this);
   }
@@ -65,21 +63,14 @@ export default class PopupNewComment extends SmartView {
   }
 
   setEmotionChangeHandler() {
-    this.getElement().querySelectorAll('input').forEach((element) => {
-      element.addEventListener('change', this._emotionIconChangeHandler);
-    });
+    this.getElement().querySelectorAll('input')
+      .forEach((element) => {
+        element.addEventListener('change', this._emotionIconChangeHandler);
+      });
   }
 
   restoreHandlers() {
     this.setEmotionChangeHandler();
     this.setCommentChangeHandler();
   }
-
-  // static parseDataToState(update) {
-  //   return Object.assign({},this._data, update);
-  // }
-  //
-  // static parseStateToData(film) {
-  //   film = Object.assign({}, film);
-  // }
 }
