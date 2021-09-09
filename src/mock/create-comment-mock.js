@@ -48,5 +48,5 @@ export const createCommentMock = () => [
 
 export const getCommentsCount = () => getRandomInteger(1, 30);
 
-const ProcessState = {IDLE: 0, DELETING: 1, INSERTING: 2};
-const commentsToUse = createCommentMock().map((comment) => ({...comment, process: ProcessState.IDLE}));
+// const ProcessState = {IDLE: 0, DELETING: 1, INSERTING: 2};
+// const commentsToUse = createCommentMock().map((comment) => ({...comment, process: ProcessState.IDLE}));

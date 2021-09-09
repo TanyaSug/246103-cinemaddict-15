@@ -49,8 +49,8 @@ export default class PopupCommentDetails extends Smart{
   static parseDataToState(comment) {
     return Object.assign({}, comment, {isDeleting: false});
   }
-
-  static parseStateToData(film) {
-    film = Object.assign({}, film);
-  }
+  //
+  // static parseStateToData(film) {
+  //   film = Object.assign({}, film);
+  // }
 }

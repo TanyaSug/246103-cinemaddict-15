@@ -33,8 +33,8 @@ export default class NewPresenter {
     this._filmCardMostCommentedComponent = null;
     this._currentSortType = SortType.BY_DEFAULT;
     this._filmCardComponent = null;
-    this._filmsStartIndex = FILM_LIST_PAGE_SIZE ;
-    this._filmsCount = this._filmsData.length - FILM_LIST_PAGE_SIZE ;
+    this._filmsStartIndex = FILM_LIST_PAGE_SIZE;
+    this._filmsCount = this._filmsData.length - FILM_LIST_PAGE_SIZE;
     this._showMoreButtonComponent = null;
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -68,6 +68,8 @@ export default class NewPresenter {
     this._renderFilmsContainer();
     this._renderFilmsList();
     this._renderShowMoreButton();
+    this._renderFilmCardTopRated();
+    this._renderFilmCardMostCommented();
 
   }
   // this._filmsSortComponent.updateData(this._currentSortType);
@@ -100,7 +102,7 @@ export default class NewPresenter {
   _renderFilmsList() {
     this._filmsListComponent = new FilmsListContainerView();
     renderElement(this._filmsContainer, this._filmsListComponent, RenderPosition.BEFOREEND);
-    this._addFilms();
+    this._addFilms(this._filmsStartIndex, FILM_LIST_PAGE_SIZE);
   }
 
   _addFilms(starIndex, count) {
@@ -224,7 +226,10 @@ export default class NewPresenter {
   _clearFilmsList() {
     this._filmListMap.forEach((film) => remove(film));
     this._filmListMap.clear();
+    this._clearTopRatedList();
+    this._clearMostCommentedList();
     remove(this._filmsContainer);
+    remove(this._showMoreButtonComponent);
   }
 
 

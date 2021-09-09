@@ -1,4 +1,3 @@
-import AbstractView from './abstract';
 import {SortType} from '../lib/consts';
 import Smart from './popup/smart';
 
