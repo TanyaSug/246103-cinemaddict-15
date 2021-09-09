@@ -14,7 +14,7 @@ export const createFilmCardTemplate = (filmData) => {
           <h3 class="film-card__title">${title || ''}</h3>
           <p class="film-card__rating">${totalRating || ''}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${dayjs(releaseDate).format('YYYY') || ''}</span>
+            <span class="film-card__year">${dayjs(releaseDate).format('YYYY')} || ''}</span>
             <span class="film-card__duration">${runtime || ''}</span>
             <span class="film-card__genre">${genres || ''}</span>
           </p>
@@ -30,11 +30,12 @@ export const createFilmCardTemplate = (filmData) => {
 };
 
 export default class  FilmCard extends AbstractView {
-  constructor(filmData) {
+  constructor(props) {
+    const {...filmData} = props;
     super();
     this._filmData = filmData;
-
-    this._handlePopupPointClicks = this._handlePopupPointClicks.bind(this);
+    // this._onClick = onClick;
+    this._handleHotPointClicks = this._handleHotPointClicks.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -43,52 +44,49 @@ export default class  FilmCard extends AbstractView {
   getTemplate() {
     return createFilmCardTemplate(this._filmData);
   }
-  //
-  // _attachEventHandlers(element) {
-  //   this.setPopupClickHandler(element);
-  //   this.setFavoritesClickHandler(element);
-  //   this.setWatchedClickHandler(element);
-  //   this.setWatchlistClickHandler(element);
-  // }
 
-  _createElement() {
-    // this._attachEventHandlers(result);
-    return createElement(this.getTemplate());
-  }
-
-  _handlePopupPointClicks(evt) {
+  _handleHotPointClicks(evt) {
     evt.preventDefault();
     if (this._callback.popupClick) {
-      this._callback.popupClick(FilmClickIds.POP_UP, this._filmData);
+      this._callback.popupClick();
     } else {
       throw Error('popupClick does not exist in _callback');
     }
   }
 
+  _attachEventHandlers(element) {
+    const poster = element.querySelector('.film-card__poster');
+    const title = element.querySelector('.film-card__title');
+    const comments = element.querySelector('.film-card__comments');
+
+    poster.addEventListener('click', this._handleHotPointClicks);
+    title.addEventListener('click', this._handleHotPointClicks);
+    comments.addEventListener('click', this._handleHotPointClicks);
+  }
+
+  _createElement() {
+    const result = createElement(this.getTemplate());
+    this._attachEventHandlers(result);
+    return result;
+  }
+
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchedClick(FilmClickIds.WATCHED, this._filmData);
+    this._callback.watchedClick(this._filmData);
   }
 
   _favoritesClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoritesClick(FilmClickIds.FAVORITES, this._filmData);
+    this._callback.favoritesClick(this._filmData);
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchlistClick(FilmClickIds.WATCH_LIST, this._filmData);
+    this._callback.watchlistClick(this._filmData);
   }
 
   setPopupClickHandler(callback) {
     this._callback.popupClick = callback;
-    const poster =this.getElement().querySelector('.film-card__poster');
-    const title = this.getElement().querySelector('.film-card__title');
-    const comments = this.getElement().querySelector('.film-card__comments');
-
-    poster.addEventListener('click', this._handlePopupPointClicks);
-    title.addEventListener('click', this._handlePopupPointClicks);
-    comments.addEventListener('click', this._handlePopupPointClicks);
   }
 
   setWatchedClickHandler(callback) {
@@ -108,7 +106,7 @@ export default class  FilmCard extends AbstractView {
     const watchlistFilm = this.getElement().querySelector('.film-card__controls-item--add-to-watchlist');
     watchlistFilm.addEventListener('click', this._watchlistClickHandler);
   }
-  //
+
   // clearListeners() {
   //   if(this._element && Object.keys(this._callback).length > 0) {
   //     this._element.removeEventListener('click', this._callback.popupClick);
@@ -120,12 +118,8 @@ export default class  FilmCard extends AbstractView {
   //   }
   // }
 
-  // get all all film cards;
-  // find film card matched with film id;
-  // loop the filmCards and toggle;
-
   // updateElement(newFilmClass, updatedFilmData, handler) {
-  toggleUserControls(key, updatedFilmData) {
+  updateElement(key, updatedFilmData) {
     // this.clearListeners();
     const ACTIVE_CLASS = 'film-card__controls-item--active';
     this._filmData = updatedFilmData;

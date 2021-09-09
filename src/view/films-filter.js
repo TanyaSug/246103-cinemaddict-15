@@ -12,6 +12,19 @@ const createFilmsFilterTemplate = (watchlistCount, historyCount, favoritesCount)
     </nav>`
 );
 
+// let watchlistCount = 0;
+// this._data.forEach((el) => {
+//   watchlistCount += el.userDetails.watchlistCount;
+// });
+// let historyCount = 0;
+// this._data.forEach((el) => {
+//   historyCount += el.userDetails.alreadyWatched;
+// });
+// let favorite = 0;
+// this._data.forEach((el) => {
+//   favorite += el.userDetails.favorite;
+// });
+
 export default class FilmsFilter extends AbstractView {
   constructor(props) {
     const {watchlistCount, historyCount, favoritesCount} = props;

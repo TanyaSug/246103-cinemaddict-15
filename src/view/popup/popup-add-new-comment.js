@@ -1,76 +1,40 @@
-import SmartView from './smart';
-import {EMOTIONS} from '../../lib/consts';
+import AbstractView from '../abstract';
 
-const emotionsList = EMOTIONS.map((emotion) =>
-  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
-  <label class="film-details__emoji-label" for="emoji-${emotion}">
-  <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
-  </label>`,
-).join('');
-
-const createNewCommentTemplate = ({emotion, text}) => {
-  const img = emotion ? `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="${emotion}">` : '';
-  const comment = text || '';
-  return (
-    `<div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label">
-            ${img}
-          </div>
+const createPopupNewCommentTemplate = () => (
+  `<div class="film-details__new-comment">
+          <div class="film-details__add-emoji-label"></div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
           </label>
 
           <div class="film-details__emoji-list">
-          ${emotionsList}
-  </div>
-</div>`
-  );
-};
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+            <label class="film-details__emoji-label" for="emoji-smile">
+              <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+            </label>
 
-export default class PopupNewComment extends SmartView {
-  constructor() {
-    super();
-    this._emotionIconChangeHandler = this._emotionIconChangeHandler.bind(this);
-    this._commentChangeHandler = this._commentChangeHandler.bind(this);
-  }
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+            <label class="film-details__emoji-label" for="emoji-sleeping">
+              <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+            </label>
+
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+            <label class="film-details__emoji-label" for="emoji-puke">
+              <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
+            </label>
+
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+            <label class="film-details__emoji-label" for="emoji-angry">
+              <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
+            </label>
+          </div>
+        </div>`
+);
+
+export default class PopupAddNewComment extends AbstractView {
 
   getTemplate() {
-    return createNewCommentTemplate(this._data);
-  }
-
-  _emotionIconChangeHandler(evt) {
-    evt.preventDefault();
-    const update = {
-      emotion: evt.target.value,
-    };
-
-    this.updateData(update);
-  }
-
-  _commentChangeHandler(evt) {
-    evt.preventDefault();
-    const update = {
-      text: evt.target.value,
-    };
-
-    this.updateData(update, true);
-  }
-
-  setCommentChangeHandler() {
-    this.getElement().querySelector('textarea')
-      .addEventListener('input', this._commentChangeHandler);
-  }
-
-  setEmotionChangeHandler() {
-    this.getElement().querySelectorAll('input')
-      .forEach((element) => {
-        element.addEventListener('change', this._emotionIconChangeHandler);
-      });
-  }
-
-  restoreHandlers() {
-    this.setEmotionChangeHandler();
-    this.setCommentChangeHandler();
+    return createPopupNewCommentTemplate();
   }
 }

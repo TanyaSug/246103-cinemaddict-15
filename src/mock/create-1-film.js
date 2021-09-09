@@ -9,5 +9,5 @@ export const create1Film = (index) => ({
   userDetails: createUserDetails(index),
   comments: createCommentMock(),
 });
-export const filmData = create1Film(0);
+export const filmData = createFilmInfo();
 

@@ -79,10 +79,10 @@ export const generateFilmAgeRating = () => getRandomElement(ageRatings);
 export const generateFilmPoster = () => getRandomElement(posters);
 export const generateFilmTitle = () => getRandomElement(titles);
 export const generateDirector = () => getRandomElement(directors);
-export const generateWriters = () => getRandomSubset(writers, getRandomInteger(1, 3));
-export const generateActors = () => getRandomSubset(actors, getRandomInteger(1, 2));
+export const generateWriters = () => getRandomSubset(writers, getRandomInteger(1, 3)).toString();
+export const generateActors = () => getRandomSubset(actors, getRandomInteger(1, 2)).toString();
 export const generateFilmDescription = () => getRandomSubset(description, getRandomInteger(1, 5)).toString();
 export const generateRuntime = () => getRandomElement(runtime);
-export const generateGenres = () => getRandomSubset(genres, getRandomInteger(1, 3));
+export const generateGenres = () => getRandomElement(genres);
 export const generateReleaseCountry = () => getRandomElement(releaseCountry);
 

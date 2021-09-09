@@ -22,31 +22,14 @@ const emotions = [
   'angry',
 ];
 
-export const createCommentMock = () => [
+export const createCommentMock = () => (
   {
     id: getRandomInteger(1, 20),
     author: getRandomElement(authors),
-    text: getRandomElement(comments),
+    commentsCount: getRandomElement(comments),
     date: '2019/12/31 23:59',
     emotion: getRandomElement(emotions),
-  },
-  {
-    id: getRandomInteger(1, 20),
-    author: getRandomElement(authors),
-    text: getRandomElement(comments),
-    date: '2019/12/31 23:59',
-    emotion: getRandomElement(emotions),
-  },
-  {
-    id: getRandomInteger(1, 20),
-    author: getRandomElement(authors),
-    text: getRandomElement(comments),
-    date: '2019/12/31 23:59',
-    emotion: getRandomElement(emotions),
-  },
-];
+  }
+);
 
 export const getCommentsCount = () => getRandomInteger(1, 30);
-
-// const ProcessState = {IDLE: 0, DELETING: 1, INSERTING: 2};
-// const commentsToUse = createCommentMock().map((comment) => ({...comment, process: ProcessState.IDLE}));
