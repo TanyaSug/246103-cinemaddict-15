@@ -1,3 +1,6 @@
+import {getTopRated} from './get-top-rated';
+import {getMostCommented} from './get-most-commented';
+
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -11,7 +14,7 @@ export const FilterNames = {
   STATS:'stats',
 };
 
-export const SortNames = {
+export const SortType = {
   BY_DEFAULT: 'default',
   BY_DATE: 'date',
   BY_RATING: 'rating',
@@ -37,6 +40,27 @@ export const FilmClickIds = {
   WATCH_LIST: 3,
 };
 
-export const FILMS_COUNT = 5;
+export const FILM_LIST_PAGE_SIZE  = 5;
 
 export const DESCRIPTION_LENGTH = 140;
+
+export const EMOTIONS = [
+  'smile',
+  'sleeping',
+  'puke',
+  'angry',
+];
+
+const TOP_RATED = 'Top Rated';
+const MOST_COMMENTED = 'Most Commented';
+
+export const Extra = {
+  topRated: {
+    heading: TOP_RATED,
+    filter: (data) => getTopRated(data),
+  },
+  mostCommented: {
+    heading: MOST_COMMENTED,
+    filter: (data) => getMostCommented(data),
+  },
+};
