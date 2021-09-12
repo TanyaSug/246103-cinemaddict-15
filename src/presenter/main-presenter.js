@@ -11,10 +11,11 @@ import NewPresenter from './new-presenter';
 
 
 export default class MainPresenter {
-  constructor(bodyContainer, data) {
+  constructor(bodyContainer, filmsModel) {
     this._container = bodyContainer;
-    this._data = data;
-    this._originalData = data;
+    this._filmsModel = filmsModel;
+    // this._data = data;
+    // this._originalData = data;
     this._userStatusComponent = null;
     this._filmsPresenter = null;
     this._filmsLoading = null;
@@ -27,13 +28,13 @@ export default class MainPresenter {
 
 
   _renderUserStatus() {
-    this._userStatusComponent = new UserStatusView(computeUserRating(this._data));
+    this._userStatusComponent = new UserStatusView(computeUserRating(this._filmsModel));
     renderElement(this._container, this._userStatusComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilmsPresenter() {
-    this._filmsPresenter = new NewPresenter(this._container, this._data);
-    this._filmsPresenter.execute(this._data);
+    this._filmsPresenter = new NewPresenter(this._container, this._filmsModel);
+    this._filmsPresenter.execute();
   }
 
   _renderFilmsLoading() {
@@ -47,7 +48,7 @@ export default class MainPresenter {
   }
 
   _renderFooterStatistics() {
-    this._footerStatisticsComponent = new FooterStatisticsView(this._data.length);
+    this._footerStatisticsComponent = new FooterStatisticsView(this._filmsModel.length);
     renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 
@@ -93,13 +94,13 @@ export default class MainPresenter {
 
   _render() {
     this._clearViews();
-    if (this._data === undefined) {
+    if (this._filmsModel.films === undefined) {
       this._renderFilmsLoading();
       return;
     }
 
-    if (Array.isArray(this._data)) {
-      if (this._data.length <= 0) {
+    if (Array.isArray(this._filmsModel.films)) {
+      if (this._filmsModel.length <= 0) {
         this._renderFilmsListEmpty();
       } else {
         this._renderFooterStatistics();
@@ -129,21 +130,23 @@ export default class MainPresenter {
   //   }
   // }
 
-  _onDataReceived(data) {
+  _onDataReceived(films) {
     // this._clearContainer();
-    this._originalData = data;
-    this._data = data.slice();
+    // this._originalData = films;
+
+    this._filmsModel.films = films;
+
     this._render();
   }
 
   _beginLoadData() {
-    loadData().then((data) => {
-      this._onDataReceived(data);
+    loadData().then((films) => {
+      this._onDataReceived(films);
     }).catch(() => undefined);
   }
 
   execute() {
     this._beginLoadData();
-    this._render();
+    // this._render();
   }
 }

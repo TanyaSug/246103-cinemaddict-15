@@ -21,7 +21,7 @@ const createCommentDetailsTemplate = (comment) => (
           </li>`
 );
 
-export default class PopupCommentDetails extends Smart{
+export default class PopupCommentDetails extends Smart {
   constructor(comment) {
     super();
 
@@ -36,18 +36,22 @@ export default class PopupCommentDetails extends Smart{
 
   _deleteButtonHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteButton(PopupCommentDetails.parseStateToData(this._data));
+    this._callback.deleteButton((this._data));
   }
 
   setDeleteButtonHandler(callback) {
     this._callback.deleteButton = callback;
-    this.getElement().querySelector('.film-details__comment-delete')
-      .addEventListener('click', this._deleteButtonHandler);
-
+    this.getElement().querySelectorAll('.film-details__comment-delete')
+      .forEach((comment) => comment
+        .addEventListener('click', this._deleteButtonHandler));
   }
 
   static parseDataToState(comment) {
     return Object.assign({}, comment, {isDeleting: false});
+  }
+
+  restoreHandlers() {
+    this.setDeleteButtonHandler(this._callback.deleteButton);
   }
   //
   // static parseStateToData(film) {

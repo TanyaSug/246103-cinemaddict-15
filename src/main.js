@@ -1,24 +1,14 @@
-// import {renderData} from './lib/render-data';
-// import {loadData} from './api/load-data';
-// import PopupFilmInfo from './view/popup/film-popup';
 import MainPresenter from './presenter/main-presenter';
+import FilmsModel from './model/films-model';
+// import {create15Films} from './mock/create-15-films';
 // import {loadData} from './api/load-data';
 
-
+// const films = create15Films();
 const bodyContainer = document.querySelector('body');
-// export const filmsMainContainer = siteContainer.querySelector('main');
-// export const filmsListContainer = filmsMainContainer.querySelector('.films');
+const filmsModel = new FilmsModel();
+// filmsModel.setFilms(films);
 
-// const footerContainer = document.querySelector('.footer');
-// const footerStats = footerContainer.querySelector('.footer__statistics');
-// const showPopup = (film) => new PopupFilmInfo(film).appendPopUp();
-// const closePopup = (film) => new PopupFilmInfo(film).removePopUp();
-
-// document.addEventListener('keydown', onEscKeyDown);
-
-// loadData()
-//   .then((data) => {
-const presenter = new MainPresenter(bodyContainer, undefined);
+const presenter = new MainPresenter(bodyContainer, filmsModel);
 presenter.execute();
-// });
+
 

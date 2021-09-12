@@ -12,6 +12,8 @@ export const getRandomElement = (arr) => {
 };
 export const getRandomSubset = (arr, count) => Array(count).fill(null).map(() => getRandomElement(arr));
 
+// items - whole array;
+// update - new array item.
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 

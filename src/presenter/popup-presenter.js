@@ -3,12 +3,12 @@ import PopupFilmInfoView from '../view/popup/popup-film-info';
 import PopupCommentsContainerView from '../view/popup/comments-container';
 import PopupCommentsListView from '../view/popup/popup-comments-list';
 import PopupNewCommentView from '../view/popup/popup-add-new-comment';
-import PopupCommentDetailsView from '../view/popup/new-comments-details';
+import PopupCommentDetailsView from '../view/popup/comments-list-details';
 import {remove, renderElement} from '../lib/render';
 import {RenderPosition} from '../lib/consts';
 
 export default class PopupPresenter {
-  constructor(onToggleUserControls) {
+  constructor(onToggleUserControls, onCommentAdded) {
     this._popupContainer = null;
     this._filmData = null;
     this._filmPopupInfoComponent = null;
@@ -18,11 +18,13 @@ export default class PopupPresenter {
     this._popupNewCommentComponent = null;
 
     this._onToggleUserControls = onToggleUserControls;
+    this._onCommentAdded = onCommentAdded;
+
     this._handleDeleteButton = this._handleDeleteButton.bind(this);
   }
 
   _renderPopupContainer() {
-    this._popupContainer = new PopupContainerView();
+    this._popupContainer = new PopupContainerView(this._filmData);
     // const popupContainerInnerPoint = this._popupContainer.getInnerPoint();
   }
 
@@ -61,13 +63,17 @@ export default class PopupPresenter {
       const popupComment = new PopupCommentDetailsView(comment);
       popupComment.setDeleteButtonHandler(this._handleDeleteButton);
       renderElement(this._popupCommentsListComponent, popupComment, RenderPosition.BEFOREEND);
+      this._popupCommentDetailsComponent = popupComment;
     });
   }
 
   _renderNewComment() {
-    this._popupNewCommentComponent = new PopupNewCommentView();
+    this._popupNewCommentComponent = new PopupNewCommentView((
+      (newComment) => this._onCommentAdded(this._filmData.id, newComment)),
+    );
     this._popupNewCommentComponent.setEmotionChangeHandler();
     this._popupNewCommentComponent.setCommentChangeHandler();
+    this._popupNewCommentComponent.setFormKeydownHandler();
     renderElement(this._commentsContainer, this._popupNewCommentComponent, RenderPosition.BEFOREEND);
   }
 
