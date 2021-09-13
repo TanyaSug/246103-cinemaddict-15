@@ -8,15 +8,18 @@ import FilmsListEmptyView from '../view/film/films-list-empty';
 import FilmsLoadingView from '../view/films-loading';
 import FooterStatisticsView from '../view/footer-statistics';
 import NewPresenter from './new-presenter';
+import FilterPresenter from './filter-presenter';
 
 
 export default class MainPresenter {
-  constructor(bodyContainer, filmsModel) {
+  constructor(bodyContainer, filmsModel, filterModel) {
     this._container = bodyContainer;
     this._filmsModel = filmsModel;
+    this._filterModel = filterModel;
     // this._data = data;
     // this._originalData = data;
     this._userStatusComponent = null;
+    this._filterPresenter = null;
     this._filmsPresenter = null;
     this._filmsLoading = null;
     this._filmListEmptyComponent = null;
@@ -28,7 +31,7 @@ export default class MainPresenter {
 
 
   _renderUserStatus() {
-    this._userStatusComponent = new UserStatusView(computeUserRating(this._filmsModel));
+    this._userStatusComponent = new UserStatusView(computeUserRating(this._filmsModel.films));
     renderElement(this._container, this._userStatusComponent, RenderPosition.AFTERBEGIN);
   }
 
@@ -37,14 +40,19 @@ export default class MainPresenter {
     this._filmsPresenter.execute();
   }
 
+  _renderFilterPresenter() {
+    this._filterPresenter = new FilterPresenter(this._container, this._filterModel, this._filmsModel);
+    this._filterPresenter.execute();
+  }
+
   _renderFilmsLoading() {
     this._filmsLoading = new FilmsLoadingView();
     renderElement(this._container, this._filmsLoading, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilmsListEmpty() {
-    this._filmListEmptyComponent = new FilmsListEmptyView();
-    renderElement(this._container, this._filmListEmptyComponent, RenderPosition.BEFOREEND);
+    this._filmListEmptyComponent = new FilmsListEmptyView(this._filterModel.getFilter());
+    renderElement(this._container, this._filmListEmptyComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderFooterStatistics() {
@@ -101,7 +109,10 @@ export default class MainPresenter {
 
     if (Array.isArray(this._filmsModel.films)) {
       if (this._filmsModel.length <= 0) {
+        this._renderFooterStatistics();
+        this._renderFilterPresenter();
         this._renderFilmsListEmpty();
+        this._renderUserStatus();
       } else {
         this._renderFooterStatistics();
         this._renderFilmsPresenter();

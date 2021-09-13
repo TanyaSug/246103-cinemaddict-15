@@ -60,7 +60,7 @@ const compareFilmInfo = (infoA, infoB) => {
   return compareRating(infoA.totalRating, infoB.totalRating);
 };
 
-export const getSortedByRating = (filmA, filmB) => {
+export const sortByRating = (filmA, filmB) => {
   const weight = getWeightForNullData(filmA, filmB);
   if(weight !== null) {
     return weight;

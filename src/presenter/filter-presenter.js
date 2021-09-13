@@ -1,7 +1,8 @@
 import FilmsFilterView from '../view/films-filter';
 import {FilterType, RenderPosition, UpdateType} from '../lib/consts';
 import {remove, renderElement, replace} from '../lib/render';
-import {createSiteMenuMock} from '../mock/create-site-menu-mock';
+import {filter} from '../lib/get-filters';
+
 
 export default class FilterPresenter {
   constructor(container, filterModel, filmsModel) {
@@ -52,22 +53,22 @@ export default class FilterPresenter {
       {
         type: FilterType.ALL,
         name: 'All movies',
-        count: createSiteMenuMock(films),
+        count: filter[FilterType.ALL](films).length,
       },
       {
         type: FilterType.WATCHLIST,
         name: 'Watchlist',
-        count: createSiteMenuMock(films),
+        count: filter[FilterType.WATCHLIST](films).length,
       },
       {
         type: FilterType.HISTORY,
         name: 'History',
-        count: createSiteMenuMock(films),
+        count: filter[FilterType.HISTORY](films).length,
       },
       {
         type: FilterType.FAVORITES,
         name: 'Favorites',
-        count: createSiteMenuMock(films),
+        count: filter[FilterType.FAVORITES](films).length,
       },
     ];
   }
