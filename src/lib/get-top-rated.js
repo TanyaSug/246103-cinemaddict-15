@@ -1,3 +1,3 @@
-import {getSortedByRating} from '../utils';
+import {sortByRating} from '../utils';
 
-export const getTopRated = (films) => films.slice().sort(getSortedByRating).slice(0,2);
+export const getTopRated = (films) => films.slice().sort(sortByRating).slice(0,2);

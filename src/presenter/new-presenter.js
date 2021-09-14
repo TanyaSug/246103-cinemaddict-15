@@ -68,6 +68,9 @@ export default class NewPresenter {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this._filmsModel.updateFilm(updateType, update);
+        break;
       case UserAction.ADD_COMMENT:
         this._filmsModel.addComment(updateType, update);
         break;
@@ -87,12 +90,11 @@ export default class NewPresenter {
 
         break;
       case UpdateType.MAJOR:
-        this._clearFilmsList({resetFilmsCount: true, resetSortType: true});
+        this._clearFilmsList(true);
         this._renderFilmsContainer();
         this._renderFilmsList();
-        this._resetShowMoreButtonStartIndex();
         this._renderShowMoreButton();
-
+        this._resetShowMoreButtonStartIndex();
         break;
     }
   }
@@ -113,7 +115,7 @@ export default class NewPresenter {
     }
 
     this._sortFilms(sortType);
-    this._clearFilmsList({resetFilmsCount: true, resetSortType: true});
+    this._clearFilmsList();
     this._renderFilmsContainer();
     this._renderFilmsList();
     this._resetShowMoreButtonStartIndex();
@@ -158,7 +160,7 @@ export default class NewPresenter {
 
   _addFilms(starIndex, count) {
     const innerPoint = this._filmsListComponent.getInnerPoint();
-    getFilmsList(this._filmsModel.films, starIndex, count).map((film) => {
+    getFilmsList(this._getFilms(), starIndex, count).map((film) => {
       const filmCard = new FilmCard(film);
       filmCard.setPopupClickHandler(this._handleFilmCardClick);
       filmCard.setWatchlistClickHandler(this._handleFilmCardClick);
@@ -172,11 +174,14 @@ export default class NewPresenter {
   _resetShowMoreButtonStartIndex() {
     this._filmsStartIndex = FILM_LIST_PAGE_SIZE;
     this._filmsCount = this._filmsModel.length - FILM_LIST_PAGE_SIZE;
+    if (this._getFilms().length <= FILM_LIST_PAGE_SIZE) {
+      remove(this._showMoreButtonComponent);
+    }
   }
 
 
   _handleMoreButtonClick() {
-    const FILMS_QUANTITY = this._filmsModel.length - this._filmsStartIndex;
+    const FILMS_QUANTITY = this._getFilms().length - this._filmsStartIndex;
     const REST_OF_FILMS = FILMS_QUANTITY % FILM_LIST_PAGE_SIZE ;
 
     if (this._filmsCount > 0 && this._filmsListComponent) {
@@ -188,7 +193,7 @@ export default class NewPresenter {
 
       this._filmsCount -= count;
 
-      if (this._filmsCount === 0) {
+      if (this._filmsCount <= 0) {
         remove(this._showMoreButtonComponent);
       }
     }
@@ -204,7 +209,7 @@ export default class NewPresenter {
     this._showMoreButtonComponent.setButtonClickHandler(this._handleMoreButtonClick);
   }
 
-  _clearFilmsList({resetFilmsCount = false, resetSortType = false} = {}) {
+  _clearFilmsList(resetSortType = false) {
     // const filmsCount = this._filmsModel.films.length;
     this._filmListMap.forEach((film) => remove(film));
     this._filmListMap.clear();
@@ -217,9 +222,10 @@ export default class NewPresenter {
     //   this._filmsStartIndex = Math.min(filmsCount, this._filmsStartIndex);
     // }
 
-    // if (resetSortType) {
-    //   this._currentSortType = SortType.BY_DEFAULT;
-    // }
+    if (resetSortType) {
+      this._currentSortType = SortType.BY_DEFAULT;
+      this._filmsSortComponent.updateData({currentSortType: this._currentSortType});
+    }
   }
 
 
@@ -248,7 +254,7 @@ export default class NewPresenter {
   }
 
   _handleFilmCardChange(key, updatedFilmData) {
-    this._filmsModel.films = updateItem(this._filmsModel.films, updatedFilmData);
+    this._filmsModel.updateFilm(UpdateType.MAJOR, updatedFilmData);
 
     this._filmListMap.get(updatedFilmData.id)
       .toggleUserControls(key, updatedFilmData);
@@ -278,13 +284,13 @@ export default class NewPresenter {
   }
 
   destroy() {
-    this._clearFilmsList({resetFilmsCount: false, resetSortType: false});
+    this._clearFilmsList();
     this._filmsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   execute() {
-    this._sourcedFilmsData = this._filmsModel.films;
+    this._sourcedFilmsData = this._filmsModel.films.slice();
     this._render();
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);

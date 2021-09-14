@@ -64,7 +64,7 @@ export default class MainPresenter {
   }
 
   _renderFilmsStatistics() {
-    this._filmStatistic = new FilmStatisticView();
+    this._filmStatistic = new FilmStatisticView(this._filmsModel.films);
     renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
   }
 
@@ -98,15 +98,15 @@ export default class MainPresenter {
 
       case FilterType.STATS:
         this._filmsPresenter.destroy();
-        this._filmStatistic = new FilmStatisticView();
-        renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
+        // this._renderFilmsStatistics();
+        // this._filmStatistic = new FilmStatisticView();
+        // renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
 
         activeClassName.classList.remove('main-navigation__item--active');
         statsElement.classList.add('main-navigation__item--active');
         break;
     }
     activeFilterElement = selectedFilterElement;
-
   }
 
   // _onDataLoaded(data) {
