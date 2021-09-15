@@ -45,10 +45,10 @@ const description = [
   'In rutrum ac purus sit amet tempus.',
 ];
 const runtime = [
-  '1h 50m',
-  '1h 30m',
-  '1h 20m',
-  '1h 15m',
+  50,
+  130,
+  77,
+  95,
 ];
 const genres = [
   'Musical',

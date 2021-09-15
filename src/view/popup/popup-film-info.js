@@ -1,6 +1,8 @@
 import AbstractView from '../abstract';
 import dayjs from 'dayjs';
 import {FilmClickIds} from '../../lib/consts';
+import {getRuntime} from '../../lib/get-duration-time';
+
 
 
 const makeActiveClassName = (flag) => flag ? 'film-details__control-button--active' : '';
@@ -13,6 +15,7 @@ const createGenresTemplate = (genres) => genres
 const createFilmPopupTemplate = (filmData) => {
   const genreTitle = filmData.filmInfo.genres.length > 1 ? 'Genres' : 'Genre';
   const genresList = createGenresTemplate(filmData.filmInfo.genres);
+  const runTime = getRuntime(filmData.filmInfo.runtime);
   return `<div class="film-details__top-container">
       <div class="film-details__close">
         <button class="film-details__close-btn" type="button">close</button>
@@ -55,7 +58,7 @@ const createFilmPopupTemplate = (filmData) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${filmData.filmInfo.runtime}</td>
+              <td class="film-details__cell">${runTime}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>

@@ -32,7 +32,7 @@ export default class NewPresenter {
     this._filmsSortComponent = null;
     this._filmsContainer = null;
     this._filmsListComponent = null;
-    this._popupPresenter = new PopupPresenter(this._handleFilmCardClick, this._addFilmComment);
+    this._popupPresenter = new PopupPresenter(this._handleFilmCardClick, this._handleViewAction);
     this._currentSortType = SortType.BY_DEFAULT;
     this._filterType = FilterType.ALL;
     this._filmCardComponent = null;
@@ -264,14 +264,6 @@ export default class NewPresenter {
       this._popupPresenter.toggleUserControls(key, updatedFilmData);
     }
 
-  }
-
-  _addFilmComment(id, newComment) {
-    // find film by id in filmsModel
-    // add new comment in comments as the last element
-
-    // rerender film card;
-    // rerender popup;
   }
 
   _render() {

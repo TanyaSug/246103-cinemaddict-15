@@ -31,6 +31,9 @@ export default class MainPresenter {
     this._onDataReceived = this._onDataReceived.bind(this);
     this._sortOrder = null;
     this._filterBy = null;
+    this._handleFilterChange = this._handleFilterChange.bind(this);
+    this._filmsModel.addObserver(this._handleFilterChange);
+    this._filterModel.addObserver(this._handleFilterChange);
   }
 
 
@@ -40,7 +43,7 @@ export default class MainPresenter {
   }
 
   _renderMainFilmsContainer() {
-    renderElement(this._container, this._mainFilmsContainer, RenderPosition.AFTERBEGIN);
+    renderElement(this._container, this._mainFilmsContainer, RenderPosition.BEFOREEND);
   }
 
   _renderFilterPresenter() {
@@ -73,40 +76,41 @@ export default class MainPresenter {
     renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 
-  _handleFilterChange(target) {
-    let activeFilterElement = FilterType.ALL;
-    const selectedFilterElement = target.dataset.filter;
-    const activeClassName = document.querySelector('.main-navigation__item--active');
-    const statsElement = document.getElement().querySelector('.main-navigation__additional');
-
-
-    if (selectedFilterElement === activeFilterElement) {
-      return;
-    }
-
-    switch (selectedFilterElement) {
-      case FilterType.ALL:
-      case FilterType.WATCHLIST:
-      case FilterType.HISTORY:
-      case FilterType.FAVORITES:
-        this._filmStatistic.remove();
-        this._filmsPresenter.execute();
-
-        statsElement.classList.remove('main-navigation__item--active');
-        target.classList.add('main-navigation__item--active');
-        break;
-
-      case FilterType.STATS:
-        this._filmsPresenter.destroy();
-        // this._renderFilmsStatistics();
-        // this._filmStatistic = new FilmStatisticView();
-        // renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
-
-        activeClassName.classList.remove('main-navigation__item--active');
-        statsElement.classList.add('main-navigation__item--active');
-        break;
-    }
-    activeFilterElement = selectedFilterElement;
+  _handleFilterChange() {
+    this._render();
+    // let activeFilterElement = FilterType.ALL;
+    // const selectedFilterElement = target.dataset.filter;
+    // const activeClassName = document.querySelector('.main-navigation__item--active');
+    // const statsElement = document.getElement().querySelector('.main-navigation__additional');
+    //
+    //
+    // if (selectedFilterElement === activeFilterElement) {
+    //   return;
+    // }
+    //
+    // switch (selectedFilterElement) {
+    //   case FilterType.ALL:
+    //   case FilterType.WATCHLIST:
+    //   case FilterType.HISTORY:
+    //   case FilterType.FAVORITES:
+    //     this._filmStatistic.remove();
+    //     this._filmsPresenter.execute();
+    //
+    //     statsElement.classList.remove('main-navigation__item--active');
+    //     target.classList.add('main-navigation__item--active');
+    //     break;
+    //
+    //   case FilterType.STATS:
+    //     this._filmsPresenter.destroy();
+    //     this._renderFilmsStatistics();
+    //     // this._filmStatistic = new FilmStatisticView();
+    //     // renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
+    //
+    //     activeClassName.classList.remove('main-navigation__item--active');
+    //     statsElement.classList.add('main-navigation__item--active');
+    //     break;
+    // }
+    // activeFilterElement = selectedFilterElement;
   }
 
   // _onDataLoaded(data) {
@@ -149,33 +153,37 @@ export default class MainPresenter {
     this._clearViewByName('_footerStatisticsComponent');
   }
 
+  _renderList() {
+    if (this._filmsModel.length <= 0) {
+      this._renderFilmsListEmpty();
+    } else {
+      this._renderFilmsPresenter();
+    }
+  }
+
+  _renderMain() {
+    if (this._filterModel.getFilter() === FilterType.STATS) {
+      this._renderFilmsStatistics();
+    } else {
+      this._renderList();
+    }
+  }
+
+  _renderBusinessData() {
+    if (!Array.isArray(this._filmsModel.films)) {
+      this._renderFilmsLoading();
+    } else {
+      this._renderMain();
+    }
+  }
+
   _render() {
     this._clearViews();
-    if (this._filmsModel.films === undefined) {
-      this._renderFooterStatistics();
-      this._renderMainFilmsContainer();
-      this._renderFilterPresenter();
-      this._renderFilmsLoading();
-      this._renderUserStatus();
-      return;
-    }
-
-    if (Array.isArray(this._filmsModel.films)) {
-      if (this._filmsModel.length <= 0) {
-        this._renderFooterStatistics();
-        this._renderMainFilmsContainer();
-        this._renderFilterPresenter();
-        this._renderFilmsListEmpty();
-        this._renderUserStatus();
-      } else {
-        this._renderFooterStatistics();
-        this._renderMainFilmsContainer();
-        this._renderFilterPresenter();
-        this._renderFilmsPresenter();
-        this._renderFilmsStatistics();
-        this._renderUserStatus();
-      }
-    }
+    this._renderUserStatus();
+    this._renderFilterPresenter();
+    this._renderMainFilmsContainer();
+    this._renderBusinessData();
+    this._renderFooterStatistics();
   }
 
   // _render() {
@@ -201,7 +209,6 @@ export default class MainPresenter {
   _onDataReceived(films) {
     // this._clearContainer();
     // this._originalData = films;
-
     this._filmsModel.films = films;
 
     this._render();

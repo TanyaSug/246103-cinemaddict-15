@@ -4,7 +4,7 @@ export default class FilmsModel extends AbstractObserver {
 
   constructor() {
     super();
-    this._films = [];
+    this._films = undefined;
     this._comments = new Map();
     this._busy = false;
     this._commentStatuses = new Map();
@@ -15,12 +15,20 @@ export default class FilmsModel extends AbstractObserver {
   }
 
   set films(films) {
-    this._films = films.slice();
+    if(Array.isArray(films)) {
+      this._films = films.slice();
+    } else {
+      this._films = undefined;
+    }
   }
 
 
   get length() {
-    return this._films.length;
+    if(Array.isArray(this._films)) {
+      return this._films.length;
+    } else {
+      return 0;
+    }
   }
 
   updateFilm(updateType, update) {
@@ -81,3 +89,9 @@ export default class FilmsModel extends AbstractObserver {
     return this._commentStatuses.get(commentId);
   }
 }
+
+// comment add and delete
+// commentList ready
+// userDetails flags
+// filmList ready
+//

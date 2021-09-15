@@ -2,11 +2,13 @@ import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
 import {DESCRIPTION_LENGTH, FilmClickIds} from '../../lib/consts';
 import dayjs from 'dayjs';
+import {getRuntime} from '../../lib/get-duration-time';
 
 
 export const createFilmCardTemplate = (filmData) => {
-  const {filmInfo: {title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount}, userDetails: {watchlist, alreadyWatched, favorite}} = filmData;
+  const {filmInfo: {title, totalRating, releaseDate, genres, posters, description, commentsCount}, userDetails: {watchlist, alreadyWatched, favorite}} = filmData;
   const setDescriptionView = (filmDescription) => filmDescription.length <= DESCRIPTION_LENGTH ? filmDescription : `${filmDescription.slice(0, DESCRIPTION_LENGTH)}...`;
+  const runTime = getRuntime(filmData.filmInfo.runtime);
   const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
   const watchlistClassName = watchlist ? 'film-card__controls-item--active' : '';
   const watchedClassName = alreadyWatched ? 'film-card__controls-item--active' : '';
@@ -15,7 +17,7 @@ export const createFilmCardTemplate = (filmData) => {
           <p class="film-card__rating">${totalRating || ''}</p>
           <p class="film-card__info">
             <span class="film-card__year">${dayjs(releaseDate).format('YYYY') || ''}</span>
-            <span class="film-card__duration">${runtime || ''}</span>
+            <span class="film-card__duration">${runTime || ''}</span>
             <span class="film-card__genre">${genres || ''}</span>
           </p>
           <img src=${posters} alt="" class="film-card__poster">
