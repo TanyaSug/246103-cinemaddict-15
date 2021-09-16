@@ -198,10 +198,10 @@ export default class MainPresenter {
   _render() {
     this._clearViews();
     this._renderUserStatus();
-    this._renderFilterPresenter();
-    this._renderMainFilmsContainer();
-    this._renderBusinessData();
-    this._renderFooterStatistics();
+    // this._renderFilterPresenter();
+    // this._renderMainFilmsContainer();
+    // this._renderBusinessData();
+    // this._renderFooterStatistics();
   }
 
   // _render() {

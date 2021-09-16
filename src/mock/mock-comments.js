@@ -12,10 +12,13 @@ const paras = [
   'Одновременно может быть открыт только один попап. При открытии нового попапа прежний закрывается',
 ];
 const emots = ['smile', 'sleeping', 'puke', 'angry'];
-export const mockComments = (filmsId) => Array(getRandomInteger(0, 7)).fill().map((_, idx) => ({
+
+export const mockComment1 = (filmsId, idx) => ({
   id: filmsId * 10000 + idx,
   author: `${getRandomElement(namesM)} ${getRandomElement(namesF)}`,
   comment: getRandomElement(paras),
   date: new Date(2021 - getRandomElement(0, 5), getRandomInteger(0, 11), getRandomInteger(1, 30)).toISOString(),
   emotion: getRandomElement(emots),
-}));
+});
+
+export const mockComments = (filmsId) => Array(getRandomInteger(0, 7)).fill().map((_, idx) => mockComment1(filmsId, idx));
