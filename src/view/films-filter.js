@@ -1,5 +1,7 @@
 import Abstract from './abstract';
 
+const getCountTemplate = (type, count)=> (type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : '');
+const getActiveClassName = (type, currentFilterType) => (type === currentFilterType ? 'main-navigation__item--active' : '');
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
   const {
@@ -7,9 +9,7 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
     name,
     count,
   } = filter;
-  const filterCount = type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : '';
-  const activeFilter = type === currentFilterType ? 'main-navigation__item--active' : '';
-  return `<a href="#${type}" class="main-navigation__item ${activeFilter}" data-filter="${type}">${name} ${filterCount}</a>`;
+  return `<a href="#${type}" class="main-navigation__item ${getActiveClassName(type, currentFilterType)}" data-filter="${type}">${name} ${getCountTemplate(type, count)}</a>`;
 };
 
 const createFilmsFilterTemplate = (filterItems, currentFilterType) => {
