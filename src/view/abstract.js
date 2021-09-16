@@ -25,10 +25,10 @@ export default class Abstract {
   // dataBind(element) {}
 
   _createElement() {
-    return this._initializeElement(createElement(this.getTemplate()));
+    return this.initializeElement(createElement(this.getTemplate()));
   }
 
-  _initializeElement(element) {
+  initializeElement(element) {
     return element;
   }
 
