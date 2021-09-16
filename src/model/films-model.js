@@ -88,10 +88,6 @@ export default class FilmsModel extends AbstractObserver {
     return comments;
   }
 
-  setComments(comments) {
-    this._comments = comments.slice();
-  }
-
   addComment(updateType, update) {
     this._comments = [
       update,
