@@ -34,14 +34,6 @@ export default class FilmsModel extends AbstractObserver {
     return this._films;
   }
 
-  set films(films) {
-    if (Array.isArray(films)) {
-      this._films = films.slice();
-    } else {
-      this._films = undefined;
-    }
-  }
-
   updateFilm(updateType, update) {
     const index = this._films
       .findIndex((film) => film.id === update.id);
