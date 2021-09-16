@@ -1,7 +1,17 @@
-import {loadData} from '../api/load-data';
-import {renderElement} from '../lib/render';
-import {FilterType, RenderPosition} from '../lib/consts';
-import {computeUserRating} from '../lib/compute-user-rating';
+import {
+  loadData
+} from '../api/load-data';
+import {
+  remove,
+  renderElement
+} from '../lib/render';
+import {
+  FilterType,
+  RenderPosition
+} from '../lib/consts';
+import {
+  computeUserRating
+} from '../lib/compute-user-rating';
 // import FilmsPresenter from './films-presenter';
 import UserStatusView from '../view/user-status';
 import FilmsListEmptyView from '../view/film/films-list-empty';
@@ -131,18 +141,26 @@ export default class MainPresenter {
   //   this. _render();
   // }
 
-  _clearViewByName() {
-    if(this[name] !== null) {
+  _clearViewByName(name) {
+    if (this[name] !== null) {
       const view = this[name];
       this[name] = null;
-      return view;
+      remove(view);
     }
   }
 
   _clearFilmsPresenter() {
-    if(this._filmsPresenter !== null) {
+    if (this._filmsPresenter !== null) {
       this._filmsPresenter.destroy();
       this._filmsPresenter = null;
+    }
+  }
+
+  _destroyPresenter(name) {
+    if (this[name]) {
+      const presenter = this[name];
+      this[name] = null;
+      presenter.destroy();
     }
   }
 
@@ -151,6 +169,9 @@ export default class MainPresenter {
     this._clearViewByName('_filmsLoading');
     this._clearViewByName('_filmListEmptyComponent');
     this._clearViewByName('_footerStatisticsComponent');
+
+    this._destroyPresenter('_filmsPresenter');
+    this._destroyPresenter('_filterPresenter');
   }
 
   _renderList() {
@@ -217,7 +238,7 @@ export default class MainPresenter {
   _beginLoadData() {
     loadData().then((films) => {
       this._onDataReceived(films);
-    }).catch(() => undefined);
+    }).catch((err) => window['console'].error(err));
   }
 
   execute() {

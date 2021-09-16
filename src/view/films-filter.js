@@ -2,7 +2,11 @@ import Abstract from './abstract';
 
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
-  const {type, name, count} = filter;
+  const {
+    type,
+    name,
+    count,
+  } = filter;
   const filterCount = type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : '';
   const activeFilter = type === currentFilterType ? 'main-navigation__item--active' : '';
   return `<a href="#${type}" class="main-navigation__item ${activeFilter}" data-filter="${type}">${name} ${filterCount}</a>`;
@@ -51,5 +55,10 @@ export default class FilmsFilter extends Abstract {
     this._callback.filterTypeChange = callback;
     this.getElement()
       .addEventListener('click', this._filterChangeHandler);
+  }
+
+  removeFilterChangeHandler(callback) {
+    this._callback.filterTypeChange = null;
+    this.getElement().removeEventListener('click', callback);
   }
 }

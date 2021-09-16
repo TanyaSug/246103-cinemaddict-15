@@ -1,7 +1,17 @@
 import FilmsFilterView from '../view/films-filter';
-import {FilterType, RenderPosition, UpdateType} from '../lib/consts';
-import {remove, renderElement, replace} from '../lib/render';
-import {filter} from '../lib/get-filters';
+import {
+  FilterType,
+  RenderPosition,
+  UpdateType
+} from '../lib/consts';
+import {
+  remove,
+  renderElement,
+  replace
+} from '../lib/render';
+import {
+  filter
+} from '../lib/get-filters';
 
 
 export default class FilterPresenter {
@@ -50,8 +60,7 @@ export default class FilterPresenter {
 
   _getFilters() {
     const films = this._filmsModel.films;
-    return [
-      {
+    return [{
         type: FilterType.ALL,
         name: 'All movies',
         count: filter[FilterType.ALL](films).length,
@@ -72,5 +81,13 @@ export default class FilterPresenter {
         count: filter[FilterType.FAVORITES](films).length,
       },
     ];
+  }
+
+  destroy() {
+    if (this._filterComponent === null) {
+      return;
+    }
+    this._filterComponent.removeFilterChangeHandler(this._handleFilterTypeChange);
+    remove(this._filterComponent);
   }
 }
