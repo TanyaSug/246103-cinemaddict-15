@@ -32,3 +32,4 @@ export const getGenresRanks = (films) => {
   return ranks;
 };
 
+export const computeTotalFilms = (films)=>Array.isArray(films)?films.length:0;

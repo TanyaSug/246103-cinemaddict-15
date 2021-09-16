@@ -79,7 +79,7 @@ export default class MainPresenter {
   }
 
   _renderFooterStatistics() {
-    this._footerStatisticsComponent = new FooterStatisticsView(this._filmsModel.length);
+    this._footerStatisticsComponent = new FooterStatisticsView(this._filmsModel.films);
     renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 

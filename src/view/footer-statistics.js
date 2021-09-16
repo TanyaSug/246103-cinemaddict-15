@@ -1,3 +1,4 @@
+import { computeTotalFilms } from '../lib/user-statistics';
 import AbstractView from './abstract';
 
 // const FILM_STATS = 1111;
@@ -11,12 +12,12 @@ const createFooterStatsTemplate = (filmsCount) => (
 );
 
 export default class FooterStatistics  extends AbstractView {
-  constructor(filmsCount) {
+  constructor(films) {
     super();
-    this._filmsCount = filmsCount;
+    this._films = films;
   }
 
   getTemplate() {
-    return createFooterStatsTemplate(this._filmsCount);
+    return createFooterStatsTemplate(computeTotalFilms(this._films));
   }
 }
