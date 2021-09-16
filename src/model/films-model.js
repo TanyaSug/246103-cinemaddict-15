@@ -5,6 +5,12 @@ import {
 import {
   UpdateType
 } from '../lib/consts';
+import {
+  replaceAt
+} from '../lib/replace-by-id';
+import {
+  mockComments
+} from '../mock/mock-comments';
 
 export default class FilmsModel extends AbstractObserver {
 
@@ -21,10 +27,33 @@ export default class FilmsModel extends AbstractObserver {
     this._notify(UpdateType.MAJOR, undefined);
   }
 
+  _updateFilmCommentsIds(filmId, commentIds) {
+    if (!Array.isArray(this._films)) {
+      return;
+    }
+    const filmIndex = this._films.findIndex((film) => film.id === filmId);
+    if (filmIndex < 0) {
+      return;
+    }
+    const found = this._films[filmIndex];
+    found.comments = commentIds;
+    this.films = replaceAt(this._films, found, filmIndex);
+  }
+
+  _onCommentsReceived(filmId, comments) {
+    this._updateFilmCommentsIds(filmId, comments.map((comment) => comment.id));
+    this.comment.set(filmId, comments);
+    this._notify(UpdateType.MINOR, filmId);
+  }
+
   _beginLoadData() {
     loadData().then((films) => {
       this._onDataReceived(films);
     }).catch((err) => window['console'].error(err));
+  }
+
+  _beginLoadComments(filmId) {
+    setTimeout(() => this._updateFilmCommentsIds(filmId, mockComments(filmId)), 700);
   }
 
   get films() {
@@ -52,7 +81,11 @@ export default class FilmsModel extends AbstractObserver {
   }
 
   getComments(filmId) {
-    return this._comments.get(filmId);
+    const comments = this._comments.get(filmId);
+    if (!comments) {
+      this._beginLoadComments(filmId);
+    }
+    return comments;
   }
 
   setComments(comments) {
