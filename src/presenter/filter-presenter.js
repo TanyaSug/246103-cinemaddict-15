@@ -1,9 +1,7 @@
 import FilmsFilterView from '../view/films-filter';
 import {
   FilterType,
-  RenderPosition,
-  UpdateType
-} from '../lib/consts';
+  RenderPosition} from '../lib/consts';
 import {
   remove,
   renderElement,

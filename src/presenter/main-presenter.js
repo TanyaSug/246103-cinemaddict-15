@@ -1,6 +1,7 @@
 import {
   remove,
-  renderElement
+  renderElement,
+  replace
 } from '../lib/render';
 import {
   FilterType,
@@ -26,7 +27,7 @@ export default class MainPresenter {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._userStatusComponent = null;
-    this._mainFilmsContainer = new MainContainerView();
+    this._mainFilmsContainer = null; //new MainContainerView();
     this._filterPresenter = null;
     this._filmsPresenter = null;
     this._filmsLoading = null;
@@ -37,22 +38,39 @@ export default class MainPresenter {
     this._sortOrder = null;
     this._filterBy = null;
     this._handleFilterChanged = this._handleFilterChanged.bind(this);
-    this._filmsModel.addObserver(this._handleFilterChanged);
+    this._handleListLoaded = this._handleListLoaded.bind(this);
 
     this._filterModel.addFilterChangedListener(this._handleFilterChanged);
+    this._filmsModel.addListLoadedListener(this._handleListLoaded);
+
   }
 
+  _renderOrReplace(container, fieldName, nextValue, place = RenderPosition.BEFOREEND) {
+    const prev = this[fieldName];
+    if (prev) {
+      replace(nextValue, prev);
+    } else {
+      renderElement(container, nextValue, place);
+    }
+    this[fieldName] = nextValue;
+  }
 
   _renderUserStatus() {
-    this._userStatusComponent = new UserStatusView(computeUserRating(this._filmsModel.films));
-    renderElement(this._container, this._userStatusComponent, RenderPosition.AFTERBEGIN);
+    this._renderOrReplace(
+      this._container,
+      '_userStatusComponent',
+      new UserStatusView(computeUserRating(this._filmsModel.films)),
+      RenderPosition.AFTERBEGIN,
+    );
   }
 
   _renderMainFilmsContainer() {
+    this._renderOrReplace(this._container, '_mainFilmsContainer', new MainContainerView());
     renderElement(this._container, this._mainFilmsContainer, RenderPosition.BEFOREEND);
   }
 
   _renderFilterPresenter() {
+
     this._filterPresenter = new FilterPresenter(this._mainFilmsContainer, this._filterModel, this._filmsModel);
     this._filterPresenter.execute();
   }
@@ -83,7 +101,11 @@ export default class MainPresenter {
   }
 
   _handleFilterChanged() {
-    console.log(`to continue with new filter ${this._filterModel.getFilter()}`);
+    this._render();
+  }
+
+  _handleListLoaded() {
+    this._render();
   }
 
   _clearViewByName(name) {
@@ -146,8 +168,8 @@ export default class MainPresenter {
   _render() {
     this._clearViews();
     this._renderUserStatus();
-    this._renderFilterPresenter();
     this._renderMainFilmsContainer();
+    this._renderFilterPresenter();
     this._renderBusinessData();
     this._renderFooterStatistics();
   }

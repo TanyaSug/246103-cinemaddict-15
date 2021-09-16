@@ -20,4 +20,5 @@ export default class UserStatus extends AbstractView {
   getTemplate() {
     return createUserStatusTemplate(this._userRating);
   }
+
 }

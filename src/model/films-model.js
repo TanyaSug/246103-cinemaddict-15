@@ -4,6 +4,9 @@ import {
   UserAction
 } from '../lib/consts';
 import {
+  EventManager
+} from '../lib/event-manager';
+import {
   replaceAt
 } from '../lib/replace-by-id';
 
@@ -17,11 +20,16 @@ export default class FilmsModel extends AbstractObserver {
     this._busy = false;
     this._commentStatuses = new Map();
     this._filmsBusy = new Map();
+
+    this._listLoaded = new EventManager();
+    this._filmUpdated = new EventManager();
+    this._commentsLoaded = new EventManager();
+    this._commentUpdated = new EventManager();
   }
 
   async _withCommentsBusy(commentsId, userAction, callback) {
     const flag = this._comments.get(commentsId);
-    if(flag){
+    if (flag) {
       return;
     }
     this._commentStatuses.set(commentsId, userAction);
@@ -36,7 +44,7 @@ export default class FilmsModel extends AbstractObserver {
 
   async _withFilmBusy(filmId, callback) {
     const flag = this._filmsBusy.get(filmId);
-    if(flag){
+    if (flag) {
       return;
     }
     this._filmsBusy.set(filmId, true);
@@ -49,7 +57,7 @@ export default class FilmsModel extends AbstractObserver {
   }
 
   async _withListBusy(callback) {
-    if(this._busy){
+    if (this._busy) {
       return;
     }
     this._busy = true;
@@ -80,7 +88,7 @@ export default class FilmsModel extends AbstractObserver {
 
   _onDataReceived(films) {
     this._films = films;
-    this._notify(UpdateType.MAJOR, undefined);
+    this._listLoaded.notify();
   }
 
   _updateFilmCommentsIds(filmId, commentIds) {
@@ -183,6 +191,23 @@ export default class FilmsModel extends AbstractObserver {
   getCommentStatus(commentId) {
     return this._commentStatuses.get(commentId);
   }
+
+
+  addListLoadedListener(subscriber){this._listLoaded.subscribe(subscriber);}
+
+  addFilmUpdatedListener(subscriber){this._filmUpdated.subscribe(subscriber);}
+
+  addCommentsLoadedListener(subscriber){this._commentsLoaded.subscribe(subscriber);}
+
+  addCommentUpdatedListener(subscriber){this._commentUpdated.subscribe(subscriber);}
+
+  removeListLoadedListener(subscriber){this._listLoaded.unsubscribe(subscriber);}
+
+  removeFilmUpdatedListener(subscriber){this._filmUpdated.unsubscribe(subscriber);}
+
+  removeCommentsLoadedListener(subscriber){this._commentsLoaded.unsubscribe(subscriber);}
+
+  removeCommentUpdatedListener(subscriber){this._commentUpdated.unsubscribe(subscriber);}
 }
 
 // comment add and delete
