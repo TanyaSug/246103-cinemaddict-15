@@ -279,13 +279,13 @@ export default class NewPresenter {
   _handleFilmCardChange(key, updatedFilmData) {
     this._filmsModel.updateFilm(UpdateType.MAJOR, updatedFilmData);
 
-    this._filmListMap.get(updatedFilmData.id)
-      .toggleUserControls(key, updatedFilmData);
+    // this._filmListMap.get(updatedFilmData.id)
+    //   .toggleUserControls(key, updatedFilmData);
 
-    const popup = document.querySelector('.film-details');
-    if (this._popupPresenter && popup) {
-      this._popupPresenter.toggleUserControls(key, updatedFilmData);
-    }
+    // const popup = document.querySelector('.film-details');
+    // if (this._popupPresenter && popup) {
+    //   this._popupPresenter.toggleUserControls(key, updatedFilmData);
+    // }
 
   }
 
