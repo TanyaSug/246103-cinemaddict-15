@@ -1,3 +1,4 @@
+import { getUrlHash } from '../lib/get-url-hash';
 import Abstract from './abstract';
 
 const getCountTemplate = (type, count)=> (type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : '');
@@ -48,7 +49,7 @@ export default class FilmsFilter extends Abstract {
       return;
     }
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.dataset.filter);
+    this._callback.filterTypeChange(getUrlHash(evt.target.href));
   }
 
   setFilterChangeHandler(callback) {
