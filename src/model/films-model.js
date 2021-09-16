@@ -31,7 +31,6 @@ export default class FilmsModel extends AbstractObserver {
     this._commentStatuses.set(commentsId, userAction);
 
     try {
-      this._notify(UpdateType.PATCH, commentsId);
       await this._withLogError(callback);
     } finally {
       this._commentStatuses.delete(commentsId);
@@ -46,7 +45,6 @@ export default class FilmsModel extends AbstractObserver {
     }
     this._filmsBusy.set(filmId, true);
     try {
-      this._notify(UpdateType.MINOR, filmId);
       await this._withLogError(callback);
     } finally {
       this._filmsBusy.delete(filmId);
@@ -60,7 +58,6 @@ export default class FilmsModel extends AbstractObserver {
     }
     this._busy = true;
     try {
-      this._notify(UpdateType.MAJOR);
       await this._withLogError(callback);
     } finally {
       this._busy = false;
