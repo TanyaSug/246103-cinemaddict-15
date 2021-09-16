@@ -22,7 +22,7 @@ export const createFilmInfo = () => ({
   director: generateDirector(),
   writers: generateWriters(),
   actors: generateActors(),
-  releaseDate: new Date().toISOString(),
+  releaseDate: new Date(2021-getRandomInteger(1,50),getRandomInteger(0,11), getRandomInteger(1,30)).toISOString(),
   releaseCountry: generateReleaseCountry(),
   runtime: generateRuntime(),
   genres: generateGenres(),

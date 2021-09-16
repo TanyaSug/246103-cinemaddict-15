@@ -18,9 +18,7 @@ export default class FilmsModel extends AbstractObserver {
 
   _onDataReceived(films) {
     this._films = films;
-    console.log('data received');
     this._notify(UpdateType.MAJOR, undefined);
-
   }
 
   _beginLoadData() {
