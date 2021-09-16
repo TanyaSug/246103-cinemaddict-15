@@ -1,7 +1,4 @@
 import {
-  loadData
-} from '../api/load-data';
-import {
   remove,
   renderElement
 } from '../lib/render';
@@ -235,14 +232,8 @@ export default class MainPresenter {
     this._render();
   }
 
-  _beginLoadData() {
-    loadData().then((films) => {
-      this._onDataReceived(films);
-    }).catch((err) => window['console'].error(err));
-  }
-
   execute() {
-    this._beginLoadData();
-    // this._render();
+    //this._beginLoadData();
+    this._render();
   }
 }

@@ -1,8 +1,12 @@
-import {create15Films} from '../mock/create-15-films';
+import {
+  create15Films
+} from '../mock/create-15-films';
 
 export const loadData = async () => {
   const filmsModel = create15Films();
   return new Promise((resolve) => {
-    resolve(filmsModel);
+    setTimeout(() => {
+      resolve(filmsModel);
+    }, 1000);
   });
 };

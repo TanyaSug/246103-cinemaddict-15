@@ -1,4 +1,10 @@
 import AbstractObserver from '../abstract-observer';
+import {
+  loadData
+} from '../api/load-data';
+import {
+  UpdateType
+} from '../lib/consts';
 
 export default class FilmsModel extends AbstractObserver {
 
@@ -10,12 +16,28 @@ export default class FilmsModel extends AbstractObserver {
     this._commentStatuses = new Map();
   }
 
+  _onDataReceived(films) {
+    this._films = films;
+    console.log('data received');
+    this._notify(UpdateType.MAJOR, undefined);
+
+  }
+
+  _beginLoadData() {
+    loadData().then((films) => {
+      this._onDataReceived(films);
+    }).catch((err) => window['console'].error(err));
+  }
+
   get films() {
+    if (!Array.isArray(this._films)) {
+      this._beginLoadData();
+    }
     return this._films;
   }
 
   set films(films) {
-    if(Array.isArray(films)) {
+    if (Array.isArray(films)) {
       this._films = films.slice();
     } else {
       this._films = undefined;
@@ -24,7 +46,7 @@ export default class FilmsModel extends AbstractObserver {
 
 
   get length() {
-    if(Array.isArray(this._films)) {
+    if (Array.isArray(this._films)) {
       return this._films.length;
     } else {
       return 0;
