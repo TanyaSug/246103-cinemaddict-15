@@ -1,20 +1,28 @@
 import AbstractObserver from '../abstract-observer';
-import {FilterType} from '../lib/consts';
+import {FilterType, SortType, UpdateType} from '../lib/consts';
 
 export default class FilterModel extends AbstractObserver {
   constructor() {
     super();
-
     this._activeFilter = FilterType.ALL;
+    this._activeSort = SortType.BY_DEFAULT;
   }
 
   getFilter() {
     return this._activeFilter;
   }
 
-  setFilter(updateType, filter) {
-    this._activeFilter = filter;
+  getSort(){
+    return this._activeSort;
+  }
 
-    this._notify(updateType, filter);
+  setFilter(filter) {
+    this._activeFilter = filter;
+    this._notify(UpdateType.MAJOR, filter);
+  }
+
+  setSort(sortType){
+    this._activeSort = sortType;
+    this._notify(UpdateType.PATCH);
   }
 }

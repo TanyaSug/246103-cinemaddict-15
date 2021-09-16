@@ -9,10 +9,6 @@ import {
 
 export default class FilmsModel extends AbstractObserver {
 
-  /**
-   *
-   * @param {Api} api интерфейс взаимодействия с сервером
-   */
   constructor(api) {
     super();
     this._api = api;
