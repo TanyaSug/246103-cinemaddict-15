@@ -9,8 +9,16 @@ export default class Abstract {
     this._callback = {};
   }
 
+  _createElement() {
+    return this.initializeElement(createElement(this.getTemplate()));
+  }
+
   getTemplate() {
     throw new Error('Abstract method not implemented: getTemplate');
+  }
+
+  initializeElement(element) {
+    return element;
   }
 
   getElement() {
@@ -18,18 +26,6 @@ export default class Abstract {
       this._element = this._createElement();
     }
     return this._element;
-  }
-
-  // attachEvents(element) {}
-  //
-  // dataBind(element) {}
-
-  _createElement() {
-    return this.initializeElement(createElement(this.getTemplate()));
-  }
-
-  initializeElement(element) {
-    return element;
   }
 
   removeElement() {

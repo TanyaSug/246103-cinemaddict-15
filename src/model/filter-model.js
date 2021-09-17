@@ -47,6 +47,7 @@ export default class FilterModel extends AbstractObserver {
       return;
     }
     this._activeSort = sortType;
+    this._filmCount = FILM_LIST_PAGE_SIZE;
     this._sortChanged.notify();
   }
 

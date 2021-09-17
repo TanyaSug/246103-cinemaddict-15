@@ -66,7 +66,6 @@ export default class MainPresenter {
 
   _renderMainFilmsContainer() {
     this._renderOrReplace(this._container, '_mainFilmsContainer', new MainContainerView());
-    renderElement(this._container, this._mainFilmsContainer, RenderPosition.BEFOREEND);
   }
 
   _renderFilterPresenter() {
