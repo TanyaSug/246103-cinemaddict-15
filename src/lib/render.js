@@ -47,6 +47,9 @@ export const replace = (newChild, oldChild) => {
 };
 
 export const remove = (component) => {
+  if (component === null || typeof component === 'undefined') {
+    return;
+  }
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
   }

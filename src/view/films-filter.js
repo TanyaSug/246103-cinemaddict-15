@@ -52,4 +52,9 @@ export default class FilmsFilter extends Abstract {
     this.getElement()
       .addEventListener('click', this._filterChangeHandler);
   }
+
+  removeFilterChangeHandler(callback) {
+    this._callback.filterTypeChange = null;
+    this.getElement().removeEventListener('click', callback);
+  }
 }

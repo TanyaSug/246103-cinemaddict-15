@@ -4,7 +4,6 @@ import {FilmClickIds} from '../../lib/consts';
 import {getRuntime} from '../../lib/get-duration-time';
 
 
-
 const makeActiveClassName = (flag) => flag ? 'film-details__control-button--active' : '';
 
 const createGenresTemplate = (genres) => genres
@@ -17,9 +16,6 @@ const createFilmPopupTemplate = (filmData) => {
   const genresList = createGenresTemplate(filmData.filmInfo.genres);
   const runTime = getRuntime(filmData.filmInfo.runtime);
   return `<div class="film-details__top-container">
-      <div class="film-details__close">
-        <button class="film-details__close-btn" type="button">close</button>
-      </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
           <img class="film-details__poster-img" src=${filmData.filmInfo.posters} alt="">
@@ -133,31 +129,15 @@ export default class PopupFilmInfo extends AbstractView{
     return createFilmPopupTemplate(this._filmData);
   }
 
-  clearListeners() {
-    if(this._element && Object.keys(this._callback).length > 0) {
-      this._element.removeEventListener('click', this._callback.favoritesClick);
-      this._element.removeEventListener('click', this._callback.watchlistClick);
-      this._element.removeEventListener('click', this._callback.watchedClick);
-
-    } else {
-      throw Error('Element is not found');
-    }
+  restoreHandlers() {
+    this.setFavoritesClickHandler(this._callback.favoritesClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
   }
 
-  toggleUserControls(key, filmData) {
-    this._filmData = filmData;
-    const ACTIVE_CLASS = 'film-details__control-button--active';
-
-    if (key === FilmClickIds.WATCH_LIST) {
-      this._element.querySelector('.film-details__control-button--watchlist')
-        .classList.toggle(ACTIVE_CLASS);
-    } else if (key === FilmClickIds.WATCHED) {
-      this._element.querySelector('.film-details__control-button--watched')
-        .classList.toggle(ACTIVE_CLASS);
-    } else if (key === FilmClickIds.FAVORITES) {
-      this._element.querySelector('.film-details__control-button--favorite')
-        .classList.toggle(ACTIVE_CLASS);
-    }
+  updateElement(updatedFilmData) {
+    this._filmData = updatedFilmData;
+    super.updateElement();
   }
 }
 

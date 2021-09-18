@@ -9,9 +9,9 @@ const emotionsList = EMOTIONS.map((emotion) =>
   </label>`,
 ).join('');
 
-const createNewCommentTemplate = ({emotion, comment}) => {
+const createNewCommentTemplate = ({emotion, text}) => {
   const img = emotion ? `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="${emotion}">` : '';
-  const text = comment || '';
+  const comment = text || '';
   return (
     `<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">
@@ -19,7 +19,7 @@ const createNewCommentTemplate = ({emotion, comment}) => {
           </div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(text)}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
@@ -54,26 +54,29 @@ export default class PopupNewComment extends SmartView {
   _commentChangeHandler(evt) {
     evt.preventDefault();
     const update = {
-      comment: evt.target.value,
+      text: evt.target.value,
     };
 
     this.updateData(update, true);
   }
 
+  _reset() {
+    const update = {} ;
+    this.updateData(update);
+  }
+
   _formKeydownHandler(evt) {
     if (evt.ctrlKey && evt.key === 'Enter') {
-      if ((!this._data.comment && this._data.comment.length > 0 )|| !this._data.emotion) {
+      if ((!this._data.text && this._data.text.length > 0 )|| !this._data.emotion) {
         return;
       }
 
       const newComment = {
         ...this._data,
-        date: new Date(),
       };
       this._onCommentAdded(newComment);
-
-      console.log(newComment);
       this._callback.formKeydown(newComment);
+      this._reset();
     }
   }
 

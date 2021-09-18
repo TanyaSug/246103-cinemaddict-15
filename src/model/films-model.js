@@ -14,6 +14,10 @@ export default class FilmsModel extends AbstractObserver {
     return this._films;
   }
 
+  get comments() {
+    return this._comments;
+  }
+
   set films(films) {
     if(Array.isArray(films)) {
       this._films = films.slice();
@@ -53,32 +57,24 @@ export default class FilmsModel extends AbstractObserver {
   }
 
   setComments(comments) {
-    this._comments = comments.slice();
+    comments.forEach((comment) => {
+      this._comments.set(comment.id, comment);
+    });
   }
 
   addComment(updateType, update) {
-    this._comments = [
-      update,
-      ...this._comments,
-    ];
+    this._comments.set(update.id, update);
 
-    this._notify(updateType, update);
+    // this._notify(updateType, update);
   }
 
-  deleteComment(updateType, update) {
-    const index = this._comments
-      .findIndex((comment) => comment.id === update.id);
+  deleteComment(updateType, id) {
 
-    if (index === -1) {
-      throw new Error('Can\'t delete unexisting comment');
+    if (!this._comments.has(id)) {
+      throw new Error('Can\'t delete un-existing comment');
     }
-
-    this._comments = [
-      ...this._comments.slice(0, index),
-      ...this._comments.slice(index + 1),
-    ];
-
-    this._notify(updateType, update);
+    this._comments.delete(id);
+    // this._notify(updateType, update);
   }
 
   getBusy() {

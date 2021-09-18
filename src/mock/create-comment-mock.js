@@ -24,21 +24,21 @@ const emotions = [
 
 export const createCommentMock = () => [
   {
-    id: getRandomInteger(1, 20),
+    id: 1,
     author: getRandomElement(authors),
     text: getRandomElement(comments),
     date: '2019/12/31 23:59',
     emotion: getRandomElement(emotions),
   },
   {
-    id: getRandomInteger(1, 20),
+    id: 2,
     author: getRandomElement(authors),
     text: getRandomElement(comments),
     date: '2019/12/31 23:59',
     emotion: getRandomElement(emotions),
   },
   {
-    id: getRandomInteger(1, 20),
+    id: 3,
     author: getRandomElement(authors),
     text: getRandomElement(comments),
     date: '2019/12/31 23:59',

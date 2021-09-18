@@ -2,6 +2,9 @@ import AbstractView from '../abstract';
 
 const createPopupContainerTemplate = () => (
   `<section class="film-details">
+      <div class="film-details__close">
+        <button class="film-details__close-btn" type="button">close</button>
+      </div>
      <form class="film-details__inner" action="" method="get">
 
      </form>

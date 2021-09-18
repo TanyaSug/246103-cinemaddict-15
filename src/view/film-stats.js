@@ -5,12 +5,10 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {computeUserRating} from '../lib/compute-user-rating';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {countFilmsByGenre, getGenresRanks, getGenreUniq} from '../lib/user-statistics';
+import {getGenresRanks} from '../lib/user-statistics';
 dayjs.extend(duration);
 
 const renderChart = (statisticCtx, films) => {
-
-
 
   const allRanks = getGenresRanks(films);
   return new Chart(statisticCtx, {
@@ -76,21 +74,20 @@ const renderChart = (statisticCtx, films) => {
 const createStatsFilterElement = (filter, currentFilter) => {
   const {type, name} = filter;
 
-  const selectedFilter = type === currentFilter ? 'checked' : '';
+  const checked = type === currentFilter ? 'checked' : '';
 
   return `
-    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${type}" value="${type}" ${selectedFilter}>
+    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${type}" value="${type}" ${checked}>
       <label for="statistic-${type}" class="statistic__filters-label">${name}</label>
   `;
 };
 
-const createFilmStatsTemplate = (films, filters) => {
-  const { currentFilter} = films;
+const createFilmStatsTemplate = (films, filters, currentFilter) => {
 
   const userRating = computeUserRating(films);
-  const WatchedFilms = films.filter((film) => film.userDetails.alreadyWatched);
-  const WatchedFilmsCount = WatchedFilms.length;
-  const totalDuration = WatchedFilms.reduce((acc, film) =>  acc + film.filmInfo.runtime, 0);
+  const watchedFilms = films.filter((film) => film.userDetails.alreadyWatched);
+  const watchedFilmsCount = watchedFilms.length;
+  const totalDuration = watchedFilms.reduce((acc, film) =>  acc + film.filmInfo.runtime, 0);
 
   const getFilmsHours = (minutes) => Math.floor(dayjs.duration({minutes}).asHours());
   const hoursDuration = getFilmsHours(totalDuration);
@@ -121,7 +118,7 @@ const createFilmStatsTemplate = (films, filters) => {
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">${WatchedFilmsCount} <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text">${watchedFilmsCount} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
@@ -140,36 +137,43 @@ const createFilmStatsTemplate = (films, filters) => {
 };
 
 export default class FilmStatistic extends Smart {
-  constructor(films) {
+  constructor(filteredFilms, currentFilter) {
     super();
-    this._films = films;
+
+    this._filteredFilms = filteredFilms;
     this._filter = this._getFilter();
+    this._currentFilter = currentFilter;
     this._userStatisticChart = null;
 
-    // this._filterElementChangeHandler = this._filterElementChangeHandler.bind(this);
+    this._filterElementChangeHandler = this._filterElementChangeHandler.bind(this);
 
     this._setChart();
   }
 
   getTemplate() {
-    return createFilmStatsTemplate(this._films, this._filter);
+    const filteredFilms = this._data.filteredFilms || this._filteredFilms;
+    const currentFilter = this._data.currentFilter || this._currentFilter;
+    return createFilmStatsTemplate(filteredFilms, this._filter, currentFilter);
   }
-  //
-  // _filterElementChangeHandler(evt) {
-  //   this._callback.changeStatsFilter(evt.target.value);
-  // }
-  //
-  //
-  // setStatsFilterElementsChangeHandler(callback) {
-  //   this._callback.changeStatsFilter = callback;
-  //
-  //   this.getElement()
-  //     .querySelector('.statistic__filters')
-  //     .addEventListener('change', this._filterElementChangeHandler);
-  // }
+
+
+  _filterElementChangeHandler(evt) {
+    this._callback.changeStatsFilter(evt.target.value);
+  }
+
+
+  setStatsFilterElementsChangeHandler(callback) {
+    this._callback.changeStatsFilter = callback;
+
+    this.getElement()
+      .querySelector('.statistic__filters')
+      .addEventListener('change', this._filterElementChangeHandler);
+  }
 
   restoreHandlers() {
     this._setChart();
+    this.setStatsFilterElementsChangeHandler(this._callback.changeStatsFilter);
+
   }
 
   _getFilter() {
@@ -204,13 +208,12 @@ export default class FilmStatistic extends Smart {
 
     // const BAR_HEIGHT = 50;
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
-    // const {genres} = this._films;
+    // const genres = this._films.films;
     //
     // statisticCtx.height = BAR_HEIGHT * genres.size;
     //
-    this._userStatisticChart = renderChart(statisticCtx, this._films);
+    this._userStatisticChart = renderChart(statisticCtx, this._filteredFilms);
   }
-
 
   removeElement() {
     super.removeElement();

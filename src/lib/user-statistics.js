@@ -1,7 +1,12 @@
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+
+dayjs.extend(isBetween);
+import {StatsType} from './consts';
 
 export  const getGenreUniq = (genres) => [...new Set(genres)];
-export const countFilmsByGenre = (films, genre) =>
-  films.filter((film) => film.filmInfo.genres === genre).length;
+// export const countFilmsByGenre = (films, genre) =>
+//   films.filter((film) => film.filmInfo.genres === genre).length;
 
 // const getWatchedFilms = (films) => {
 //   // const WatchedFilms = [];
@@ -30,5 +35,41 @@ export const getGenresRanks = (films) => {
   });
 
   return ranks;
+};
+
+export const  getFilmsByFilter = (films, currentFilter) => {
+  const currentDate = new Date();
+  const weekAgoDate = dayjs().subtract(7, 'day').toDate();
+  const monthAgoDate = dayjs().subtract(1, 'month').toDate();
+  const yearAgoDate = dayjs().subtract(1, 'year').toDate();
+  let watchedFilms = [];
+
+  switch (currentFilter) {
+    case StatsType.ALL_TIME:
+      watchedFilms = films
+        .filter((film) => film.userDetails.alreadyWatched);
+      break;
+
+    case StatsType.TODAY:
+      watchedFilms = films
+        .filter((film) => film.userDetails.alreadyWatched && dayjs(film.userDetails.watchingDate).isSame(currentDate, 'day'));
+      break;
+
+    case StatsType.WEEK:
+      watchedFilms = films
+        .filter((film) => film.userDetails.alreadyWatched && dayjs(film.userDetails.watchingDate).isBetween(weekAgoDate, currentDate));
+      break;
+
+    case StatsType.MONTH:
+      watchedFilms = films
+        .filter((film) => film.userDetails.alreadyWatched && dayjs(film.userDetails.watchingDate).isBetween(monthAgoDate, currentDate));
+      break;
+
+    case StatsType.YEAR:
+      watchedFilms = films
+        .filter((film) => film.userDetails.alreadyWatched && dayjs(film.userDetails.watchingDate).isBetween(yearAgoDate, currentDate));
+      break;
+  }
+  return watchedFilms;
 };
 

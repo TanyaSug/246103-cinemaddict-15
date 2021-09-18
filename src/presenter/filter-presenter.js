@@ -73,4 +73,12 @@ export default class FilterPresenter {
       },
     ];
   }
+
+  destroy() {
+    if (this._filterComponent === null) {
+      return;
+    }
+    this._filterComponent.removeFilterChangeHandler(this._handleFilterTypeChange);
+    remove(this._filterComponent);
+  }
 }

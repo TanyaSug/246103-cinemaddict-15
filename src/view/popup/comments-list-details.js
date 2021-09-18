@@ -24,6 +24,7 @@ const createCommentDetailsTemplate = (comment) => (
 export default class PopupCommentDetails extends Smart {
   constructor(comment) {
     super();
+    this._comment = comment;
 
     this._data = PopupCommentDetails.parseDataToState(comment);
     this._deleteButtonHandler = this._deleteButtonHandler.bind(this);
@@ -36,7 +37,7 @@ export default class PopupCommentDetails extends Smart {
 
   _deleteButtonHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteButton((this._data));
+    this._callback.deleteButton(this._comment.id);
   }
 
   setDeleteButtonHandler(callback) {
