@@ -130,6 +130,18 @@ export default class FilmsModel extends AbstractObserver {
     return this._films;
   }
 
+  getComments(filmId) {
+    const comments = this._comments.get(filmId);
+    if (!comments) {
+      this._beginLoadComments(filmId);
+    }
+    return comments;
+  }
+
+  /**
+   * @deprecated
+   * @param {*} update
+   */
   updateFilm(update) {
     this._withFilmBusy(
       update.id,
@@ -141,13 +153,17 @@ export default class FilmsModel extends AbstractObserver {
     );
   }
 
-  getComments(filmId) {
-    const comments = this._comments.get(filmId);
-    if (!comments) {
-      this._beginLoadComments(filmId);
-    }
-    return comments;
-  }
+  setFilmFavorite(filmId){}
+
+  resetFilmFavorite(filmId){}
+
+  setFilmWatched(filmId){}
+
+  resetFilmWatched(filmId){}
+
+  setFilmWatchlist(filmId){}
+
+  resetFilmWatchlist(filmId){}
 
   addComment(filmId, update) {
     this._withCommentsBusy(

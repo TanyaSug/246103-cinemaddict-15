@@ -17,11 +17,11 @@ export default class Abstract {
     throw new Error('Abstract method not implemented: getTemplate');
   }
 
-  initializeElement(element) {
+  /*только для наследников*/initializeElement(element) {
     return element;
   }
 
-  getElement() {
+  /*только для наследников*/getElement() {
     if (!this._element) {
       this._element = this._createElement();
     }

@@ -18,7 +18,8 @@ import ShowMoreButtonView from '../view/film-show-more-button';
 import PopupPresenter from './popup-presenter';
 import {
   sortByDate,
-  sortByRating} from '../utils';
+  sortByRating
+} from '../utils';
 import FilmCard from '../view/film/film-card';
 import FilmsListContainerView from '../view/film/films-list-container';
 import {
@@ -108,15 +109,13 @@ export default class NewPresenter {
     }
   }
 
+  _handeOpenPopup() {}
 
-  // _renderMainContainer() {
-  //   renderElement(this._bodyContainer, this._mainContainer, RenderPosition.AFTERBEGIN);
-  // }
-  //
-  // _renderFilter() {
-  //   this._filterPresenter = new FilterPresenter(this._mainContainer, this._filterModel, this._filmsModel);
-  //   this._filterPresenter.execute();
-  // }
+  _handleToggelWatched() {}
+
+  _handleToggleFavorite() {}
+
+  _handleToggleWatchlist() {}
 
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
@@ -173,11 +172,13 @@ export default class NewPresenter {
   _addFilms(starIndex, count) {
     const innerPoint = this._filmsListComponent.getInnerPoint();
     getFilmsList(this._getFilms(), starIndex, count).map((film) => {
-      const filmCard = new FilmCard(film);
-      filmCard.setPopupClickHandler(this._handleFilmCardClick);
-      filmCard.setWatchlistClickHandler(this._handleFilmCardClick);
-      filmCard.setWatchedClickHandler(this._handleFilmCardClick);
-      filmCard.setFavoritesClickHandler(this._handleFilmCardClick);
+      const filmCard = new FilmCard(film, {
+        popupClick: this._handleFilmCardClick,
+        watchedClick: this._handleFilmCardClick,
+        favoritesClick: this._handleFilmCardClick,
+        watchlistClick: this._handleFilmCardClick,
+      });
+
       this._filmListMap.set(film.id, filmCard);
       renderElement(innerPoint, filmCard, RenderPosition.BEFOREEND);
     });
@@ -278,15 +279,6 @@ export default class NewPresenter {
 
   _handleFilmCardChange(key, updatedFilmData) {
     this._filmsModel.updateFilm(UpdateType.MAJOR, updatedFilmData);
-
-    // this._filmListMap.get(updatedFilmData.id)
-    //   .toggleUserControls(key, updatedFilmData);
-
-    // const popup = document.querySelector('.film-details');
-    // if (this._popupPresenter && popup) {
-    //   this._popupPresenter.toggleUserControls(key, updatedFilmData);
-    // }
-
   }
 
   _render() {

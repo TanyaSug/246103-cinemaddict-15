@@ -2,7 +2,8 @@ import AbstractObserver from '../abstract-observer';
 import {
   FILM_LIST_PAGE_SIZE,
   FilterType,
-  SortType
+  SortType,
+  StatsType
 } from '../lib/consts';
 import {
   EventManager
@@ -14,10 +15,12 @@ export default class FilterModel extends AbstractObserver {
     this._activeFilter = FilterType.ALL;
     this._activeSort = SortType.BY_DEFAULT;
     this._filmCount = FILM_LIST_PAGE_SIZE;
+    this._statsType = StatsType.ALL_TIME;
 
     this._filterChanged = new EventManager();
     this._sortChanged = new EventManager();
     this._countChanged = new EventManager();
+    this._statsChanged = new EventManager();
   }
 
   getFilter() {
@@ -30,6 +33,10 @@ export default class FilterModel extends AbstractObserver {
 
   getFilmCount (){
     return this._filmCount;
+  }
+
+  getStatsType(){
+    return this._statsType;
   }
 
   setFilter(filter) {
@@ -53,6 +60,12 @@ export default class FilterModel extends AbstractObserver {
 
   incrementFilmCount(){
     this._filmCount += FILM_LIST_PAGE_SIZE;
+    this._countChanged.notify();
+  }
+
+  setStatsType (statsType){
+    this._statsType = statsType;
+    this._statsChanged.notify();
   }
 
   addFilterChangedListener(subscriber) {
@@ -67,6 +80,10 @@ export default class FilterModel extends AbstractObserver {
     this._countChanged.subscribe(subscriber);
   }
 
+  addStatsChangedListener(subscriber) {
+    this._statsChanged.subscribe(subscriber);
+  }
+
   removeFilterChangedListener(subscriber) {
     this._filterChanged.unsubscribe(subscriber);
   }
@@ -78,4 +95,9 @@ export default class FilterModel extends AbstractObserver {
   removeCountChangedListener(subscriber) {
     this._countChanged.unsubscribe(subscriber);
   }
+
+  removeStatsChangedListener(subscriber) {
+    this._statsChanged.unsubscribe(subscriber);
+  }
+
 }
