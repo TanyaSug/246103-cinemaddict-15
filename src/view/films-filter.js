@@ -1,11 +1,16 @@
+import { getUrlHash } from '../lib/get-url-hash';
 import Abstract from './abstract';
 
+const getCountTemplate = (type, count)=> (type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : '');
+const getActiveClassName = (type, currentFilterType) => (type === currentFilterType ? 'main-navigation__item--active' : '');
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
-  const {type, name, count} = filter;
-  const filterCount = type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : '';
-  const activeFilter = type === currentFilterType ? 'main-navigation__item--active' : '';
-  return `<a href="#${type}" class="main-navigation__item ${activeFilter}" data-filter="${type}">${name} ${filterCount}</a>`;
+  const {
+    type,
+    name,
+    count,
+  } = filter;
+  return `<a href="#${type}" class="main-navigation__item ${getActiveClassName(type, currentFilterType)}" data-filter="${type}">${name} ${getCountTemplate(type, count)}</a>`;
 };
 
 const createFilmsFilterTemplate = (filterItems, currentFilterType) => {
@@ -44,12 +49,17 @@ export default class FilmsFilter extends Abstract {
       return;
     }
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.dataset.filter);
+    this._callback.filterTypeChange(getUrlHash(evt.target.href));
   }
 
   setFilterChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     this.getElement()
       .addEventListener('click', this._filterChangeHandler);
+  }
+
+  removeFilterChangeHandler(callback) {
+    this._callback.filterTypeChange = null;
+    this.getElement().removeEventListener('click', callback);
   }
 }

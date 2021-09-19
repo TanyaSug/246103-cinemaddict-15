@@ -9,31 +9,23 @@ export default class Abstract {
     this._callback = {};
   }
 
+  _createElement() {
+    return this.initializeElement(createElement(this.getTemplate()));
+  }
+
   getTemplate() {
     throw new Error('Abstract method not implemented: getTemplate');
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = this._createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  // attachEvents(element) {}
-  //
-  // dataBind(element) {}
-
-  _createElement() {
-    const template = this.getTemplate();
-    const element = createElement(template);
-    this._initializeElement(element);
+  /*только для наследников*/initializeElement(element) {
     return element;
   }
 
-  _initializeElement() {
-    // attachEvents(element);
-    // dataBind(element);
+  /*только для наследников*/getElement() {
+    if (!this._element) {
+      this._element = this._createElement();
+    }
+    return this._element;
   }
 
   removeElement() {
