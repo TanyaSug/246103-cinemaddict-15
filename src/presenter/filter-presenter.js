@@ -1,5 +1,5 @@
 import FilmsFilterView from '../view/films-filter';
-import {FilterType, RenderPosition, UpdateType} from '../lib/consts';
+import {FilterType, RenderPosition} from '../lib/consts';
 import {remove, renderElement, replace} from '../lib/render';
 import {filter} from '../lib/get-filters';
 
@@ -45,7 +45,7 @@ export default class FilterPresenter {
       return;
     }
 
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.setFilter(filterType);
   }
 
   _getFilters() {

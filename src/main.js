@@ -1,16 +1,20 @@
 import MainPresenter from './presenter/main-presenter';
 import FilmsModel from './model/films-model';
 import FilterModel from './model/filter-model';
-// import {create15Films} from './mock/create-15-films';
-// import {loadData} from './api/load-data';
+import Api from './api/api';
+import {AUTHORIZATION, END_POINT, UpdateType} from './lib/consts';
 
-// const films = create15Films();
-const bodyContainer = document.querySelector('body');
+
 const filmsModel = new FilmsModel();
-const filterModel = new FilterModel();
-// filmsModel.setFilms(films);
+const api = new Api(END_POINT, AUTHORIZATION);
+api.getFilms().then((films) => {
+  filmsModel.setFilms(UpdateType.INIT, films);
+});
+const bodyContainer = document.querySelector('body');
 
-const presenter = new MainPresenter(bodyContainer, filmsModel, filterModel);
+const filterModel = new FilterModel();
+
+const presenter = new MainPresenter(bodyContainer, filmsModel, filterModel, api);
 presenter.execute();
 
 

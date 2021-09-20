@@ -8,7 +8,7 @@ const makeActiveClassName = (flag) => flag ? 'film-details__control-button--acti
 
 const createGenresTemplate = (genres) => genres
   .map((genre) => `<span class="film-details__genre">${genre}</span>`)
-  .join('');
+  .join(' ');
 
 
 const createFilmPopupTemplate = (filmData) => {
@@ -18,7 +18,7 @@ const createFilmPopupTemplate = (filmData) => {
   return `<div class="film-details__top-container">
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src=${filmData.filmInfo.posters} alt="">
+          <img class="film-details__poster-img" src=${filmData.filmInfo.poster} alt="">
 
           <p class="film-details__age">${filmData.filmInfo.ageRating}</p>
         </div>
@@ -50,7 +50,7 @@ const createFilmPopupTemplate = (filmData) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${dayjs(filmData.filmInfo.releaseDate).format('YYYY/MM/DD')}</td>
+              <td class="film-details__cell">${dayjs(filmData.filmInfo.release.date).format('YYYY/MM/DD')}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
@@ -58,7 +58,7 @@ const createFilmPopupTemplate = (filmData) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${filmData.filmInfo.releaseCountry}</td>
+              <td class="film-details__cell">${filmData.filmInfo.release.releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">${genreTitle}</td>

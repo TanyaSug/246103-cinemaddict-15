@@ -6,7 +6,7 @@ import {getRuntime} from '../../lib/get-duration-time';
 
 
 export const createFilmCardTemplate = (filmData) => {
-  const {filmInfo: {title, totalRating, releaseDate, genres, posters, description}, userDetails: {watchlist, alreadyWatched, favorite}} = filmData;
+  const {filmInfo: {title, totalRating, release, genres, poster, description}, userDetails: {watchlist, alreadyWatched, favorite}} = filmData;
   const setDescriptionView = (filmDescription) => filmDescription.length <= DESCRIPTION_LENGTH ? filmDescription : `${filmDescription.slice(0, DESCRIPTION_LENGTH)}...`;
   const runTime = getRuntime(filmData.filmInfo.runtime);
   const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
@@ -16,11 +16,11 @@ export const createFilmCardTemplate = (filmData) => {
           <h3 class="film-card__title">${title || ''}</h3>
           <p class="film-card__rating">${totalRating || ''}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${dayjs(releaseDate).format('YYYY') || ''}</span>
+            <span class="film-card__year">${dayjs(release.date).format('YYYY') || ''}</span>
             <span class="film-card__duration">${runTime || ''}</span>
             <span class="film-card__genre">${genres || ''}</span>
           </p>
-          <img src=${posters} alt="" class="film-card__poster">
+          <img src=${poster} alt="" class="film-card__poster">
           <p class="film-card__description">${setDescriptionView(description) || ''}</p>
           <a class="film-card__comments">${filmData.comments.length} comments</a>
           <div class="film-card__controls">
@@ -122,46 +122,4 @@ export default class  FilmCard extends AbstractView {
     this._filmData = updatedFilmData;
     super.updateElement();
   }
-
-  //
-  // clearListeners() {
-  //   if(this._element && Object.keys(this._callback).length > 0) {
-  //     this._element.removeEventListener('click', this._callback.popupClick);
-  //     this._element.removeEventListener('click', this._callback.favoritesClick);
-  //     this._element.removeEventListener('click', this._callback.watchlistClick);
-  //     this._element.removeEventListener('click', this._callback.watchedClick);
-  //   } else {
-  //     throw Error('Element is not found');
-  //   }
-  // }
-
-  // get all all film cards;
-  // find film card matched with film id;
-  // loop the filmCards and toggle;
-
-  // updateElement(newFilmClass, updatedFilmData, handler) {
-  // toggleUserControls(key, updatedFilmData) {
-  //   // this.clearListeners();
-  //   const ACTIVE_CLASS = 'film-card__controls-item--active';
-  //   this._filmData = updatedFilmData;
-  //
-  //   if (key === FilmClickIds.WATCH_LIST) {
-  //     this._element.querySelector('.film-card__controls-item--add-to-watchlist')
-  //       .classList.toggle(ACTIVE_CLASS);
-  //   } else if (key === FilmClickIds.WATCHED) {
-  //     this._element.querySelector('.film-card__controls-item--mark-as-watched')
-  //       .classList.toggle(ACTIVE_CLASS);
-  //   } else if (key === FilmClickIds.FAVORITES) {
-  //     this._element.querySelector('.film-card__controls-item--favorite')
-  //       .classList.toggle(ACTIVE_CLASS);
-  //   }
-
-  // newFilmClass.setPopupClickHandler(() => handler(FilmClickIds.POP_UP, updatedFilmData));
-  // newFilmClass.setFavoritesClickHandler(() => handler(FilmClickIds.FAVORITES, updatedFilmData));
-  // newFilmClass.setWatchlistClickHandler(() => handler(FilmClickIds.WATCH_LIST, updatedFilmData));
-  // newFilmClass.setWatchedClickHandler(() => handler(FilmClickIds.WATCHED, updatedFilmData));
-
-  // replace(newFilmClass, this);
-  // }
-
 }

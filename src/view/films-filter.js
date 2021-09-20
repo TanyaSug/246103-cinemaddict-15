@@ -1,5 +1,5 @@
 import Abstract from './abstract';
-
+import {getUrlHash} from '../lib/get-url-hash';
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
@@ -17,16 +17,7 @@ const createFilmsFilterTemplate = (filterItems, currentFilterType) => {
             <a href="#stats" class="main-navigation__additional">Stats</a>
           </nav>`;
 };
-// const createFilmsFilterTemplate = (currentFilterType) => (
-//   `<nav class="main-navigation">
-//       <div class="main-navigation__items">
-//         <a href="#all" class="main-navigation__item ${(currentFilterType === FilterType.ALL) || !currentFilterType ? activeFilter : ''}" data-filter-type="${FilterType.ALL}">All movies</a>
-//         <a href="#watchlist" class="main-navigation__item ${currentFilterType === FilterType.WATCHLIST ? activeFilter : ''}" data-filter-type="${FilterType.WATCHLIST}">Watchlist <span class="main-navigation__item-count">${watchlistCount}</span></a>
-//         <a href="#history" class="main-navigation__item ${currentFilterType === FilterType.HISTORY ? activeFilter : ''}" data-filter-type="${FilterType.HISTORY}">History <span class="main-navigation__item-count">${historyCount}</span></a>
-//         <a href="#favorites" class="main-navigation__item ${currentFilterType === FilterType.FAVORITES ? activeFilter : ''}" data-filter-type="${FilterType.FAVORITES}">Favorites <span class="main-navigation__item-count">${favoritesCount}</span></a>
-//       </div>
-//         <a href="#stats" class="main-navigation__additional">Stats</a>
-//     </nav>`
+
 export default class FilmsFilter extends Abstract {
   constructor(filters, currentFilterType) {
     super();
@@ -44,7 +35,7 @@ export default class FilmsFilter extends Abstract {
       return;
     }
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.dataset.filter);
+    this._callback.filterTypeChange(getUrlHash(evt.target.href));
   }
 
   setFilterChangeHandler(callback) {

@@ -30,7 +30,6 @@ export default class FilmsSort extends Smart {
   }
 
   setSortChangeHandler(callback) {
-    // we do not need to re-assign sortTypeChange on restoreHandlers
     if (!this._callback.sortTypeChange) {
       this._callback.sortTypeChange = callback;
     }

@@ -84,6 +84,6 @@ export const getSortedByCommentsCount = (filmA, filmB)=>{
   return compareByComments(filmA.comments, filmB.comments);
 };
 
-export const sortByDate = (filmA, filmB) => dayjs(filmA.filmInfo.releaseDate).diff(dayjs(filmB.filmInfo.releaseDate));
+export const sortByDate = (filmA, filmB) => dayjs(filmB.filmInfo.release.date).diff(dayjs(filmA.filmInfo.release.date));
 
-
+export const computeTotalFilms = (films) => Array.isArray(films) ? films.length : 0;

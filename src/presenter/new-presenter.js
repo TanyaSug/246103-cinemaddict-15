@@ -7,7 +7,6 @@ import {
   UserAction,
   UpdateType, FilterType
 } from '../lib/consts';
-// import MainContainerView from '../view/film/main-container';
 import FilmsSortView from '../view/films-sort';
 import FilmsContainerView from '../view/film/films-container';
 import ShowMoreButtonView from '../view/film-show-more-button';
@@ -16,17 +15,16 @@ import {sortByDate, sortByRating} from '../utils';
 import FilmCard from '../view/film/film-card';
 import FilmsListContainerView from '../view/film/films-list-container';
 import {getFilmsList} from '../lib/get-films-list';
-// import FilterPresenter from './filter-presenter';
 import {filter} from '../lib/get-filters';
-import {loadComments} from '../api/load-data';
 
 
 export default class NewPresenter {
-  constructor(bodyContainer, filmsModel, filterModel) {
+  constructor(bodyContainer, filmsModel, filterModel, api) {
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._mainContainer = bodyContainer;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._api = api;
     this._filterPresenter = null;
     this._filmsSortComponent = null;
     this._filmsContainer = null;
@@ -41,7 +39,7 @@ export default class NewPresenter {
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleMoreButtonClick = this._handleMoreButtonClick.bind(this);
-    this._handlePopupAction = this._handlePopupAction.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
 
@@ -63,7 +61,7 @@ export default class NewPresenter {
     return filteredTasks;
   }
 
-  _handlePopupAction(actionType, updateType, update) {
+  _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
         this._filmsModel.updateFilm(updateType, update);
@@ -100,16 +98,6 @@ export default class NewPresenter {
         break;
     }
   }
-
-
-  // _renderMainContainer() {
-  //   renderElement(this._bodyContainer, this._mainContainer, RenderPosition.AFTERBEGIN);
-  // }
-  //
-  // _renderFilter() {
-  //   this._filterPresenter = new FilterPresenter(this._mainContainer, this._filterModel, this._filmsModel);
-  //   this._filterPresenter.execute();
-  // }
 
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
@@ -226,21 +214,8 @@ export default class NewPresenter {
   }
 
   _executePopup(film) {
-    const cachedComments = [];
-    // pick comments from cache
-    if (this._filmsModel.comments.size > 0) {
-      this._filmsModel.comments.forEach((comment) => {
-        if (film.comments.includes(comment.id)) {
-          cachedComments.push(comment);
-        }
-      });
-    }
 
-    if (film.comments.length === cachedComments.length) {
-      return this._popupPresenter.execute(film, cachedComments);
-    }
-
-    loadComments(film.comments).then((comments) => {
+    this._api.getComments(film.id).then((comments) => {
       this._filmsModel.setComments(comments);
       return this._popupPresenter.execute(film, comments);
     });
@@ -288,7 +263,7 @@ export default class NewPresenter {
   }
 
   destroy() {
-    this._clearViewByName(this._filmsSortComponent);
+    this._clearViewByName('_filmsSortComponent');
     this._clearFilmsList();
     this._filmsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
@@ -296,7 +271,7 @@ export default class NewPresenter {
 
   execute() {
     this._sourcedFilmsData = this._filmsModel.films.slice();
-    this._popupPresenter = new PopupPresenter(this._handleFilmCardClick, this._handlePopupAction);
+    this._popupPresenter = new PopupPresenter(this._handleFilmCardClick, this._handleViewAction, this._api);
     this._render();
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);

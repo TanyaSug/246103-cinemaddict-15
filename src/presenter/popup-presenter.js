@@ -8,10 +8,11 @@ import {remove, renderElement} from '../lib/render';
 import {RenderPosition, UpdateType, UserAction} from '../lib/consts';
 
 export default class PopupPresenter {
-  constructor(onToggleUserControls, handlePopupAction) {
+  constructor(onToggleUserControls, handlePopupAction, api) {
     this._popupContainer = null;
     this._filmData = null;
     this._comments = [];
+    this._api = api;
     this._filmPopupInfoComponent = null;
     this._commentsContainer = null;
     this._popupCommentsListComponent = null;
@@ -31,7 +32,6 @@ export default class PopupPresenter {
 
   _renderPopupContainer() {
     this._popupContainer = new PopupContainerView(this._filmData);
-    // const popupContainerInnerPoint = this._popupContainer.getInnerPoint();
   }
 
   _renderFilmPopupInfo() {
@@ -52,20 +52,30 @@ export default class PopupPresenter {
   }
 
   _renderCommentsList() {
-    this._popupCommentsListComponent = new PopupCommentsListView();
+    this._popupCommentsListComponent = new PopupCommentsListView(this._comments.length);
+
     renderElement(this._commentsContainer, this._popupCommentsListComponent, RenderPosition.BEFOREEND);
   }
 
   _handleDeleteButton(commentId) {
-    remove(this._popupCommentDetailsComponents.get(commentId));
-    this._filmData.comments = this._filmData.comments.filter((comId) => comId !== commentId);
+    const comment = this._comments.find((comm) => comm.id === commentId);
+    const currentComment = this._popupCommentDetailsComponents.get(commentId);
+    currentComment.updateElement({...comment, isDeleting: true});
 
-    this._handlePopupAction(UserAction.DELETE_COMMENT, UpdateType.COMMENT, commentId);
-    this._handlePopupAction(UserAction.UPDATE_FILM, UpdateType.PATCH, this._filmData);
+    this._api.deleteComment(commentId).then(() => {
+      this._filmData.comments = this._filmData.comments.filter((comId) => comId !== commentId);
+      this._comments = this._comments.filter((comm) => comm.id !== commentId);
+      this._popupCommentsListComponent.updateElement(this._comments.length);
+      this._comments.forEach((comm) => {
+        this._addComment(comm);
+      });
+      this._handlePopupAction(UserAction.UPDATE_FILM, UpdateType.PATCH, this._filmData);
+    }).catch(() => {
+      currentComment.updateElement({...comment, isDeleting: false});
+    });
+
   }
 
-  // renderElement(this._popupCommentsListComponent, this._popupCommentDetailsComponent, RenderPosition.BEFOREEND);
-  // this._popupCommentDetailsComponent.setDeleteButtonHandler(this._handleDeleteButton);
   _renderCommentDetails() {
     this._comments.forEach(this._addComment);
   }
@@ -73,21 +83,24 @@ export default class PopupPresenter {
   _addComment(comment) {
     const popupComment = new PopupCommentDetailsView(comment);
     popupComment.setDeleteButtonHandler(this._handleDeleteButton);
-    renderElement(this._popupCommentsListComponent, popupComment, RenderPosition.BEFOREEND);
+    const innerPoint = this._popupCommentsListComponent.getInnerPoint();
+    renderElement(innerPoint, popupComment, RenderPosition.BEFOREEND);
     this._popupCommentDetailsComponents.set(comment.id, popupComment);
   }
 
   _renderNewComment() {
     this._popupNewCommentComponent = new PopupNewCommentView((
       (newComment) =>{
-        // mock server comment respond
-        const newCommentFromServer = {...newComment, date: new Date(), author: 'Tany', id: Math.random()};
-        this._comments.push(newCommentFromServer);
-        this._filmData.comments.push(newCommentFromServer.id);
-        this._addComment(newCommentFromServer);
-
-        this._handlePopupAction(UserAction.ADD_COMMENT, UpdateType.COMMENT, newCommentFromServer);
-        this._handlePopupAction(UserAction.UPDATE_FILM, UpdateType.PATCH, this._filmData);
+        this._api.addComment(this._filmData.id, newComment).then(({film, comments}) => {
+          this._comments = comments;
+          this._filmData = film;
+          this._popupCommentsListComponent.updateElement(comments.length);
+          comments.forEach((comm) => {
+            this._addComment(comm);
+          });
+          this._popupNewCommentComponent.reset();
+          this._handlePopupAction(UserAction.UPDATE_FILM, UpdateType.PATCH, film);
+        });
       }),
     );
     this._popupNewCommentComponent.setEmotionChangeHandler();

@@ -76,6 +76,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const StatsType = {
@@ -85,3 +86,13 @@ export const StatsType = {
   MONTH: 'month',
   YEAR: 'year',
 };
+
+export const RequestMethod = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+};
+
+export const AUTHORIZATION = 'Basic k92Dz15RmsQ09';
+export const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';

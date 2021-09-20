@@ -1,4 +1,5 @@
 import AbstractView from './abstract';
+import {computeUserRating} from '../lib/compute-user-rating';
 
 const createUserStatusTemplate = (userRating) => (
   `<header class="header">
@@ -18,6 +19,6 @@ export default class UserStatus extends AbstractView {
   }
 
   getTemplate() {
-    return createUserStatusTemplate(this._userRating);
+    return createUserStatusTemplate(computeUserRating(this._userRating));
   }
 }

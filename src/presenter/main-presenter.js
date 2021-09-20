@@ -1,7 +1,5 @@
-import {loadData} from '../api/load-data';
 import {renderElement, remove} from '../lib/render';
-import {FilterType, RenderPosition, StatsType} from '../lib/consts';
-import {computeUserRating} from '../lib/compute-user-rating';
+import {FilterType, RenderPosition, StatsType, UpdateType} from '../lib/consts';
 import UserStatusView from '../view/user-status';
 import FilmsListEmptyView from '../view/film/films-list-empty';
 import FilmsLoadingView from '../view/films-loading';
@@ -14,12 +12,13 @@ import {getFilmsByFilter} from '../lib/user-statistics';
 
 
 export default class MainPresenter {
-  constructor(bodyContainer, filmsModel, filterModel) {
+  constructor(bodyContainer, filmsModel, filterModel, api) {
     this._container = bodyContainer;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._api = api;
     this._userStatusComponent = null;
-    this._mainFilmsContainer = new MainContainerView();
+    this._mainFilmsContainer = null;
     this._filterPresenter = null;
     this._filmsPresenter = null;
     this._filmsLoading = null;
@@ -32,17 +31,19 @@ export default class MainPresenter {
     this._sortOrder = null;
     this._filterBy = null;
     this._handleStatsFilterChange = this._handleStatsFilterChange.bind(this);
-    // this._filmsModel.addObserver(this._handleFilterChange);
-    // this._filterModel.addObserver(this._handleFilterChange);
+    this._handleFilterChange = this._handleFilterChange.bind(this);
+    this._handleListLoaded = this._handleListLoaded.bind(this);
+    this._filmsModel.addObserver(this._handleListLoaded);
+    this._filterModel.addFilterChangedListener(this._handleFilterChange);
   }
 
-
   _renderUserStatus() {
-    this._userStatusComponent = new UserStatusView(computeUserRating(this._filmsModel.films));
+    this._userStatusComponent = new UserStatusView(this._filmsModel.films);
     renderElement(this._container, this._userStatusComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderMainFilmsContainer() {
+    this._mainFilmsContainer =  new MainContainerView();
     renderElement(this._container, this._mainFilmsContainer, RenderPosition.BEFOREEND);
   }
 
@@ -52,7 +53,7 @@ export default class MainPresenter {
   }
 
   _renderFilmsPresenter() {
-    this._filmsPresenter = new NewPresenter(this._mainFilmsContainer, this._filmsModel, this._filterModel);
+    this._filmsPresenter = new NewPresenter(this._mainFilmsContainer, this._filmsModel, this._filterModel, this._api);
     this._filmsPresenter.execute();
   }
 
@@ -74,7 +75,7 @@ export default class MainPresenter {
   }
 
   _renderFooterStatistics() {
-    this._footerStatisticsComponent = new FooterStatisticsView(this._filmsModel.length);
+    this._footerStatisticsComponent = new FooterStatisticsView(this._filmsModel.films);
     renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 
@@ -83,46 +84,12 @@ export default class MainPresenter {
     const filteredFilms = getFilmsByFilter(this._filmsModel.films, this._currentStatsFilter);
 
     this._filmStatistic.updateData(
-      {filteredFilms, currentFilter: this._currentStatsFilter}
+      {filteredFilms, currentFilter: this._currentStatsFilter},
     );
   }
 
   _handleFilterChange() {
     this._render();
-
-    // let activeFilterElement = FilterType.ALL;
-    // const selectedFilterElement = target.dataset.filter;
-    // const activeClassName = document.querySelector('.main-navigation__item--active');
-    // const statsElement = document.getElement().querySelector('.main-navigation__additional');
-    //
-    //
-    // if (selectedFilterElement === activeFilterElement) {
-    //   return;
-    // }
-    //
-    // switch (selectedFilterElement) {
-    //   case FilterType.ALL:
-    //   case FilterType.WATCHLIST:
-    //   case FilterType.HISTORY:
-    //   case FilterType.FAVORITES:
-    //     this._filmStatistic.remove();
-    //     this._filmsPresenter.execute();
-    //
-    //     statsElement.classList.remove('main-navigation__item--active');
-    //     target.classList.add('main-navigation__item--active');
-    //     break;
-    //
-    //   case FilterType.STATS:
-    //     this._filmsPresenter.destroy();
-    //     this._renderFilmsStatistics();
-    //     // this._filmStatistic = new FilmStatisticView();
-    //     // renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
-    //
-    //     activeClassName.classList.remove('main-navigation__item--active');
-    //     statsElement.classList.add('main-navigation__item--active');
-    //     break;
-    // }
-    // activeFilterElement = selectedFilterElement;
   }
 
   _clearViewByName(name) {
@@ -133,10 +100,9 @@ export default class MainPresenter {
     }
   }
 
-  _clearFilmsPresenter() {
-    if (this._filmsPresenter !== null) {
-      this._filmsPresenter.destroy();
-      this._filmsPresenter = null;
+  _handleListLoaded(type) {
+    if (type === UpdateType.INIT) {
+      this._render();
     }
   }
 
@@ -152,6 +118,7 @@ export default class MainPresenter {
     this._clearViewByName('_userStatusComponent');
     this._clearViewByName('_filmsLoading');
     this._clearViewByName('_filmListEmptyComponent');
+    this._clearViewByName('_filmStatistic');
     this._clearViewByName('_footerStatisticsComponent');
     this._destroyPresenter('_filmsPresenter');
     this._destroyPresenter('_filterPresenter');
@@ -184,11 +151,10 @@ export default class MainPresenter {
   _render() {
     this._clearViews();
     this._renderUserStatus();
-    this._renderFilterPresenter();
     this._renderMainFilmsContainer();
+    this._renderFilterPresenter();
     this._renderBusinessData();
     this._renderFooterStatistics();
-    this._renderFilmsStatistics();
   }
 
   _onDataReceived(films) {
@@ -196,14 +162,8 @@ export default class MainPresenter {
     this._render();
   }
 
-  _beginLoadData() {
-    loadData().then((films) => {
-      this._onDataReceived(films);
-    }).catch(() => undefined);
-  }
 
   execute() {
-    this._beginLoadData();
-    // this._render();
+    this._render();
   }
 }
