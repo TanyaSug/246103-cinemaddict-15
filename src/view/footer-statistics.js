@@ -1,6 +1,6 @@
 import AbstractView from './abstract';
+import {computeTotalFilms} from '../utils';
 
-// const FILM_STATS = 1111;
 const createFooterStatsTemplate = (filmsCount) => (
   `<footer class="footer">
   <section class="footer__logo logo logo--smaller">Cinemaddict</section>
@@ -11,12 +11,12 @@ const createFooterStatsTemplate = (filmsCount) => (
 );
 
 export default class FooterStatistics  extends AbstractView {
-  constructor(filmsCount) {
+  constructor(films) {
     super();
-    this._filmsCount = filmsCount;
+    this._films= films;
   }
 
   getTemplate() {
-    return createFooterStatsTemplate(this._filmsCount);
+    return createFooterStatsTemplate(computeTotalFilms(this._films));
   }
 }

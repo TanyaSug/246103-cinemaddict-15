@@ -12,6 +12,8 @@ export const getRandomElement = (arr) => {
 };
 export const getRandomSubset = (arr, count) => Array(count).fill(null).map(() => getRandomElement(arr));
 
+// items - whole array;
+// update - new array item.
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
@@ -58,7 +60,7 @@ const compareFilmInfo = (infoA, infoB) => {
   return compareRating(infoA.totalRating, infoB.totalRating);
 };
 
-export const getSortedByRating = (filmA, filmB) => {
+export const sortByRating = (filmA, filmB) => {
   const weight = getWeightForNullData(filmA, filmB);
   if(weight !== null) {
     return weight;
@@ -82,6 +84,6 @@ export const getSortedByCommentsCount = (filmA, filmB)=>{
   return compareByComments(filmA.comments, filmB.comments);
 };
 
-export const sortByDate = (filmA, filmB) => dayjs(filmA.filmInfo.releaseDate).diff(dayjs(filmB.filmInfo.releaseDate));
+export const sortByDate = (filmA, filmB) => dayjs(filmB.filmInfo.release.date).diff(dayjs(filmA.filmInfo.release.date));
 
-
+export const computeTotalFilms = (films) => Array.isArray(films) ? films.length : 0;

@@ -1,24 +1,20 @@
-// import {renderData} from './lib/render-data';
-// import {loadData} from './api/load-data';
-// import PopupFilmInfo from './view/popup/film-popup';
 import MainPresenter from './presenter/main-presenter';
-// import {loadData} from './api/load-data';
+import FilmsModel from './model/films-model';
+import FilterModel from './model/filter-model';
+import Api from './api/api';
+import {AUTHORIZATION, END_POINT, UpdateType} from './lib/consts';
 
 
+const filmsModel = new FilmsModel();
+const api = new Api(END_POINT, AUTHORIZATION);
+api.getFilms().then((films) => {
+  filmsModel.setFilms(UpdateType.INIT, films);
+});
 const bodyContainer = document.querySelector('body');
-// export const filmsMainContainer = siteContainer.querySelector('main');
-// export const filmsListContainer = filmsMainContainer.querySelector('.films');
 
-// const footerContainer = document.querySelector('.footer');
-// const footerStats = footerContainer.querySelector('.footer__statistics');
-// const showPopup = (film) => new PopupFilmInfo(film).appendPopUp();
-// const closePopup = (film) => new PopupFilmInfo(film).removePopUp();
+const filterModel = new FilterModel();
 
-// document.addEventListener('keydown', onEscKeyDown);
-
-// loadData()
-//   .then((data) => {
-const presenter = new MainPresenter(bodyContainer, undefined);
+const presenter = new MainPresenter(bodyContainer, filmsModel, filterModel, api);
 presenter.execute();
-// });
+
 

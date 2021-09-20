@@ -1,39 +1,51 @@
-import AbstractView from './abstract';
+import Abstract from './abstract';
+import {getUrlHash} from '../lib/get-url-hash';
 
-const createFilmsFilterTemplate = (watchlistCount, historyCount, favoritesCount) => (
-  `<nav class="main-navigation">
-      <div class="main-navigation__items">
-        <a href="#all" class="main-navigation__item">All movies</a>
-        <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlistCount}</span></a>
-        <a href="#history" class="main-navigation__item main-navigation__item--active">History <span class="main-navigation__item-count">${historyCount}</span></a>
-        <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favoritesCount}</span></a>
-      </div>
-        <a href="#stats" class="main-navigation__additional">Stats</a>
-    </nav>`
-);
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
+  const filterCount = type !== 'all' ? `<span class="main-navigation__item-count">${count}</span>` : '';
+  const activeFilter = type === currentFilterType ? 'main-navigation__item--active' : '';
+  return `<a href="#${type}" class="main-navigation__item ${activeFilter}" data-filter="${type}">${name} ${filterCount}</a>`;
+};
 
-export default class FilmsFilter extends AbstractView {
-  constructor(props) {
-    const {watchlistCount, historyCount, favoritesCount} = props;
+const createFilmsFilterTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems
+    .map((filter) => createFilterItemTemplate(filter, currentFilterType))
+    .join('');
+  return `<nav class="main-navigation">
+            <div class="main-navigation__items">${filterItemsTemplate}</div>
+            <a href="#stats" class="main-navigation__additional">Stats</a>
+          </nav>`;
+};
+
+export default class FilmsFilter extends Abstract {
+  constructor(filters, currentFilterType) {
     super();
-    this._watchlistCount = watchlistCount;
-    this._historyCount = historyCount;
-    this._favoritesCount = favoritesCount;
+    this._filters = filters;
+    this._currentFilter = currentFilterType;
     this._filterChangeHandler = this._filterChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmsFilterTemplate(this._watchlistCount, this._historyCount, this._favoritesCount);
+    return createFilmsFilterTemplate(this._filters, this._currentFilter);
   }
 
   _filterChangeHandler(evt) {
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
     evt.preventDefault();
-    this._callback.filterChange();
+    this._callback.filterTypeChange(getUrlHash(evt.target.href));
   }
 
   setFilterChangeHandler(callback) {
-    this._callback.filterChange = callback;
+    this._callback.filterTypeChange = callback;
     this.getElement()
       .addEventListener('click', this._filterChangeHandler);
+  }
+
+  removeFilterChangeHandler(callback) {
+    this._callback.filterTypeChange = null;
+    this.getElement().removeEventListener('click', callback);
   }
 }

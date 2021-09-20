@@ -2,6 +2,9 @@ import AbstractView from '../abstract';
 
 const createPopupContainerTemplate = () => (
   `<section class="film-details">
+      <div class="film-details__close">
+        <button class="film-details__close-btn" type="button">close</button>
+      </div>
      <form class="film-details__inner" action="" method="get">
 
      </form>
@@ -10,8 +13,10 @@ const createPopupContainerTemplate = () => (
 
 
 export default class PopupContainer extends AbstractView {
-  constructor() {
+  constructor(filmData) {
     super();
+    this._filmData = filmData;
+    // this._formKeydownHandler = this._formKeydownHandler.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this.removePopUp = this.removePopUp.bind(this);
   }
@@ -35,6 +40,7 @@ export default class PopupContainer extends AbstractView {
   appendPopUp() {
     document.body.appendChild(this.getElement());
     document.body.classList.add('hide-overflow');
+    // document.addEventListener('keydown', this._formKeydownHandler);
 
     document.addEventListener('keydown', this._onEscKeyDown);
     document.querySelector('.film-details__close-btn')

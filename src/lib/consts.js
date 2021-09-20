@@ -6,7 +6,7 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-export const FilterNames = {
+export const FilterType = {
   ALL: 'all',
   WATCHLIST: 'watchlist',
   HISTORY:'history',
@@ -64,3 +64,35 @@ export const Extra = {
     filter: (data) => getMostCommented(data),
   },
 };
+
+export const UserAction = {
+  UPDATE_FILM: 'UPDATE_FILM',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+export const UpdateType = {
+  COMMENT: 'COMMENT',
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
+};
+
+export const StatsType = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
+
+export const RequestMethod = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+};
+
+export const AUTHORIZATION = 'Basic k92Dz15RmsQ09';
+export const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';

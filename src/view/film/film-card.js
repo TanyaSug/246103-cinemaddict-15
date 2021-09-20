@@ -2,11 +2,13 @@ import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
 import {DESCRIPTION_LENGTH, FilmClickIds} from '../../lib/consts';
 import dayjs from 'dayjs';
+import {getRuntime} from '../../lib/get-duration-time';
 
 
 export const createFilmCardTemplate = (filmData) => {
-  const {filmInfo: {title, totalRating, releaseDate, runtime, genres, posters, description, commentsCount}, userDetails: {watchlist, alreadyWatched, favorite}} = filmData;
+  const {filmInfo: {title, totalRating, release, genres, poster, description}, userDetails: {watchlist, alreadyWatched, favorite}} = filmData;
   const setDescriptionView = (filmDescription) => filmDescription.length <= DESCRIPTION_LENGTH ? filmDescription : `${filmDescription.slice(0, DESCRIPTION_LENGTH)}...`;
+  const runTime = getRuntime(filmData.filmInfo.runtime);
   const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
   const watchlistClassName = watchlist ? 'film-card__controls-item--active' : '';
   const watchedClassName = alreadyWatched ? 'film-card__controls-item--active' : '';
@@ -14,13 +16,13 @@ export const createFilmCardTemplate = (filmData) => {
           <h3 class="film-card__title">${title || ''}</h3>
           <p class="film-card__rating">${totalRating || ''}</p>
           <p class="film-card__info">
-            <span class="film-card__year">${dayjs(releaseDate).format('YYYY') || ''}</span>
-            <span class="film-card__duration">${runtime || ''}</span>
+            <span class="film-card__year">${dayjs(release.date).format('YYYY') || ''}</span>
+            <span class="film-card__duration">${runTime || ''}</span>
             <span class="film-card__genre">${genres || ''}</span>
           </p>
-          <img src=${posters} alt="" class="film-card__poster">
+          <img src=${poster} alt="" class="film-card__poster">
           <p class="film-card__description">${setDescriptionView(description) || ''}</p>
-          <a class="film-card__comments">${commentsCount} comments</a>
+          <a class="film-card__comments">${filmData.comments.length} comments</a>
           <div class="film-card__controls">
             <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button">Add to watchlist</button>
             <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${watchedClassName}" type="button">Mark as watched</button>
@@ -108,44 +110,16 @@ export default class  FilmCard extends AbstractView {
     const watchlistFilm = this.getElement().querySelector('.film-card__controls-item--add-to-watchlist');
     watchlistFilm.addEventListener('click', this._watchlistClickHandler);
   }
-  //
-  // clearListeners() {
-  //   if(this._element && Object.keys(this._callback).length > 0) {
-  //     this._element.removeEventListener('click', this._callback.popupClick);
-  //     this._element.removeEventListener('click', this._callback.favoritesClick);
-  //     this._element.removeEventListener('click', this._callback.watchlistClick);
-  //     this._element.removeEventListener('click', this._callback.watchedClick);
-  //   } else {
-  //     throw Error('Element is not found');
-  //   }
-  // }
 
-  // get all all film cards;
-  // find film card matched with film id;
-  // loop the filmCards and toggle;
+  restoreHandlers() {
+    this.setPopupClickHandler(this._callback.popupClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFavoritesClickHandler(this._callback.favoritesClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+  }
 
-  // updateElement(newFilmClass, updatedFilmData, handler) {
-  toggleUserControls(key, updatedFilmData) {
-    // this.clearListeners();
-    const ACTIVE_CLASS = 'film-card__controls-item--active';
+  updateElement(updatedFilmData) {
     this._filmData = updatedFilmData;
-
-    if (key === FilmClickIds.WATCH_LIST) {
-      this._element.querySelector('.film-card__controls-item--add-to-watchlist')
-        .classList.toggle(ACTIVE_CLASS);
-    } else if (key === FilmClickIds.WATCHED) {
-      this._element.querySelector('.film-card__controls-item--mark-as-watched')
-        .classList.toggle(ACTIVE_CLASS);
-    } else if (key === FilmClickIds.FAVORITES) {
-      this._element.querySelector('.film-card__controls-item--favorite')
-        .classList.toggle(ACTIVE_CLASS);
-    }
-
-    // newFilmClass.setPopupClickHandler(() => handler(FilmClickIds.POP_UP, updatedFilmData));
-    // newFilmClass.setFavoritesClickHandler(() => handler(FilmClickIds.FAVORITES, updatedFilmData));
-    // newFilmClass.setWatchlistClickHandler(() => handler(FilmClickIds.WATCH_LIST, updatedFilmData));
-    // newFilmClass.setWatchedClickHandler(() => handler(FilmClickIds.WATCHED, updatedFilmData));
-
-    // replace(newFilmClass, this);
+    super.updateElement();
   }
 }

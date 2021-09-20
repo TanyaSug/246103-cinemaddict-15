@@ -9,10 +9,6 @@ export default class Smart extends Abstract {
     this._data = {};
   }
 
-  restoreHandlers() {
-    throw new Error('Abstract method not implemented: restoreHandlers');
-  }
-
   updateData(update, justDataUpdating = false) {
     if (!update) {
       return;
@@ -27,18 +23,6 @@ export default class Smart extends Abstract {
     if (!justDataUpdating) {
       this.updateElement();
     }
-  }
-
-  updateElement() {
-    const oldElement = this.getElement();
-    const parentElement = oldElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parentElement.replaceChild(newElement, oldElement);
-
-    this.restoreHandlers();
   }
 }
 

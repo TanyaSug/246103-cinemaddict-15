@@ -3,36 +3,42 @@ import PopupFilmInfoView from '../view/popup/popup-film-info';
 import PopupCommentsContainerView from '../view/popup/comments-container';
 import PopupCommentsListView from '../view/popup/popup-comments-list';
 import PopupNewCommentView from '../view/popup/popup-add-new-comment';
-import PopupCommentDetailsView from '../view/popup/new-comments-details';
+import PopupCommentDetailsView from '../view/popup/comments-list-details';
 import {remove, renderElement} from '../lib/render';
-import {RenderPosition} from '../lib/consts';
+import {RenderPosition, UpdateType, UserAction} from '../lib/consts';
 
 export default class PopupPresenter {
-  constructor(onToggleUserControls) {
+  constructor(onToggleUserControls, handlePopupAction, api) {
     this._popupContainer = null;
     this._filmData = null;
+    this._comments = [];
+    this._api = api;
     this._filmPopupInfoComponent = null;
     this._commentsContainer = null;
     this._popupCommentsListComponent = null;
-    this._popupCommentDetailsComponent = null;
+    this._popupCommentDetailsComponents = new Map();
     this._popupNewCommentComponent = null;
 
     this._onToggleUserControls = onToggleUserControls;
+    this._handlePopupAction = handlePopupAction;
+
     this._handleDeleteButton = this._handleDeleteButton.bind(this);
+    this._addComment = this._addComment.bind(this);
+  }
+
+  get filmPopupInfoComponent() {
+    return this._filmPopupInfoComponent;
   }
 
   _renderPopupContainer() {
-    this._popupContainer = new PopupContainerView();
-    // const popupContainerInnerPoint = this._popupContainer.getInnerPoint();
+    this._popupContainer = new PopupContainerView(this._filmData);
   }
 
   _renderFilmPopupInfo() {
     const filmPopupInfoComponent = new PopupFilmInfoView(this._filmData);
 
     filmPopupInfoComponent.setFavoritesClickHandler(this._onToggleUserControls);
-
     filmPopupInfoComponent.setWatchlistClickHandler(this._onToggleUserControls);
-
     filmPopupInfoComponent.setWatchedClickHandler(this._onToggleUserControls);
 
     renderElement(this._popupContainer, filmPopupInfoComponent, RenderPosition.BEFOREEND);
@@ -40,34 +46,66 @@ export default class PopupPresenter {
   }
 
   _renderCommentsContainer() {
-    this._commentsContainer = new PopupCommentsContainerView(this._filmData.comments.length);
+    this._commentsContainer = new PopupCommentsContainerView(this._comments.length);
     // const commentsContainerInnerPoint = this._commentsContainer.getInnerPoint();
     renderElement(this._popupContainer, this._commentsContainer, RenderPosition.BEFOREEND);
   }
 
   _renderCommentsList() {
-    this._popupCommentsListComponent = new PopupCommentsListView();
+    this._popupCommentsListComponent = new PopupCommentsListView(this._comments.length);
+
     renderElement(this._commentsContainer, this._popupCommentsListComponent, RenderPosition.BEFOREEND);
   }
 
-  _handleDeleteButton() {
-    remove(this._popupCommentDetailsComponent);
+  _handleDeleteButton(commentId) {
+    const comment = this._comments.find((comm) => comm.id === commentId);
+    const currentComment = this._popupCommentDetailsComponents.get(commentId);
+    currentComment.updateElement({...comment, isDeleting: true});
+
+    this._api.deleteComment(commentId).then(() => {
+      this._filmData.comments = this._filmData.comments.filter((comId) => comId !== commentId);
+      this._comments = this._comments.filter((comm) => comm.id !== commentId);
+      this._popupCommentsListComponent.updateElement(this._comments.length);
+      this._comments.forEach((comm) => {
+        this._addComment(comm);
+      });
+      this._handlePopupAction(UserAction.UPDATE_FILM, UpdateType.PATCH, this._filmData);
+    }).catch(() => {
+      currentComment.updateElement({...comment, isDeleting: false});
+    });
+
   }
 
-  // renderElement(this._popupCommentsListComponent, this._popupCommentDetailsComponent, RenderPosition.BEFOREEND);
-  // this._popupCommentDetailsComponent.setDeleteButtonHandler(this._handleDeleteButton);
   _renderCommentDetails() {
-    this._filmData.comments.forEach((comment) => {
-      const popupComment = new PopupCommentDetailsView(comment);
-      popupComment.setDeleteButtonHandler(this._handleDeleteButton);
-      renderElement(this._popupCommentsListComponent, popupComment, RenderPosition.BEFOREEND);
-    });
+    this._comments.forEach(this._addComment);
+  }
+
+  _addComment(comment) {
+    const popupComment = new PopupCommentDetailsView(comment);
+    popupComment.setDeleteButtonHandler(this._handleDeleteButton);
+    const innerPoint = this._popupCommentsListComponent.getInnerPoint();
+    renderElement(innerPoint, popupComment, RenderPosition.BEFOREEND);
+    this._popupCommentDetailsComponents.set(comment.id, popupComment);
   }
 
   _renderNewComment() {
-    this._popupNewCommentComponent = new PopupNewCommentView();
+    this._popupNewCommentComponent = new PopupNewCommentView((
+      (newComment) =>{
+        this._api.addComment(this._filmData.id, newComment).then(({film, comments}) => {
+          this._comments = comments;
+          this._filmData = film;
+          this._popupCommentsListComponent.updateElement(comments.length);
+          comments.forEach((comm) => {
+            this._addComment(comm);
+          });
+          this._popupNewCommentComponent.reset();
+          this._handlePopupAction(UserAction.UPDATE_FILM, UpdateType.PATCH, film);
+        });
+      }),
+    );
     this._popupNewCommentComponent.setEmotionChangeHandler();
     this._popupNewCommentComponent.setCommentChangeHandler();
+    this._popupNewCommentComponent.setFormKeydownHandler();
     renderElement(this._commentsContainer, this._popupNewCommentComponent, RenderPosition.BEFOREEND);
   }
 
@@ -91,11 +129,10 @@ export default class PopupPresenter {
     this._popupContainer.appendPopUp();
   }
 
-  toggleUserControls(key, filmData) {
-    this._filmData = filmData;
-
+  updateElement(updatedFilmData) {
+    this._filmData = updatedFilmData;
     if(this._filmPopupInfoComponent) {
-      this._filmPopupInfoComponent.toggleUserControls(key, filmData);
+      this._filmPopupInfoComponent.updateElement(updatedFilmData);
     }
   }
 
@@ -103,7 +140,8 @@ export default class PopupPresenter {
     remove(this._popupContainer);
   }
 
-  execute(filmData) {
+  execute(filmData, comments) {
+    this._comments = comments;
     this._filmData = filmData;
     this.appendPopUp();
   }

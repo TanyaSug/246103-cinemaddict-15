@@ -11,7 +11,7 @@ const createCommentDetailsTemplate = (comment) => (
               <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
             </span>
             <div>
-              <p class="film-details__comment-text">${comment.text}</p>
+              <p class="film-details__comment-text">${comment.comment}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment.author}</span>
                 <span class="film-details__comment-day">${dayjs(comment.date).format('YYYY/MM/DD HH:mm')}</span>
@@ -21,36 +21,40 @@ const createCommentDetailsTemplate = (comment) => (
           </li>`
 );
 
-export default class PopupCommentDetails extends Smart{
+export default class PopupCommentDetails extends Smart {
   constructor(comment) {
     super();
-
-    this._data = PopupCommentDetails.parseDataToState(comment);
+    this._comment = comment;
     this._deleteButtonHandler = this._deleteButtonHandler.bind(this);
 
   }
 
   getTemplate() {
-    return createCommentDetailsTemplate(this._data);
+    return createCommentDetailsTemplate(this._comment);
   }
 
   _deleteButtonHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteButton(PopupCommentDetails.parseStateToData(this._data));
+    this._callback.deleteButton(this._comment.id);
   }
 
   setDeleteButtonHandler(callback) {
     this._callback.deleteButton = callback;
-    this.getElement().querySelector('.film-details__comment-delete')
-      .addEventListener('click', this._deleteButtonHandler);
-
+    this.getElement().querySelectorAll('.film-details__comment-delete')
+      .forEach((comment) => comment
+        .addEventListener('click', this._deleteButtonHandler));
   }
 
-  static parseDataToState(comment) {
-    return Object.assign({}, comment, {isDeleting: false});
-  }
-  //
-  // static parseStateToData(film) {
-  //   film = Object.assign({}, film);
+  // static parseDataToState(comment) {
+  //   return Object.assign({}, comment, {isDeleting: false});
   // }
+
+  restoreHandlers() {
+    this.setDeleteButtonHandler(this._callback.deleteButton);
+  }
+
+  updateElement(comment) {
+    this._comment = comment;
+    super.updateElement();
+  }
 }

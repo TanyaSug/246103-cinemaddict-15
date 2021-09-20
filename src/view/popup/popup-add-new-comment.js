@@ -1,5 +1,6 @@
 import SmartView from './smart';
 import {EMOTIONS} from '../../lib/consts';
+import he from 'he';
 
 const emotionsList = EMOTIONS.map((emotion) =>
   `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
@@ -8,9 +9,9 @@ const emotionsList = EMOTIONS.map((emotion) =>
   </label>`,
 ).join('');
 
-const createNewCommentTemplate = ({emotion, text}) => {
+const createNewCommentTemplate = ({emotion, comment}) => {
   const img = emotion ? `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="${emotion}">` : '';
-  const comment = text || '';
+  const text = comment || '';
   return (
     `<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">
@@ -18,7 +19,7 @@ const createNewCommentTemplate = ({emotion, text}) => {
           </div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(text)}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
@@ -29,10 +30,13 @@ const createNewCommentTemplate = ({emotion, text}) => {
 };
 
 export default class PopupNewComment extends SmartView {
-  constructor() {
+  constructor(onCommentAdded) {
     super();
+    this._onCommentAdded = onCommentAdded;
     this._emotionIconChangeHandler = this._emotionIconChangeHandler.bind(this);
     this._commentChangeHandler = this._commentChangeHandler.bind(this);
+    this._formKeydownHandler = this._formKeydownHandler.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   getTemplate() {
@@ -51,10 +55,32 @@ export default class PopupNewComment extends SmartView {
   _commentChangeHandler(evt) {
     evt.preventDefault();
     const update = {
-      text: evt.target.value,
+      comment: evt.target.value,
     };
 
     this.updateData(update, true);
+  }
+
+  reset() {
+    const update = {
+      comment: '',
+      emotion: '',
+    } ;
+    this.updateData(update);
+  }
+
+  _formKeydownHandler(evt) {
+    if (evt.ctrlKey && evt.key === 'Enter') {
+      if ((!this._data.comment && this._data.comment.length > 0 )|| !this._data.emotion) {
+        return;
+      }
+
+      const newComment = {
+        ...this._data,
+      };
+      this._onCommentAdded(newComment);
+      this._callback.formKeydown(newComment);
+    }
   }
 
   setCommentChangeHandler() {
@@ -69,8 +95,16 @@ export default class PopupNewComment extends SmartView {
       });
   }
 
+  setFormKeydownHandler() {
+    if(!this._callback.formKeydown) {
+      this._callback.formKeydown = this._formKeydownHandler;
+    }
+    document.addEventListener('keydown', this._callback.formKeydown);
+  }
+
   restoreHandlers() {
     this.setEmotionChangeHandler();
     this.setCommentChangeHandler();
+    this.setFormKeydownHandler(this._callback.formKeydown);
   }
 }
