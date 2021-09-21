@@ -40,6 +40,8 @@ export const FilmClickIds = {
   WATCH_LIST: 3,
 };
 
+export const filmsStartIndex = 0;
+
 export const FILM_LIST_PAGE_SIZE  = 5;
 
 export const DESCRIPTION_LENGTH = 140;

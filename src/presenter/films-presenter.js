@@ -50,15 +50,16 @@ export default class FilmsPresenter {
     this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.films;
 
-    const filteredTasks = filter[this._filterType](films);
+    const filteredFilms = filter[this._filterType](films);
 
     switch (this._currentSortType) {
       case SortType.BY_DATE:
-        return filteredTasks.sort(sortByDate);
+        return filteredFilms.sort(sortByDate);
       case SortType.BY_RATING:
-        return filteredTasks.sort(sortByRating);
+        return filteredFilms.sort(sortByRating);
     }
-    return filteredTasks;
+    this._filmsCount = filteredFilms.length - FILM_LIST_PAGE_SIZE;
+    return filteredFilms;
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -191,10 +192,10 @@ export default class FilmsPresenter {
   }
 
   _renderShowMoreButton() {
-    // if (this._showMoreButtonComponent !== null) {
-    //   this._showMoreButtonComponent = null;
-    // }
-    if (this._getFilms().length > this._filmsStartIndex) {
+    if (this._showMoreButtonComponent !== null) {
+      this._showMoreButtonComponent = null;
+    }
+    if (this._getFilms().length > FILM_LIST_PAGE_SIZE) {
       this._showMoreButtonComponent = new ShowMoreButtonView();
       renderElement(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
       this._showMoreButtonComponent.setButtonClickHandler(this._handleMoreButtonClick);
@@ -221,7 +222,7 @@ export default class FilmsPresenter {
   }
 
 
-  _handleFilmCardClick(key, film) {
+  _handleFilmCardClick(key, film, fromPopUp) {
     if (key === FilmClickIds.POP_UP) {
       return this._executePopup(film);
     }
@@ -244,8 +245,21 @@ export default class FilmsPresenter {
       };
     }
 
+    let type = UpdateType.PATCH;
+    if(!fromPopUp && this._filterType === FilterType.ALL) {
+      type = UpdateType.PATCH;
+    } else if (this._filterType === FilterType.FAVORITES && key === FilmClickIds.FAVORITES) {
+      type = UpdateType.MAJOR;
+    } else if (this._filterType === FilterType.WATCHLIST && key === FilmClickIds.WATCH_LIST) {
+      type = UpdateType.MAJOR;
+    } else if (this._filterType === FilterType.HISTORY && key === FilmClickIds.WATCHED) {
+      type = UpdateType.MAJOR;
+    } else if (fromPopUp) {
+      type = UpdateType.MINOR;
+    }
+
     this._api.updateFilm(updatedFilmData).then((filmData) => {
-      this._filmsModel.updateFilm(UpdateType.MAJOR, filmData);
+      this._filmsModel.updateFilm(type, filmData);
     });
   }
 
@@ -273,7 +287,7 @@ export default class FilmsPresenter {
 
   execute() {
     this._sourcedFilmsData = this._filmsModel.films.slice();
-    this._popupPresenter = new PopupPresenter(this._handleFilmCardClick, this._handleViewAction, this._api);
+    this._popupPresenter = new PopupPresenter((key, film) => this._handleFilmCardClick(key, film, true), this._handleViewAction, this._api);
     this._render();
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);

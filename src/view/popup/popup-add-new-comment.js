@@ -2,8 +2,8 @@ import SmartView from './smart';
 import {EMOTIONS} from '../../lib/consts';
 import he from 'he';
 
-const emotionsList = EMOTIONS.map((emotion) =>
-  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
+const getEmotionsList = (isSaving) => EMOTIONS.map((emotion) =>
+  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}" ${isSaving ? 'disabled' : ''}>
   <label class="film-details__emoji-label" for="emoji-${emotion}">
   <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
   </label>`,
@@ -22,8 +22,8 @@ const createNewCommentTemplate = ({emotion, comment, isSaving}) => {
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSaving ? 'disabled' : ''}>${he.encode(text)}</textarea>
           </label>
 
-          <div class="film-details__emoji-list" ${isSaving ? 'disabled' : ''}>
-          ${emotionsList}
+          <div class="film-details__emoji-list">
+          ${getEmotionsList(isSaving)}
   </div>
 </div>`
   );
@@ -70,7 +70,7 @@ export default class PopupNewComment extends SmartView {
   }
 
   _formKeydownHandler(evt) {
-    if (evt.ctrlKey && evt.key === 'Enter') {
+    if ((evt.ctrlKey && evt.key === 'Enter') || (evt.keyCode === 13 && evt.metaKey)) {
       if ((!this._data.comment && this._data.comment.length > 0 )|| !this._data.emotion) {
         return;
       }

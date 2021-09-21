@@ -27,6 +27,7 @@ export default class PopupPresenter {
 
     this.setViewState = this.setViewState.bind(this);
     this.setAborting = this.setAborting.bind(this);
+    this.setSavingComment = this.setSavingComment.bind(this);
     this._onToggleUserControls = onToggleUserControls;
     this._handlePopupAction = handlePopupAction;
 
@@ -96,9 +97,10 @@ export default class PopupPresenter {
     this._popupCommentDetailsComponents.set(comment.id, popupComment);
   }
 
-  // setSavingComment() {
-  //   this._popupNewCommentComponent.updateElement({isSaving: true});
-  // }
+  setSavingComment(isSaving) {
+    this._popupNewCommentComponent.updateData({isSaving});
+  }
+
   setAborting() {
     const resetFormState = () => {
       this._popupNewCommentComponent.updateData({
@@ -136,9 +138,10 @@ export default class PopupPresenter {
   }
 
   _renderNewComment() {
-    // this._popupNewCommentComponent.setSaving();
     this._popupNewCommentComponent = new PopupNewCommentView((
       (newComment) =>{
+        this.setSavingComment(true);
+
         this._api.addComment(this._filmData.id, newComment).then(({film, comments}) => {
           this._comments = comments;
           this._filmData = film;
@@ -146,10 +149,11 @@ export default class PopupPresenter {
           comments.forEach((comm) => {
             this._addComment(comm);
           });
+          this.setSavingComment(false);
           this._popupNewCommentComponent.reset();
           this._handlePopupAction(UserAction.UPDATE_FILM, UpdateType.PATCH, film);
         }).catch(() => {
-          this._popupContainer.setAborting();
+          this.setAborting();
         });
       }),
     );

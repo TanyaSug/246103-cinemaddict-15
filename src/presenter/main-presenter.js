@@ -41,7 +41,7 @@ export default class MainPresenter {
 
   _renderMainFilmsContainer() {
     this._mainFilmsContainer =  new MainContainerView();
-    renderElement(this._container, this._mainFilmsContainer, RenderPosition.AFTERBEGIN);
+    renderElement(this._container, this._mainFilmsContainer, RenderPosition.BEFOREEND);
   }
 
   _renderFilterPresenter() {
@@ -76,7 +76,7 @@ export default class MainPresenter {
 
   _renderFooterStatistics() {
     this._footerStatisticsComponent = new FooterStatisticsView(this._filmsModel.films);
-    renderElement(this._container, this._footerStatisticsComponent, RenderPosition.AFTERBEGIN);
+    renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
   }
 
   _handleStatsFilterChange(value) {
@@ -151,11 +151,12 @@ export default class MainPresenter {
 
   _render() {
     this._clearViews();
-    this._renderFooterStatistics();
+    this._renderUserStatus();
     this._renderMainFilmsContainer();
     this._renderFilterPresenter();
     this._renderBusinessData();
-    this._renderUserStatus();
+    this._renderFooterStatistics();
+
   }
 
   _onDataReceived(films) {

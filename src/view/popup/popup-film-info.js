@@ -14,6 +14,9 @@ const createGenresTemplate = (genres) => genres
 const createFilmPopupTemplate = (filmData) => {
   const genreTitle = filmData.filmInfo.genres.length > 1 ? 'Genres' : 'Genre';
   const genresList = createGenresTemplate(filmData.filmInfo.genres);
+  const actorsList = filmData.filmInfo.actors;
+  const writersList = filmData.filmInfo.writers;
+
   const runTime = getRuntime(filmData.filmInfo.runtime);
   return `<div class="film-details__top-container">
       <div class="film-details__info-wrap">
@@ -42,11 +45,11 @@ const createFilmPopupTemplate = (filmData) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${filmData.filmInfo.writers}</td>
+              <td class="film-details__cell">${writersList ? writersList.join('') : ''}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${filmData.filmInfo.actors}</td>
+              <td class="film-details__cell">${actorsList ? actorsList.join('') : ''}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
