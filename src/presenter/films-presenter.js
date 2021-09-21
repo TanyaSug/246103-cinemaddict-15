@@ -18,7 +18,7 @@ import {getFilmsList} from '../lib/get-films-list';
 import {filter} from '../lib/get-filters';
 
 
-export default class NewPresenter {
+export default class FilmsPresenter {
   constructor(bodyContainer, filmsModel, filterModel, api) {
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._mainContainer = bodyContainer;
@@ -191,17 +191,17 @@ export default class NewPresenter {
   }
 
   _renderShowMoreButton() {
-    if (this._showMoreButtonComponent !== null) {
-      this._showMoreButtonComponent = null;
+    // if (this._showMoreButtonComponent !== null) {
+    //   this._showMoreButtonComponent = null;
+    // }
+    if (this._getFilms().length > this._filmsStartIndex) {
+      this._showMoreButtonComponent = new ShowMoreButtonView();
+      renderElement(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
+      this._showMoreButtonComponent.setButtonClickHandler(this._handleMoreButtonClick);
     }
-    this._showMoreButtonComponent = new ShowMoreButtonView();
-
-    renderElement(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
-    this._showMoreButtonComponent.setButtonClickHandler(this._handleMoreButtonClick);
   }
 
   _clearFilmsList(resetSortType = false) {
-    // const filmsCount = this._filmsModel.films.length;
     this._filmListMap.forEach((film) => remove(film));
     this._filmListMap.clear();
     remove(this._filmsContainer);
@@ -214,7 +214,6 @@ export default class NewPresenter {
   }
 
   _executePopup(film) {
-
     this._api.getComments(film.id).then((comments) => {
       this._filmsModel.setComments(comments);
       return this._popupPresenter.execute(film, comments);
@@ -244,7 +243,10 @@ export default class NewPresenter {
         userDetails:  {...film.userDetails, favorite: !film.userDetails.favorite},
       };
     }
-    this._filmsModel.updateFilm(UpdateType.MINOR, updatedFilmData);
+
+    this._api.updateFilm(updatedFilmData).then((filmData) => {
+      this._filmsModel.updateFilm(UpdateType.MAJOR, filmData);
+    });
   }
 
   _render() {

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 
 const BUTTON_NAME = 'Delete';
-const BUTTON_NAME_DELETING = 'Deleting';
+const BUTTON_NAME_DELETING = 'Deleting...';
 
 const createCommentDetailsTemplate = (comment) => (
   `<li class="film-details__comment">

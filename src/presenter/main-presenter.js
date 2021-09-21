@@ -5,7 +5,7 @@ import FilmsListEmptyView from '../view/film/films-list-empty';
 import FilmsLoadingView from '../view/films-loading';
 import FilmStatisticView from '../view/film-stats';
 import FooterStatisticsView from '../view/footer-statistics';
-import NewPresenter from './new-presenter';
+import FilmsPresenter from './films-presenter';
 import FilterPresenter from './filter-presenter';
 import MainContainerView from '../view/film/main-container';
 import {getFilmsByFilter} from '../lib/user-statistics';
@@ -26,10 +26,7 @@ export default class MainPresenter {
     this._filmStatistic = null;
     this._footerStatisticsComponent = null;
     this._currentStatsFilter = StatsType.ALL_TIME;
-    this._filtredFilms = null;
     this._onDataReceived = this._onDataReceived.bind(this);
-    this._sortOrder = null;
-    this._filterBy = null;
     this._handleStatsFilterChange = this._handleStatsFilterChange.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleListLoaded = this._handleListLoaded.bind(this);
@@ -44,7 +41,7 @@ export default class MainPresenter {
 
   _renderMainFilmsContainer() {
     this._mainFilmsContainer =  new MainContainerView();
-    renderElement(this._container, this._mainFilmsContainer, RenderPosition.BEFOREEND);
+    renderElement(this._container, this._mainFilmsContainer, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilterPresenter() {
@@ -53,7 +50,7 @@ export default class MainPresenter {
   }
 
   _renderFilmsPresenter() {
-    this._filmsPresenter = new NewPresenter(this._mainFilmsContainer, this._filmsModel, this._filterModel, this._api);
+    this._filmsPresenter = new FilmsPresenter(this._mainFilmsContainer, this._filmsModel, this._filterModel, this._api);
     this._filmsPresenter.execute();
   }
 
@@ -72,11 +69,14 @@ export default class MainPresenter {
     this._filmStatistic = new FilmStatisticView(filteredFilms, this._currentStatsFilter);
     this._filmStatistic.setStatsFilterElementsChangeHandler(this._handleStatsFilterChange);
     renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
+    const activeClass = 'main-navigation__item--active';
+    const statsElement = document.querySelector('.main-navigation__additional');
+    statsElement.classList.add(activeClass);
   }
 
   _renderFooterStatistics() {
     this._footerStatisticsComponent = new FooterStatisticsView(this._filmsModel.films);
-    renderElement(this._container, this._footerStatisticsComponent, RenderPosition.BEFOREEND);
+    renderElement(this._container, this._footerStatisticsComponent, RenderPosition.AFTERBEGIN);
   }
 
   _handleStatsFilterChange(value) {
@@ -122,6 +122,7 @@ export default class MainPresenter {
     this._clearViewByName('_footerStatisticsComponent');
     this._destroyPresenter('_filmsPresenter');
     this._destroyPresenter('_filterPresenter');
+    this._clearViewByName('_mainFilmsContainer');
   }
 
   _renderList() {
@@ -150,11 +151,11 @@ export default class MainPresenter {
 
   _render() {
     this._clearViews();
-    this._renderUserStatus();
+    this._renderFooterStatistics();
     this._renderMainFilmsContainer();
     this._renderFilterPresenter();
     this._renderBusinessData();
-    this._renderFooterStatistics();
+    this._renderUserStatus();
   }
 
   _onDataReceived(films) {

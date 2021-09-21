@@ -7,6 +7,12 @@ import PopupCommentDetailsView from '../view/popup/comments-list-details';
 import {remove, renderElement} from '../lib/render';
 import {RenderPosition, UpdateType, UserAction} from '../lib/consts';
 
+const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
 export default class PopupPresenter {
   constructor(onToggleUserControls, handlePopupAction, api) {
     this._popupContainer = null;
@@ -19,10 +25,12 @@ export default class PopupPresenter {
     this._popupCommentDetailsComponents = new Map();
     this._popupNewCommentComponent = null;
 
+    this.setViewState = this.setViewState.bind(this);
+    this.setAborting = this.setAborting.bind(this);
     this._onToggleUserControls = onToggleUserControls;
     this._handlePopupAction = handlePopupAction;
 
-    this._handleDeleteButton = this._handleDeleteButton.bind(this);
+    this._handleDeleteCommentButton = this._handleDeleteCommentButton.bind(this);
     this._addComment = this._addComment.bind(this);
   }
 
@@ -57,7 +65,7 @@ export default class PopupPresenter {
     renderElement(this._commentsContainer, this._popupCommentsListComponent, RenderPosition.BEFOREEND);
   }
 
-  _handleDeleteButton(commentId) {
+  _handleDeleteCommentButton(commentId) {
     const comment = this._comments.find((comm) => comm.id === commentId);
     const currentComment = this._popupCommentDetailsComponents.get(commentId);
     currentComment.updateElement({...comment, isDeleting: true});
@@ -82,13 +90,53 @@ export default class PopupPresenter {
 
   _addComment(comment) {
     const popupComment = new PopupCommentDetailsView(comment);
-    popupComment.setDeleteButtonHandler(this._handleDeleteButton);
+    popupComment.setDeleteButtonHandler(this._handleDeleteCommentButton);
     const innerPoint = this._popupCommentsListComponent.getInnerPoint();
     renderElement(innerPoint, popupComment, RenderPosition.BEFOREEND);
     this._popupCommentDetailsComponents.set(comment.id, popupComment);
   }
 
+  // setSavingComment() {
+  //   this._popupNewCommentComponent.updateElement({isSaving: true});
+  // }
+  setAborting() {
+    const resetFormState = () => {
+      this._popupNewCommentComponent.updateData({
+        isSaving: false,
+      });
+    };
+    this._popupContainer.shake(resetFormState);
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._popupNewCommentComponent.updateData({
+        isSaving: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._popupNewCommentComponent.updateData({
+          isSaving: false,
+        });
+        break;
+
+      case State.DELETING:
+        this._popupCommentDetailsComponents.updateData(
+          {
+            isDeleting: true,
+          });
+        break;
+
+      case State.ABORTING:
+        this._popupContainer.shake(resetFormState);
+        break;
+    }
+  }
+
   _renderNewComment() {
+    // this._popupNewCommentComponent.setSaving();
     this._popupNewCommentComponent = new PopupNewCommentView((
       (newComment) =>{
         this._api.addComment(this._filmData.id, newComment).then(({film, comments}) => {
@@ -100,6 +148,8 @@ export default class PopupPresenter {
           });
           this._popupNewCommentComponent.reset();
           this._handlePopupAction(UserAction.UPDATE_FILM, UpdateType.PATCH, film);
+        }).catch(() => {
+          this._popupContainer.setAborting();
         });
       }),
     );

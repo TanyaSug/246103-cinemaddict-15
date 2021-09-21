@@ -9,7 +9,7 @@ const emotionsList = EMOTIONS.map((emotion) =>
   </label>`,
 ).join('');
 
-const createNewCommentTemplate = ({emotion, comment}) => {
+const createNewCommentTemplate = ({emotion, comment, isSaving}) => {
   const img = emotion ? `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="${emotion}">` : '';
   const text = comment || '';
   return (
@@ -19,10 +19,10 @@ const createNewCommentTemplate = ({emotion, comment}) => {
           </div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(text)}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSaving ? 'disabled' : ''}>${he.encode(text)}</textarea>
           </label>
 
-          <div class="film-details__emoji-list">
+          <div class="film-details__emoji-list" ${isSaving ? 'disabled' : ''}>
           ${emotionsList}
   </div>
 </div>`
