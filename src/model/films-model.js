@@ -6,8 +6,6 @@ export default class FilmsModel extends AbstractObserver {
     super();
     this._films = undefined;
     this._comments = new Map();
-    this._busy = false;
-    this._commentStatuses = new Map();
   }
 
   get films() {
@@ -34,7 +32,6 @@ export default class FilmsModel extends AbstractObserver {
       this._films = undefined;
     }
   }
-
 
   get length() {
     if (Array.isArray(this._films)) {
@@ -73,8 +70,6 @@ export default class FilmsModel extends AbstractObserver {
 
   addComment(updateType, update) {
     this._comments.set(update.id, update);
-
-    // this._notify(updateType, update);
   }
 
   deleteComment(updateType, id) {
@@ -85,16 +80,8 @@ export default class FilmsModel extends AbstractObserver {
     this._comments.delete(id);
   }
 
-  getBusy() {
-    return this._busy;
-  }
-
-  getCommentStatus(commentId) {
-    return this._commentStatuses.get(commentId);
-  }
-
   static adaptToClient(film) {
-    const adaptedFilm = Object.assign(
+    return Object.assign(
       {},
       {
         id: film.id,
@@ -125,12 +112,10 @@ export default class FilmsModel extends AbstractObserver {
         },
       },
     );
-
-    return adaptedFilm;
   }
 
   static adaptToServer(film) {
-    const adaptedFilm = Object.assign(
+    return Object.assign(
       {},
       {
         'id': film.id,
@@ -161,8 +146,6 @@ export default class FilmsModel extends AbstractObserver {
         },
       },
     );
-
-    return adaptedFilm;
   }
 
   static adaptCommentToClient(comment) {
@@ -171,16 +154,6 @@ export default class FilmsModel extends AbstractObserver {
       comment,
       {
         date: new Date(comment.date),
-      },
-    );
-  }
-
-  static adaptCommentToServer(comment) {
-    return Object.assign(
-      {},
-      comment,
-      {
-        'date': comment.date.toISOString(),
       },
     );
   }

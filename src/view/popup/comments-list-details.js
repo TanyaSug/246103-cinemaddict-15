@@ -1,9 +1,7 @@
 import Smart from './smart';
 import dayjs from 'dayjs';
+import {BUTTON_NAME, BUTTON_NAME_DELETING} from '../../lib/consts';
 
-
-const BUTTON_NAME = 'Delete';
-const BUTTON_NAME_DELETING = 'Deleting';
 
 const createCommentDetailsTemplate = (comment) => (
   `<li class="film-details__comment">
@@ -45,9 +43,6 @@ export default class PopupCommentDetails extends Smart {
         .addEventListener('click', this._deleteButtonHandler));
   }
 
-  // static parseDataToState(comment) {
-  //   return Object.assign({}, comment, {isDeleting: false});
-  // }
 
   restoreHandlers() {
     this.setDeleteButtonHandler(this._callback.deleteButton);

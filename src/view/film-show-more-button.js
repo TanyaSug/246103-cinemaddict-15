@@ -1,7 +1,7 @@
 import AbstractView from './abstract';
+import {BUTTON_LABEL} from '../lib/consts';
 
 
-const BUTTON_LABEL = 'Show more';
 const createShowMoreButtonTemplate = () => `<button class="films-list__show-more">${BUTTON_LABEL}</button>`;
 
 export default class ShowMoreButton extends AbstractView {

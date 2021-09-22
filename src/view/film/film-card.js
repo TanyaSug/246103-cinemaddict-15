@@ -18,7 +18,7 @@ export const createFilmCardTemplate = (filmData) => {
           <p class="film-card__info">
             <span class="film-card__year">${dayjs(release.date).format('YYYY') || ''}</span>
             <span class="film-card__duration">${runTime || ''}</span>
-            <span class="film-card__genre">${genres || ''}</span>
+            <span class="film-card__genre">${genres ? genres.join(' ') : ''}</span>
           </p>
           <img src=${poster} alt="" class="film-card__poster">
           <p class="film-card__description">${setDescriptionView(description) || ''}</p>
@@ -45,16 +45,8 @@ export default class  FilmCard extends AbstractView {
   getTemplate() {
     return createFilmCardTemplate(this._filmData);
   }
-  //
-  // _attachEventHandlers(element) {
-  //   this.setPopupClickHandler(element);
-  //   this.setFavoritesClickHandler(element);
-  //   this.setWatchedClickHandler(element);
-  //   this.setWatchlistClickHandler(element);
-  // }
 
   _createElement() {
-    // this._attachEventHandlers(result);
     return createElement(this.getTemplate());
   }
 

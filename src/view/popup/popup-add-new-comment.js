@@ -2,14 +2,14 @@ import SmartView from './smart';
 import {EMOTIONS} from '../../lib/consts';
 import he from 'he';
 
-const emotionsList = EMOTIONS.map((emotion) =>
-  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
+const getEmotionsList = (isSaving) => EMOTIONS.map((emotion) =>
+  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}" ${isSaving ? 'disabled' : ''}>
   <label class="film-details__emoji-label" for="emoji-${emotion}">
   <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
   </label>`,
 ).join('');
 
-const createNewCommentTemplate = ({emotion, comment}) => {
+const createNewCommentTemplate = ({emotion, comment, isSaving}) => {
   const img = emotion ? `<img src="./images/emoji/${emotion}.png" width="55" height="55" alt="${emotion}">` : '';
   const text = comment || '';
   return (
@@ -19,11 +19,11 @@ const createNewCommentTemplate = ({emotion, comment}) => {
           </div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(text)}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSaving ? 'disabled' : ''}>${he.encode(text)}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
-          ${emotionsList}
+          ${getEmotionsList(isSaving)}
   </div>
 </div>`
   );
@@ -70,7 +70,7 @@ export default class PopupNewComment extends SmartView {
   }
 
   _formKeydownHandler(evt) {
-    if (evt.ctrlKey && evt.key === 'Enter') {
+    if ((evt.ctrlKey && evt.key === 'Enter') || (evt.keyCode === 13 && evt.metaKey)) {
       if ((!this._data.comment && this._data.comment.length > 0 )|| !this._data.emotion) {
         return;
       }

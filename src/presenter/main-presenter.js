@@ -5,10 +5,10 @@ import FilmsListEmptyView from '../view/film/films-list-empty';
 import FilmsLoadingView from '../view/films-loading';
 import FilmStatisticView from '../view/film-stats';
 import FooterStatisticsView from '../view/footer-statistics';
-import NewPresenter from './new-presenter';
+import FilmsPresenter from './films-presenter';
 import FilterPresenter from './filter-presenter';
 import MainContainerView from '../view/film/main-container';
-import {getFilmsByFilter} from '../lib/user-statistics';
+import {getFilmsByFilter} from '../lib/get-films-by-filter';
 
 
 export default class MainPresenter {
@@ -26,13 +26,12 @@ export default class MainPresenter {
     this._filmStatistic = null;
     this._footerStatisticsComponent = null;
     this._currentStatsFilter = StatsType.ALL_TIME;
-    this._filtredFilms = null;
+
     this._onDataReceived = this._onDataReceived.bind(this);
-    this._sortOrder = null;
-    this._filterBy = null;
     this._handleStatsFilterChange = this._handleStatsFilterChange.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleListLoaded = this._handleListLoaded.bind(this);
+
     this._filmsModel.addObserver(this._handleListLoaded);
     this._filterModel.addFilterChangedListener(this._handleFilterChange);
   }
@@ -53,7 +52,7 @@ export default class MainPresenter {
   }
 
   _renderFilmsPresenter() {
-    this._filmsPresenter = new NewPresenter(this._mainFilmsContainer, this._filmsModel, this._filterModel, this._api);
+    this._filmsPresenter = new FilmsPresenter(this._mainFilmsContainer, this._filmsModel, this._filterModel, this._api);
     this._filmsPresenter.execute();
   }
 
@@ -68,10 +67,16 @@ export default class MainPresenter {
   }
 
   _renderFilmsStatistics() {
+    if (this._filmStatistic !== null) {
+      this._filmStatistic = null;
+    }
     const filteredFilms = getFilmsByFilter(this._filmsModel.films, this._currentStatsFilter);
     this._filmStatistic = new FilmStatisticView(filteredFilms, this._currentStatsFilter);
-    this._filmStatistic.setStatsFilterElementsChangeHandler(this._handleStatsFilterChange);
     renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
+    this._filmStatistic.setStatsFilterElementsChangeHandler(this._handleStatsFilterChange);
+    const activeClass = 'main-navigation__item--active';
+    const statsElement = document.querySelector('.main-navigation__additional');
+    statsElement.classList.add(activeClass);
   }
 
   _renderFooterStatistics() {
@@ -82,7 +87,6 @@ export default class MainPresenter {
   _handleStatsFilterChange(value) {
     this._currentStatsFilter = value;
     const filteredFilms = getFilmsByFilter(this._filmsModel.films, this._currentStatsFilter);
-
     this._filmStatistic.updateData(
       {filteredFilms, currentFilter: this._currentStatsFilter},
     );
@@ -122,6 +126,7 @@ export default class MainPresenter {
     this._clearViewByName('_footerStatisticsComponent');
     this._destroyPresenter('_filmsPresenter');
     this._destroyPresenter('_filterPresenter');
+    this._clearViewByName('_mainFilmsContainer');
   }
 
   _renderList() {
@@ -155,13 +160,13 @@ export default class MainPresenter {
     this._renderFilterPresenter();
     this._renderBusinessData();
     this._renderFooterStatistics();
+
   }
 
   _onDataReceived(films) {
     this._filmsModel.films = films;
     this._render();
   }
-
 
   execute() {
     this._render();

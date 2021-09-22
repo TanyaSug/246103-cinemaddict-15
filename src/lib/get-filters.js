@@ -1,6 +1,5 @@
 import {FilterType} from './consts';
 
-
 const safeArray = (films) => Array.isArray(films) ? films : [];
 
 export const filter = {

@@ -1,5 +1,7 @@
 import {createElement} from '../lib/render';
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export default class Abstract {
   constructor() {
     if (new.target === Abstract) {
@@ -20,20 +22,10 @@ export default class Abstract {
     return this._element;
   }
 
-  // attachEvents(element) {}
-  //
-  // dataBind(element) {}
-
   _createElement() {
     const template = this.getTemplate();
     const element = createElement(template);
-    this._initializeElement(element);
     return element;
-  }
-
-  _initializeElement() {
-    // attachEvents(element);
-    // dataBind(element);
   }
 
   removeElement() {
@@ -50,9 +42,17 @@ export default class Abstract {
     this.removeElement();
 
     const newElement = this.getElement();
-
     parentElement.replaceChild(newElement, oldElement);
 
     this.restoreHandlers();
+  }
+
+  shake(handler) {
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this.getElement().style.animation = '';
+      handler();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }
