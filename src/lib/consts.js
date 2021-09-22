@@ -1,5 +1,5 @@
-import {getTopRated} from './get-top-rated';
-import {getMostCommented} from './get-most-commented';
+import {getTopRated} from './#get-top-rated';
+import {getMostCommented} from './#get-most-commented';
 
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
@@ -40,7 +40,9 @@ export const FilmClickIds = {
   WATCH_LIST: 3,
 };
 
-export const filmsStartIndex = 0;
+export const BUTTON_NAME = 'Delete';
+export const BUTTON_NAME_DELETING = 'Deleting...';
+export  const BUTTON_LABEL = 'Show more';
 
 export const FILM_LIST_PAGE_SIZE  = 5;
 
@@ -53,19 +55,19 @@ export const EMOTIONS = [
   'angry',
 ];
 
-const TOP_RATED = 'Top Rated';
-const MOST_COMMENTED = 'Most Commented';
-
-export const Extra = {
-  topRated: {
-    heading: TOP_RATED,
-    filter: (data) => getTopRated(data),
-  },
-  mostCommented: {
-    heading: MOST_COMMENTED,
-    filter: (data) => getMostCommented(data),
-  },
-};
+// const TOP_RATED = 'Top Rated';
+// const MOST_COMMENTED = 'Most Commented';
+//
+// export const Extra = {
+//   topRated: {
+//     heading: TOP_RATED,
+//     filter: (data) => getTopRated(data),
+//   },
+//   mostCommented: {
+//     heading: MOST_COMMENTED,
+//     filter: (data) => getMostCommented(data),
+//   },
+// };
 
 export const UserAction = {
   UPDATE_FILM: 'UPDATE_FILM',
@@ -87,6 +89,12 @@ export const StatsType = {
   WEEK: 'week',
   MONTH: 'month',
   YEAR: 'year',
+};
+
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
 };
 
 export const RequestMethod = {

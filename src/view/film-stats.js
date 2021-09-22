@@ -5,7 +5,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {computeUserRating} from '../lib/compute-user-rating';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {getGenresRanks} from '../lib/user-statistics';
+import {getGenresRanks} from '../lib/get-films-by-filter';
 dayjs.extend(duration);
 
 const renderChart = (statisticCtx, films) => {
@@ -97,7 +97,7 @@ const createFilmStatsTemplate = (films, filters, currentFilter) => {
   const sortedAllRanks = Object.keys(allRanks).map((key) => [key, allRanks[key]])
     .sort((a, b) => b[1] - a[1]);
 
-  const topGenre = sortedAllRanks[0][0];
+  const topGenre = sortedAllRanks.length ? sortedAllRanks[0][0] : '';
 
   const filterElements = filters
     .map((filter) => createStatsFilterElement(filter, currentFilter))
@@ -118,11 +118,11 @@ const createFilmStatsTemplate = (films, filters, currentFilter) => {
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">${watchedFilmsCount} <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text">${watchedFilmsCount <= 0  ? 0 : watchedFilmsCount} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">${hoursDuration === 0 ? '' : `${hoursDuration} <span class="statistic__item-description">h</span>`} ${minutesDuration === 0 ? '' : `${minutesDuration} <span class="statistic__item-description">m</span>`}</p>
+        <p class="statistic__item-text">${hoursDuration <= 0 ? 0 : hoursDuration} <span class="statistic__item-description">h</span> ${minutesDuration === 0 ? 0 : minutesDuration} <span class="statistic__item-description">m</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
@@ -206,13 +206,14 @@ export default class FilmStatistic extends Smart {
       this._userStatisticChart = null;
     }
 
+
     // const BAR_HEIGHT = 50;
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
-    // const genres = this._films.films;
+    const films = this._filteredFilms;
     //
-    // statisticCtx.height = BAR_HEIGHT * genres.size;
+    // statisticCtx.height = BAR_HEIGHT * films.length;
     //
-    this._userStatisticChart = renderChart(statisticCtx, this._filteredFilms);
+    this._userStatisticChart = renderChart(statisticCtx, films);
   }
 
   removeElement() {

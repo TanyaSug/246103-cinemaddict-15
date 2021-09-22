@@ -35,7 +35,6 @@ export default class FilmsModel extends AbstractObserver {
     }
   }
 
-
   get length() {
     if (Array.isArray(this._films)) {
       return this._films.length;
@@ -73,8 +72,6 @@ export default class FilmsModel extends AbstractObserver {
 
   addComment(updateType, update) {
     this._comments.set(update.id, update);
-
-    // this._notify(updateType, update);
   }
 
   deleteComment(updateType, id) {
@@ -85,16 +82,16 @@ export default class FilmsModel extends AbstractObserver {
     this._comments.delete(id);
   }
 
-  getBusy() {
-    return this._busy;
-  }
+  // getBusy() {
+  //   return this._busy;
+  // }
 
-  getCommentStatus(commentId) {
-    return this._commentStatuses.get(commentId);
-  }
+  // getCommentStatus(commentId) {
+  //   return this._commentStatuses.get(commentId);
+  // }
 
   static adaptToClient(film) {
-    const adaptedFilm = Object.assign(
+    return Object.assign(
       {},
       {
         id: film.id,
@@ -125,12 +122,10 @@ export default class FilmsModel extends AbstractObserver {
         },
       },
     );
-
-    return adaptedFilm;
   }
 
   static adaptToServer(film) {
-    const adaptedFilm = Object.assign(
+    return Object.assign(
       {},
       {
         'id': film.id,
@@ -161,8 +156,6 @@ export default class FilmsModel extends AbstractObserver {
         },
       },
     );
-
-    return adaptedFilm;
   }
 
   static adaptCommentToClient(comment) {

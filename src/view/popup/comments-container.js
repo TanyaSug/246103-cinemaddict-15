@@ -5,7 +5,6 @@ const createPopupCommentsContainerTemplate = () => (
     </div>`
 );
 
-
 export default class PopupCommentsContainer extends AbstractView {
   constructor() {
     super();

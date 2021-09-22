@@ -45,16 +45,8 @@ export default class  FilmCard extends AbstractView {
   getTemplate() {
     return createFilmCardTemplate(this._filmData);
   }
-  //
-  // _attachEventHandlers(element) {
-  //   this.setPopupClickHandler(element);
-  //   this.setFavoritesClickHandler(element);
-  //   this.setWatchedClickHandler(element);
-  //   this.setWatchlistClickHandler(element);
-  // }
 
   _createElement() {
-    // this._attachEventHandlers(result);
     return createElement(this.getTemplate());
   }
 

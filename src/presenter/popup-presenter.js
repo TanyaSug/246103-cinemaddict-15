@@ -7,11 +7,6 @@ import PopupCommentDetailsView from '../view/popup/comments-list-details';
 import {remove, renderElement} from '../lib/render';
 import {RenderPosition, UpdateType, UserAction} from '../lib/consts';
 
-const State = {
-  SAVING: 'SAVING',
-  DELETING: 'DELETING',
-  ABORTING: 'ABORTING',
-};
 
 export default class PopupPresenter {
   constructor(onToggleUserControls, handlePopupAction, api) {
@@ -25,14 +20,13 @@ export default class PopupPresenter {
     this._popupCommentDetailsComponents = new Map();
     this._popupNewCommentComponent = null;
 
-    this.setViewState = this.setViewState.bind(this);
+    // this.setViewState = this.setViewState.bind(this);
     this.setAborting = this.setAborting.bind(this);
     this.setSavingComment = this.setSavingComment.bind(this);
-    this._onToggleUserControls = onToggleUserControls;
-    this._handlePopupAction = handlePopupAction;
-
     this._handleDeleteCommentButton = this._handleDeleteCommentButton.bind(this);
     this._addComment = this._addComment.bind(this);
+    this._onToggleUserControls = onToggleUserControls;
+    this._handlePopupAction = handlePopupAction;
   }
 
   get filmPopupInfoComponent() {
@@ -56,13 +50,11 @@ export default class PopupPresenter {
 
   _renderCommentsContainer() {
     this._commentsContainer = new PopupCommentsContainerView(this._comments.length);
-    // const commentsContainerInnerPoint = this._commentsContainer.getInnerPoint();
     renderElement(this._popupContainer, this._commentsContainer, RenderPosition.BEFOREEND);
   }
 
   _renderCommentsList() {
     this._popupCommentsListComponent = new PopupCommentsListView(this._comments.length);
-
     renderElement(this._commentsContainer, this._popupCommentsListComponent, RenderPosition.BEFOREEND);
   }
 
@@ -72,7 +64,7 @@ export default class PopupPresenter {
     currentComment.updateElement({...comment, isDeleting: true});
 
     this._api.deleteComment(commentId).then(() => {
-      this._filmData.comments = this._filmData.comments.filter((comId) => comId !== commentId);
+      this._filmData.comments = this._filmData.comments.filter((commId) => commId !== commentId);
       this._comments = this._comments.filter((comm) => comm.id !== commentId);
       this._popupCommentsListComponent.updateElement(this._comments.length);
       this._comments.forEach((comm) => {
@@ -82,7 +74,6 @@ export default class PopupPresenter {
     }).catch(() => {
       currentComment.updateElement({...comment, isDeleting: false});
     });
-
   }
 
   _renderCommentDetails() {
@@ -97,6 +88,33 @@ export default class PopupPresenter {
     this._popupCommentDetailsComponents.set(comment.id, popupComment);
   }
 
+  // setViewState(state) {
+  //   const resetFormState = () => {
+  //     this._popupNewCommentComponent.updateData({
+  //       isSaving: false,
+  //     });
+  //   };
+  //
+  //   switch (state) {
+  //     case State.SAVING:
+  //       this._popupNewCommentComponent.updateData({
+  //         isSaving: false,
+  //       });
+  //       break;
+  //
+  //     case State.DELETING:
+  //       this._popupCommentDetailsComponents.updateData(
+  //         {
+  //           isDeleting: true,
+  //         });
+  //       break;
+  //
+  //     case State.ABORTING:
+  //       this._popupContainer.shake(resetFormState);
+  //       break;
+  //   }
+  // }
+
   setSavingComment(isSaving) {
     this._popupNewCommentComponent.updateData({isSaving});
   }
@@ -110,33 +128,6 @@ export default class PopupPresenter {
     this._popupContainer.shake(resetFormState);
   }
 
-  setViewState(state) {
-    const resetFormState = () => {
-      this._popupNewCommentComponent.updateData({
-        isSaving: false,
-      });
-    };
-
-    switch (state) {
-      case State.SAVING:
-        this._popupNewCommentComponent.updateData({
-          isSaving: false,
-        });
-        break;
-
-      case State.DELETING:
-        this._popupCommentDetailsComponents.updateData(
-          {
-            isDeleting: true,
-          });
-        break;
-
-      case State.ABORTING:
-        this._popupContainer.shake(resetFormState);
-        break;
-    }
-  }
-
   _renderNewComment() {
     this._popupNewCommentComponent = new PopupNewCommentView((
       (newComment) =>{
@@ -146,8 +137,8 @@ export default class PopupPresenter {
           this._comments = comments;
           this._filmData = film;
           this._popupCommentsListComponent.updateElement(comments.length);
-          comments.forEach((comm) => {
-            this._addComment(comm);
+          comments.forEach((comment) => {
+            this._addComment(comment);
           });
           this.setSavingComment(false);
           this._popupNewCommentComponent.reset();

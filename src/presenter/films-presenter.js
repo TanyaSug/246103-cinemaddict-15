@@ -42,14 +42,12 @@ export default class FilmsPresenter {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-
     this._filmListMap = new Map();
   }
 
   _getFilms() {
     this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.films;
-
     const filteredFilms = filter[this._filterType](films);
 
     switch (this._currentSortType) {
@@ -95,7 +93,7 @@ export default class FilmsPresenter {
         this._renderFilmsContainer();
         this._renderFilmsList();
         this._renderShowMoreButton();
-        this._resetShowMoreButtonStartIndex();
+        // this._resetShowMoreButtonStartIndex();
         break;
     }
   }
@@ -109,7 +107,7 @@ export default class FilmsPresenter {
     this._clearFilmsList();
     this._renderFilmsContainer();
     this._renderFilmsList();
-    this._resetShowMoreButtonStartIndex();
+    // this._resetShowMoreButtonStartIndex();
     this._renderShowMoreButton();
     this._filmsSortComponent.updateData({currentSortType: this._currentSortType});
 
@@ -151,24 +149,22 @@ export default class FilmsPresenter {
   }
 
   _addFilms(starIndex, count) {
+    const REAL_START_INDEX = 0;
+    const REAL_COUNT = this._filmsStartIndex;
     const innerPoint = this._filmsListComponent.getInnerPoint();
-    getFilmsList(this._getFilms(), starIndex, count).map((film) => {
-      const filmCard = new FilmCard(film);
-      filmCard.setPopupClickHandler(this._handleFilmCardClick);
-      filmCard.setWatchlistClickHandler(this._handleFilmCardClick);
-      filmCard.setWatchedClickHandler(this._handleFilmCardClick);
-      filmCard.setFavoritesClickHandler(this._handleFilmCardClick);
-      this._filmListMap.set(film.id, filmCard);
-      renderElement(innerPoint, filmCard, RenderPosition.BEFOREEND);
-    });
-  }
-
-  _resetShowMoreButtonStartIndex() {
-    this._filmsStartIndex = FILM_LIST_PAGE_SIZE;
-    this._filmsCount = this._filmsModel.length - FILM_LIST_PAGE_SIZE;
-    if (this._getFilms().length <= FILM_LIST_PAGE_SIZE) {
-      remove(this._showMoreButtonComponent);
-    }
+    getFilmsList(
+      this._getFilms(),
+      starIndex,
+      count)
+      .map((film) => {
+        const filmCard = new FilmCard(film);
+        filmCard.setPopupClickHandler(this._handleFilmCardClick);
+        filmCard.setWatchlistClickHandler(this._handleFilmCardClick);
+        filmCard.setWatchedClickHandler(this._handleFilmCardClick);
+        filmCard.setFavoritesClickHandler(this._handleFilmCardClick);
+        this._filmListMap.set(film.id, filmCard);
+        renderElement(innerPoint, filmCard, RenderPosition.BEFOREEND);
+      });
   }
 
 
@@ -182,7 +178,6 @@ export default class FilmsPresenter {
 
       this._addFilms(this._filmsStartIndex, count);
       this._filmsStartIndex += count;
-
       this._filmsCount -= count;
 
       if (this._filmsCount <= 0) {

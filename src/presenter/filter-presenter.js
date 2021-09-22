@@ -44,7 +44,6 @@ export default class FilterPresenter {
     if (this._filterModel.getFilter() === filterType) {
       return;
     }
-
     this._filterModel.setFilter(filterType);
   }
 

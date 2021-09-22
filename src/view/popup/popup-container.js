@@ -16,7 +16,6 @@ export default class PopupContainer extends AbstractView {
   constructor(filmData) {
     super();
     this._filmData = filmData;
-    // this._formKeydownHandler = this._formKeydownHandler.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this.removePopUp = this.removePopUp.bind(this);
   }
@@ -40,8 +39,6 @@ export default class PopupContainer extends AbstractView {
   appendPopUp() {
     document.body.appendChild(this.getElement());
     document.body.classList.add('hide-overflow');
-    // document.addEventListener('keydown', this._formKeydownHandler);
-
     document.addEventListener('keydown', this._onEscKeyDown);
     document.querySelector('.film-details__close-btn')
       .addEventListener('click', this.removePopUp);
@@ -52,7 +49,6 @@ export default class PopupContainer extends AbstractView {
       document.removeEventListener('keydown', this._onEscKeyDown);
       document.querySelector('.film-details__close-btn')
         .removeEventListener('click', this.removePopUp);
-
       document.body.removeChild(this._element);
       document.body.classList.remove('hide-overflow');
     }

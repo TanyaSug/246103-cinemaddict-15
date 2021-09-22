@@ -8,7 +8,7 @@ import FooterStatisticsView from '../view/footer-statistics';
 import FilmsPresenter from './films-presenter';
 import FilterPresenter from './filter-presenter';
 import MainContainerView from '../view/film/main-container';
-import {getFilmsByFilter} from '../lib/user-statistics';
+import {getFilmsByFilter} from '../lib/get-films-by-filter';
 
 
 export default class MainPresenter {
@@ -26,10 +26,12 @@ export default class MainPresenter {
     this._filmStatistic = null;
     this._footerStatisticsComponent = null;
     this._currentStatsFilter = StatsType.ALL_TIME;
+
     this._onDataReceived = this._onDataReceived.bind(this);
     this._handleStatsFilterChange = this._handleStatsFilterChange.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleListLoaded = this._handleListLoaded.bind(this);
+
     this._filmsModel.addObserver(this._handleListLoaded);
     this._filterModel.addFilterChangedListener(this._handleFilterChange);
   }
@@ -65,10 +67,13 @@ export default class MainPresenter {
   }
 
   _renderFilmsStatistics() {
+    if (this._filmStatistic !== null) {
+      this._filmStatistic = null;
+    }
     const filteredFilms = getFilmsByFilter(this._filmsModel.films, this._currentStatsFilter);
     this._filmStatistic = new FilmStatisticView(filteredFilms, this._currentStatsFilter);
-    this._filmStatistic.setStatsFilterElementsChangeHandler(this._handleStatsFilterChange);
     renderElement(this._mainFilmsContainer, this._filmStatistic, RenderPosition.BEFOREEND);
+    this._filmStatistic.setStatsFilterElementsChangeHandler(this._handleStatsFilterChange);
     const activeClass = 'main-navigation__item--active';
     const statsElement = document.querySelector('.main-navigation__additional');
     statsElement.classList.add(activeClass);
@@ -163,7 +168,6 @@ export default class MainPresenter {
     this._filmsModel.films = films;
     this._render();
   }
-
 
   execute() {
     this._render();
