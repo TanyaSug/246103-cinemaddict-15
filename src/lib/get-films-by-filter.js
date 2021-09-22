@@ -3,7 +3,6 @@ import isBetween from 'dayjs/plugin/isBetween';
 import {StatsType} from './consts';
 dayjs.extend(isBetween);
 
-
 export  const getGenreUniq = (genres) => [...new Set(genres)];
 
 export const getGenresRanks = (films) => {
@@ -23,7 +22,6 @@ export const getGenresRanks = (films) => {
   });
   return ranks;
 };
-
 
 export const  getFilmsByFilter = (films, currentFilter) => {
   const currentDate = new Date();

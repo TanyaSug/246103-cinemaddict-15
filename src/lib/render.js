@@ -19,7 +19,6 @@ export const renderElement = (container, child, place) => {
   }
 };
 
-
 export const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;

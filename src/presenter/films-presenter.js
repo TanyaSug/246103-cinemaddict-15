@@ -92,7 +92,6 @@ export default class FilmsPresenter {
         this._renderFilmsContainer();
         this._renderFilmsList();
         this._renderShowMoreButton();
-        // this._resetShowMoreButtonStartIndex();
         break;
     }
   }
@@ -101,12 +100,10 @@ export default class FilmsPresenter {
     if (this._currentSortType === sortType) {
       return;
     }
-
     this._sortFilms(sortType);
     this._clearFilms();
     this._renderFilmsContainer();
     this._renderFilmsList();
-    // this._resetShowMoreButtonStartIndex();
     this._renderShowMoreButton();
     this._filmsSortComponent.updateData({currentSortType: this._currentSortType});
 
@@ -181,25 +178,10 @@ export default class FilmsPresenter {
     this._filmsVisibleCount += FILM_LIST_PAGE_SIZE;
     this._clearFilms();
     this._renderContainerWithButton();
-    // const FILMS_QUANTITY = this._getFilms().length - this._filmsStartIndex;
-    // const REST_OF_FILMS = FILMS_QUANTITY % FILM_LIST_PAGE_SIZE;
-    //
-    // if (this._filmsCount > 0 && this._filmsListComponent) {
-    //   const count = this._filmsCount > REST_OF_FILMS ?
-    //     FILM_LIST_PAGE_SIZE : REST_OF_FILMS;
-    //
-    //   this._addFilms(this._filmsStartIndex, count);
-    //   this._filmsStartIndex += count;
-    //   this._filmsCount -= count;
-    //
-    //   if (this._filmsCount <= 0) {
-    //     remove(this._showMoreButtonComponent);
-    //   }
-    // }
   }
 
   _renderShowMoreButton() {
-    if (this._getFilms().length > this._filmsVisibleCount && this._showMoreButtonComponent === null) {
+    if (this._getFilms().length > this._filmsVisibleCount) {
       this._showMoreButtonComponent = new ShowMoreButtonView();
       renderElement(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
       this._showMoreButtonComponent.setButtonClickHandler(this._handleMoreButtonClick);
@@ -225,7 +207,6 @@ export default class FilmsPresenter {
       return this._popupPresenter.execute(film, comments);
     });
   }
-
 
   _handleFilmCardClick(key, film, fromPopUp) {
     if (key === FilmClickIds.POP_UP) {

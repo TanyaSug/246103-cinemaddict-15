@@ -6,8 +6,6 @@ export default class FilmsModel extends AbstractObserver {
     super();
     this._films = undefined;
     this._comments = new Map();
-    this._busy = false;
-    this._commentStatuses = new Map();
   }
 
   get films() {
@@ -81,14 +79,6 @@ export default class FilmsModel extends AbstractObserver {
     }
     this._comments.delete(id);
   }
-
-  // getBusy() {
-  //   return this._busy;
-  // }
-
-  // getCommentStatus(commentId) {
-  //   return this._commentStatuses.get(commentId);
-  // }
 
   static adaptToClient(film) {
     return Object.assign(
@@ -164,16 +154,6 @@ export default class FilmsModel extends AbstractObserver {
       comment,
       {
         date: new Date(comment.date),
-      },
-    );
-  }
-
-  static adaptCommentToServer(comment) {
-    return Object.assign(
-      {},
-      comment,
-      {
-        'date': comment.date.toISOString(),
       },
     );
   }

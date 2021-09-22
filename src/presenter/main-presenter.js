@@ -87,7 +87,6 @@ export default class MainPresenter {
   _handleStatsFilterChange(value) {
     this._currentStatsFilter = value;
     const filteredFilms = getFilmsByFilter(this._filmsModel.films, this._currentStatsFilter);
-
     this._filmStatistic.updateData(
       {filteredFilms, currentFilter: this._currentStatsFilter},
     );

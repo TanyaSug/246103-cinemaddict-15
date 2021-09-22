@@ -25,11 +25,7 @@ export default class Abstract {
   _createElement() {
     const template = this.getTemplate();
     const element = createElement(template);
-    this._initializeElement(element);
     return element;
-  }
-
-  _initializeElement() {
   }
 
   removeElement() {
@@ -46,7 +42,6 @@ export default class Abstract {
     this.removeElement();
 
     const newElement = this.getElement();
-
     parentElement.replaceChild(newElement, oldElement);
 
     this.restoreHandlers();

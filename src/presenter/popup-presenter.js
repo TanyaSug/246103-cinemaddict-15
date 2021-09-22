@@ -20,7 +20,6 @@ export default class PopupPresenter {
     this._popupCommentDetailsComponents = new Map();
     this._popupNewCommentComponent = null;
 
-    // this.setViewState = this.setViewState.bind(this);
     this.setAborting = this.setAborting.bind(this);
     this.setSavingComment = this.setSavingComment.bind(this);
     this._handleDeleteCommentButton = this._handleDeleteCommentButton.bind(this);
@@ -39,7 +38,6 @@ export default class PopupPresenter {
 
   _renderFilmPopupInfo() {
     const filmPopupInfoComponent = new PopupFilmInfoView(this._filmData);
-
     filmPopupInfoComponent.setFavoritesClickHandler(this._onToggleUserControls);
     filmPopupInfoComponent.setWatchlistClickHandler(this._onToggleUserControls);
     filmPopupInfoComponent.setWatchedClickHandler(this._onToggleUserControls);
@@ -62,7 +60,6 @@ export default class PopupPresenter {
     const comment = this._comments.find((comm) => comm.id === commentId);
     const currentComment = this._popupCommentDetailsComponents.get(commentId);
     currentComment.updateElement({...comment, isDeleting: true});
-
     this._api.deleteComment(commentId).then(() => {
       this._filmData.comments = this._filmData.comments.filter((commId) => commId !== commentId);
       this._comments = this._comments.filter((comm) => comm.id !== commentId);
@@ -88,33 +85,6 @@ export default class PopupPresenter {
     this._popupCommentDetailsComponents.set(comment.id, popupComment);
   }
 
-  // setViewState(state) {
-  //   const resetFormState = () => {
-  //     this._popupNewCommentComponent.updateData({
-  //       isSaving: false,
-  //     });
-  //   };
-  //
-  //   switch (state) {
-  //     case State.SAVING:
-  //       this._popupNewCommentComponent.updateData({
-  //         isSaving: false,
-  //       });
-  //       break;
-  //
-  //     case State.DELETING:
-  //       this._popupCommentDetailsComponents.updateData(
-  //         {
-  //           isDeleting: true,
-  //         });
-  //       break;
-  //
-  //     case State.ABORTING:
-  //       this._popupContainer.shake(resetFormState);
-  //       break;
-  //   }
-  // }
-
   setSavingComment(isSaving) {
     this._popupNewCommentComponent.updateData({isSaving});
   }
@@ -132,7 +102,6 @@ export default class PopupPresenter {
     this._popupNewCommentComponent = new PopupNewCommentView((
       (newComment) =>{
         this.setSavingComment(true);
-
         this._api.addComment(this._filmData.id, newComment).then(({film, comments}) => {
           this._comments = comments;
           this._filmData = film;
@@ -153,7 +122,6 @@ export default class PopupPresenter {
     this._popupNewCommentComponent.setFormKeydownHandler();
     renderElement(this._commentsContainer, this._popupNewCommentComponent, RenderPosition.BEFOREEND);
   }
-
 
   _render() {
     this._renderPopupContainer();

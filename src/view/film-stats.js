@@ -73,7 +73,6 @@ const renderChart = (statisticCtx, films) => {
 
 const createStatsFilterElement = (filter, currentFilter) => {
   const {type, name} = filter;
-
   const checked = type === currentFilter ? 'checked' : '';
 
   return `
@@ -146,7 +145,6 @@ export default class FilmStatistic extends Smart {
     this._userStatisticChart = null;
 
     this._filterElementChangeHandler = this._filterElementChangeHandler.bind(this);
-
     this._setChart();
   }
 

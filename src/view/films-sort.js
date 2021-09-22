@@ -33,7 +33,6 @@ export default class FilmsSort extends Smart {
     if (!this._callback.sortTypeChange) {
       this._callback.sortTypeChange = callback;
     }
-
     this.getElement().addEventListener('click', this._sortChangeHandler);
   }
 

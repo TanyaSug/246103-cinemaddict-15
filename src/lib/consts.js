@@ -1,6 +1,3 @@
-import {getTopRated} from './#get-top-rated';
-import {getMostCommented} from './#get-most-commented';
-
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -54,20 +51,6 @@ export const EMOTIONS = [
   'puke',
   'angry',
 ];
-
-// const TOP_RATED = 'Top Rated';
-// const MOST_COMMENTED = 'Most Commented';
-//
-// export const Extra = {
-//   topRated: {
-//     heading: TOP_RATED,
-//     filter: (data) => getTopRated(data),
-//   },
-//   mostCommented: {
-//     heading: MOST_COMMENTED,
-//     filter: (data) => getMostCommented(data),
-//   },
-// };
 
 export const UserAction = {
   UPDATE_FILM: 'UPDATE_FILM',
