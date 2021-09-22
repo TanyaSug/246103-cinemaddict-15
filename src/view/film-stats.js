@@ -205,14 +205,9 @@ export default class FilmStatistic extends Smart {
     if (this._userStatisticChart !== null) {
       this._userStatisticChart = null;
     }
-
-
-    // const BAR_HEIGHT = 50;
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
-    const films = this._filteredFilms;
-    //
-    // statisticCtx.height = BAR_HEIGHT * films.length;
-    //
+    const films = this._data.filteredFilms || this._filteredFilms;
+
     this._userStatisticChart = renderChart(statisticCtx, films);
   }
 
