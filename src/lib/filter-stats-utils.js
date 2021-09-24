@@ -7,8 +7,8 @@ export  const getGenreUniq = (genres) => [...new Set(genres)];
 
 export const getGenresRanks = (films) => {
   const filmGenres = films.map((film) => film.filmInfo.genres);
-  const merged = [].concat(...filmGenres);
-  const uniqGenres = getGenreUniq(merged);
+  const mergedFilms = [].concat(...filmGenres);
+  const uniqGenres = getGenreUniq(mergedFilms);
   const ranks = {};
   uniqGenres.forEach((genre) => {ranks[genre] = 0;});
   films.forEach((film) => {

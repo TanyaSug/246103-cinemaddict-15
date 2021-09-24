@@ -36,9 +36,8 @@ export default class FilmsModel extends AbstractObserver {
   get length() {
     if (Array.isArray(this._films)) {
       return this._films.length;
-    } else {
-      return 0;
     }
+    return 0;
   }
 
   updateFilm(updateType, update) {

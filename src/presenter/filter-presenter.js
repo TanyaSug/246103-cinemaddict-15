@@ -36,6 +36,14 @@ export default class FilterPresenter {
     remove(prevFilterComponent);
   }
 
+  destroy() {
+    if (this._filterComponent === null) {
+      return;
+    }
+    this._filterComponent.removeFilterChangeHandler(this._handleFilterTypeChange);
+    remove(this._filterComponent);
+  }
+
   _handleModelEvent() {
     this.execute();
   }
@@ -71,13 +79,5 @@ export default class FilterPresenter {
         count: filter[FilterType.FAVORITES](films).length,
       },
     ];
-  }
-
-  destroy() {
-    if (this._filterComponent === null) {
-      return;
-    }
-    this._filterComponent.removeFilterChangeHandler(this._handleFilterTypeChange);
-    remove(this._filterComponent);
   }
 }

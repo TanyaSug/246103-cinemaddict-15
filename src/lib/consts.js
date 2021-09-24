@@ -24,21 +24,47 @@ export const UserRating = {
   MOVIE_BUFF: 'Movie Buff',
 };
 
-export const UserRatingLimits = {
+export const UserRatingLimit = {
   NONE: 0,
   NOVICE: 10,
   FAN: 20,
 };
 
-export const FilmClickIds = {
+export const FilmClickId = {
   POP_UP: 0,
   WATCHED: 1,
   FAVORITES: 2,
   WATCH_LIST: 3,
 };
 
+export const USER_STATUS_COMPONENT = '_userStatusComponent';
+
+export const FILMS_LOADING = '_filmsLoading';
+
+export const FILM_LIST_EMPTY_COMPONENT = '_filmListEmptyComponent';
+
+export const FILM_STATISTIC = '_filmStatistic';
+
+export const FOOTER_STATISTICS_COMPONENT = '_footerStatisticsComponent';
+
+export const FILMS_PRESENTER = '_filmsPresenter';
+
+export const FILTER_PRESENTER = '_filterPresenter';
+
+export const MAIN_FILMS_CONTAINER = '_mainFilmsContainer';
+
+export const FILMS_SORT_COMPONENT = '_filmsSortComponent';
+
+export const ANIMATION_DELAY = 1000;
+
+export const HOURS_DURATION = 60;
+
+export const ENTER = 'Enter';
+
 export const BUTTON_NAME = 'Delete';
+
 export const BUTTON_NAME_DELETING = 'Deleting...';
+
 export  const BUTTON_LABEL = 'Show more';
 
 export const FILM_LIST_PAGE_SIZE  = 5;

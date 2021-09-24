@@ -1,6 +1,6 @@
 import AbstractView from '../abstract';
 import dayjs from 'dayjs';
-import {FilmClickIds} from '../../lib/consts';
+import {FilmClickId} from '../../lib/consts';
 import {getRuntime} from '../../lib/get-duration-time';
 
 
@@ -94,19 +94,34 @@ export default class PopupFilmInfo extends AbstractView{
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
   }
 
+  updateElement(updatedFilmData) {
+    this._filmData = updatedFilmData;
+    super.updateElement();
+  }
+
+  getTemplate() {
+    return createFilmPopupTemplate(this._filmData);
+  }
+
+  restoreHandlers() {
+    this.setFavoritesClickHandler(this._callback.favoritesClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+  }
+
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchedClick(FilmClickIds.WATCHED, this._filmData);
+    this._callback.watchedClick(FilmClickId.WATCHED, this._filmData);
   }
 
   _favoritesClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoritesClick(FilmClickIds.FAVORITES,this._filmData);
+    this._callback.favoritesClick(FilmClickId.FAVORITES,this._filmData);
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchlistClick(FilmClickIds.WATCH_LIST, this._filmData);
+    this._callback.watchlistClick(FilmClickId.WATCH_LIST, this._filmData);
   }
 
   setWatchedClickHandler(callback) {
@@ -125,22 +140,6 @@ export default class PopupFilmInfo extends AbstractView{
     this._callback.watchlistClick = callback;
     const watchlistFilm = this.getElement().querySelector('#watchlist');
     watchlistFilm.addEventListener('click', this._watchlistClickHandler);
-  }
-
-
-  getTemplate() {
-    return createFilmPopupTemplate(this._filmData);
-  }
-
-  restoreHandlers() {
-    this.setFavoritesClickHandler(this._callback.favoritesClick);
-    this.setWatchlistClickHandler(this._callback.watchlistClick);
-    this.setWatchedClickHandler(this._callback.watchedClick);
-  }
-
-  updateElement(updatedFilmData) {
-    this._filmData = updatedFilmData;
-    super.updateElement();
   }
 }
 

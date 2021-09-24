@@ -27,8 +27,17 @@ export default class PopupCommentDetails extends Smart {
 
   }
 
+  updateElement(comment) {
+    this._comment = comment;
+    super.updateElement();
+  }
+
   getTemplate() {
     return createCommentDetailsTemplate(this._comment);
+  }
+
+  restoreHandlers() {
+    this.setDeleteButtonHandler(this._callback.deleteButton);
   }
 
   _deleteButtonHandler(evt) {
@@ -41,15 +50,5 @@ export default class PopupCommentDetails extends Smart {
     this.getElement().querySelectorAll('.film-details__comment-delete')
       .forEach((comment) => comment
         .addEventListener('click', this._deleteButtonHandler));
-  }
-
-
-  restoreHandlers() {
-    this.setDeleteButtonHandler(this._callback.deleteButton);
-  }
-
-  updateElement(comment) {
-    this._comment = comment;
-    super.updateElement();
   }
 }

@@ -1,5 +1,5 @@
 import SmartView from './smart';
-import {EMOTIONS} from '../../lib/consts';
+import {EMOTIONS, ENTER} from '../../lib/consts';
 import he from 'he';
 
 const getEmotionsList = (isSaving) => EMOTIONS.map((emotion) =>
@@ -37,6 +37,7 @@ export default class PopupNewComment extends SmartView {
     this._commentChangeHandler = this._commentChangeHandler.bind(this);
     this._formKeydownHandler = this._formKeydownHandler.bind(this);
     this.reset = this.reset.bind(this);
+    this.clearListeners = this.clearListeners.bind(this);
   }
 
   getTemplate() {
@@ -70,7 +71,7 @@ export default class PopupNewComment extends SmartView {
   }
 
   _formKeydownHandler(evt) {
-    if ((evt.ctrlKey && evt.key === 'Enter') || (evt.keyCode === 13 && evt.metaKey)) {
+    if ((evt.ctrlKey && evt.key === ENTER) || (evt.key === ENTER && evt.metaKey)) {
       if ((!this._data.comment && this._data.comment.length > 0 )|| !this._data.emotion) {
         return;
       }
@@ -100,6 +101,16 @@ export default class PopupNewComment extends SmartView {
       this._callback.formKeydown = this._formKeydownHandler;
     }
     document.addEventListener('keydown', this._callback.formKeydown);
+  }
+
+  clearListeners() {
+    document.removeEventListener('keydown', this._callback.formKeydown);
+    this.getElement().querySelectorAll('input')
+      .forEach((element) => {
+        element.removeEventListener('change', this._emotionIconChangeHandler);
+      });
+    this.getElement().querySelector('textarea')
+      .removeEventListener('input', this._commentChangeHandler);
   }
 
   restoreHandlers() {

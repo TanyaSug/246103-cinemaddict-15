@@ -32,8 +32,45 @@ export default class PopupPresenter {
     return this._filmPopupInfoComponent;
   }
 
+  open() {
+    this._render();
+    this._popupContainer.append();
+  }
+
+  updateElement(updatedFilmData) {
+    this._filmData = updatedFilmData;
+    if(this._filmPopupInfoComponent) {
+      this._filmPopupInfoComponent.updateElement(updatedFilmData);
+    }
+  }
+
+  destroy() {
+    remove(this._popupContainer);
+  }
+
+  execute(filmData, comments) {
+    this._comments = comments;
+    this._filmData = filmData;
+    this.open();
+  }
+
+  setSavingComment(isSaving) {
+    this._popupNewCommentComponent.updateData({isSaving});
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._popupNewCommentComponent.updateData({
+        isSaving: false,
+      });
+    };
+    this._popupContainer.shake(resetFormState);
+  }
+
   _renderPopupContainer() {
-    this._popupContainer = new PopupContainerView(this._filmData);
+    this._popupContainer = new PopupContainerView(this._filmData, () => {
+      this._popupNewCommentComponent && this._popupNewCommentComponent.clearListeners();
+    });
   }
 
   _renderFilmPopupInfo() {
@@ -85,19 +122,6 @@ export default class PopupPresenter {
     this._popupCommentDetailsComponents.set(comment.id, popupComment);
   }
 
-  setSavingComment(isSaving) {
-    this._popupNewCommentComponent.updateData({isSaving});
-  }
-
-  setAborting() {
-    const resetFormState = () => {
-      this._popupNewCommentComponent.updateData({
-        isSaving: false,
-      });
-    };
-    this._popupContainer.shake(resetFormState);
-  }
-
   _renderNewComment() {
     this._popupNewCommentComponent = new PopupNewCommentView((
       (newComment) =>{
@@ -130,32 +154,5 @@ export default class PopupPresenter {
     this._renderCommentsList();
     this._renderCommentDetails();
     this._renderNewComment();
-  }
-
-  appendPopUp() {
-    const popup = document.querySelector('.film-details');
-    if (popup && this._popupContainer) {
-      this._popupContainer.removePopUp();
-    }
-
-    this._render();
-    this._popupContainer.appendPopUp();
-  }
-
-  updateElement(updatedFilmData) {
-    this._filmData = updatedFilmData;
-    if(this._filmPopupInfoComponent) {
-      this._filmPopupInfoComponent.updateElement(updatedFilmData);
-    }
-  }
-
-  destroy() {
-    remove(this._popupContainer);
-  }
-
-  execute(filmData, comments) {
-    this._comments = comments;
-    this._filmData = filmData;
-    this.appendPopUp();
   }
 }

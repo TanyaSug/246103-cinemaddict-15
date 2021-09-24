@@ -2,10 +2,10 @@ import {remove, renderElement} from '../lib/render';
 import {
   RenderPosition,
   FILM_LIST_PAGE_SIZE,
-  FilmClickIds,
+  FilmClickId,
   SortType,
   UserAction,
-  UpdateType, FilterType
+  UpdateType, FilterType, FILMS_SORT_COMPONENT
 } from '../lib/consts';
 import FilmsSortView from '../view/films-sort';
 import FilmsListEmptyView from '../view/film/films-list-empty';
@@ -42,6 +42,21 @@ export default class FilmsPresenter {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filmListMap = new Map();
+  }
+
+  execute() {
+    this._sourcedFilmsData = this._filmsModel.films.slice();
+    this._popupPresenter = new PopupPresenter((key, film) => this._handleFilmCardClick(key, film, true), this._handleViewAction, this._api);
+    this._render();
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+  }
+
+  destroy() {
+    this._clearViewByName(FILMS_SORT_COMPONENT);
+    this._clearFilms();
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getFilms() {
@@ -209,22 +224,22 @@ export default class FilmsPresenter {
   }
 
   _handleFilmCardClick(key, film, fromPopUp) {
-    if (key === FilmClickIds.POP_UP) {
+    if (key === FilmClickId.POP_UP) {
       return this._executePopup(film);
     }
 
     let updatedFilmData;
-    if (key === FilmClickIds.WATCH_LIST) {
+    if (key === FilmClickId.WATCH_LIST) {
       updatedFilmData = {
         ...film,
         userDetails:  {...film.userDetails, watchlist: !film.userDetails.watchlist},
       };
-    } else if (key === FilmClickIds.WATCHED) {
+    } else if (key === FilmClickId.WATCHED) {
       updatedFilmData = {
         ...film,
         userDetails:  {...film.userDetails, alreadyWatched: !film.userDetails.alreadyWatched},
       };
-    } else if (key === FilmClickIds.FAVORITES) {
+    } else if (key === FilmClickId.FAVORITES) {
       updatedFilmData = {
         ...film,
         userDetails:  {...film.userDetails, favorite: !film.userDetails.favorite},
@@ -235,11 +250,11 @@ export default class FilmsPresenter {
     let type = UpdateType.PATCH;
     if(!fromPopUp && filterType === FilterType.ALL) {
       type = UpdateType.PATCH;
-    } else if (filterType === FilterType.FAVORITES && key === FilmClickIds.FAVORITES) {
+    } else if (filterType === FilterType.FAVORITES && key === FilmClickId.FAVORITES) {
       type = UpdateType.MAJOR;
-    } else if (filterType === FilterType.WATCHLIST && key === FilmClickIds.WATCH_LIST) {
+    } else if (filterType === FilterType.WATCHLIST && key === FilmClickId.WATCH_LIST) {
       type = UpdateType.MAJOR;
-    } else if (filterType === FilterType.HISTORY && key === FilmClickIds.WATCHED) {
+    } else if (filterType === FilterType.HISTORY && key === FilmClickId.WATCHED) {
       type = UpdateType.MAJOR;
     } else if (fromPopUp) {
       type = UpdateType.MINOR;
@@ -267,20 +282,5 @@ export default class FilmsPresenter {
       this[name] = null;
       remove(view);
     }
-  }
-
-  destroy() {
-    this._clearViewByName('_filmsSortComponent');
-    this._clearFilms();
-    this._filmsModel.removeObserver(this._handleModelEvent);
-    this._filterModel.removeObserver(this._handleModelEvent);
-  }
-
-  execute() {
-    this._sourcedFilmsData = this._filmsModel.films.slice();
-    this._popupPresenter = new PopupPresenter((key, film) => this._handleFilmCardClick(key, film, true), this._handleViewAction, this._api);
-    this._render();
-    this._filmsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 }

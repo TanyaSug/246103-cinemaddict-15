@@ -1,4 +1,4 @@
-import {UserRating, UserRatingLimits} from './consts';
+import {UserRating, UserRatingLimit} from './consts';
 
 
 const computeSafe = (data) => {
@@ -14,9 +14,9 @@ const computeSafe = (data) => {
 export const computeUserRating = (data) => {
   const totalWatched = computeSafe(data);
   switch(true) {
-    case totalWatched <= UserRatingLimits.NONE : return UserRating.NONE;
-    case totalWatched <= UserRatingLimits.NOVICE : return UserRating.NOVICE;
-    case totalWatched <= UserRatingLimits.FAN : return UserRating.FAN;
+    case totalWatched <= UserRatingLimit.NONE : return UserRating.NONE;
+    case totalWatched <= UserRatingLimit.NOVICE : return UserRating.NOVICE;
+    case totalWatched <= UserRatingLimit.FAN : return UserRating.FAN;
     default: return UserRating.MOVIE_BUFF;
   }
 };

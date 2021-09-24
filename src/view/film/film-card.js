@@ -1,6 +1,6 @@
 import AbstractView from '../abstract';
 import {createElement} from '../../lib/render';
-import {DESCRIPTION_LENGTH, FilmClickIds} from '../../lib/consts';
+import {DESCRIPTION_LENGTH, FilmClickId} from '../../lib/consts';
 import dayjs from 'dayjs';
 import {getRuntime} from '../../lib/get-duration-time';
 
@@ -53,7 +53,7 @@ export default class  FilmCard extends AbstractView {
   _handlePopupPointClicks(evt) {
     evt.preventDefault();
     if (this._callback.popupClick) {
-      this._callback.popupClick(FilmClickIds.POP_UP, this._filmData);
+      this._callback.popupClick(FilmClickId.POP_UP, this._filmData);
     } else {
       throw Error('popupClick does not exist in _callback');
     }
@@ -61,17 +61,17 @@ export default class  FilmCard extends AbstractView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchedClick(FilmClickIds.WATCHED, this._filmData);
+    this._callback.watchedClick(FilmClickId.WATCHED, this._filmData);
   }
 
   _favoritesClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoritesClick(FilmClickIds.FAVORITES, this._filmData);
+    this._callback.favoritesClick(FilmClickId.FAVORITES, this._filmData);
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchlistClick(FilmClickIds.WATCH_LIST, this._filmData);
+    this._callback.watchlistClick(FilmClickId.WATCH_LIST, this._filmData);
   }
 
   setPopupClickHandler(callback) {

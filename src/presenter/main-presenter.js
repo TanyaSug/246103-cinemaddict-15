@@ -1,5 +1,13 @@
 import {renderElement, remove} from '../lib/render';
-import {FilterType, RenderPosition, StatsType, UpdateType} from '../lib/consts';
+import {
+  FILM_LIST_EMPTY_COMPONENT, FILM_STATISTIC,
+  FILMS_LOADING, FILMS_PRESENTER, FILTER_PRESENTER,
+  FilterType, FOOTER_STATISTICS_COMPONENT, MAIN_FILMS_CONTAINER,
+  RenderPosition,
+  StatsType,
+  UpdateType,
+  USER_STATUS_COMPONENT
+} from '../lib/consts';
 import UserStatusView from '../view/user-status';
 import FilmsListEmptyView from '../view/film/films-list-empty';
 import FilmsLoadingView from '../view/films-loading';
@@ -8,7 +16,7 @@ import FooterStatisticsView from '../view/footer-statistics';
 import FilmsPresenter from './films-presenter';
 import FilterPresenter from './filter-presenter';
 import MainContainerView from '../view/film/main-container';
-import {getFilmsByFilter} from '../lib/get-films-by-filter';
+import {getFilmsByFilter} from '../lib/filter-stats-utils';
 
 
 export default class MainPresenter {
@@ -34,6 +42,10 @@ export default class MainPresenter {
 
     this._filmsModel.addObserver(this._handleListLoaded);
     this._filterModel.addFilterChangedListener(this._handleFilterChange);
+  }
+
+  execute() {
+    this._render();
   }
 
   _renderUserStatus() {
@@ -119,14 +131,14 @@ export default class MainPresenter {
   }
 
   _clearViews() {
-    this._clearViewByName('_userStatusComponent');
-    this._clearViewByName('_filmsLoading');
-    this._clearViewByName('_filmListEmptyComponent');
-    this._clearViewByName('_filmStatistic');
-    this._clearViewByName('_footerStatisticsComponent');
-    this._destroyPresenter('_filmsPresenter');
-    this._destroyPresenter('_filterPresenter');
-    this._clearViewByName('_mainFilmsContainer');
+    this._clearViewByName(USER_STATUS_COMPONENT);
+    this._clearViewByName(FILMS_LOADING);
+    this._clearViewByName(FILM_LIST_EMPTY_COMPONENT);
+    this._clearViewByName(FILM_STATISTIC);
+    this._clearViewByName(FOOTER_STATISTICS_COMPONENT);
+    this._destroyPresenter(FILMS_PRESENTER);
+    this._destroyPresenter(FILTER_PRESENTER);
+    this._clearViewByName(MAIN_FILMS_CONTAINER);
   }
 
   _renderList() {
@@ -165,10 +177,6 @@ export default class MainPresenter {
 
   _onDataReceived(films) {
     this._filmsModel.films = films;
-    this._render();
-  }
-
-  execute() {
     this._render();
   }
 }

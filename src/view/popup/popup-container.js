@@ -13,11 +13,12 @@ const createPopupContainerTemplate = () => (
 
 
 export default class PopupContainer extends AbstractView {
-  constructor(filmData) {
+  constructor(filmData, onPopupClosing) {
     super();
     this._filmData = filmData;
+    this._onPopupClosing = onPopupClosing;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this.removePopUp = this.removePopUp.bind(this);
+    this._remove = this._remove.bind(this);
   }
 
   getTemplate() {
@@ -29,26 +30,31 @@ export default class PopupContainer extends AbstractView {
     return element.querySelector('form');
   }
 
-  _onEscKeyDown(evt)  {
-    if ( evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.removePopUp();
-    }
-  }
-
-  appendPopUp() {
+  append() {
     document.body.appendChild(this.getElement());
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDown);
     document.querySelector('.film-details__close-btn')
-      .addEventListener('click', this.removePopUp);
+      .addEventListener('click', this._remove);
   }
 
-  removePopUp() {
+  _onEscKeyDown(evt)  {
+    if ( evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this._remove();
+    }
+  }
+
+  _clearListeners() {
+    document.removeEventListener('keydown', this._onEscKeyDown);
+    document.querySelector('.film-details__close-btn')
+      .removeEventListener('click', this._remove);
+  }
+
+  _remove() {
     if (this._element) {
-      document.removeEventListener('keydown', this._onEscKeyDown);
-      document.querySelector('.film-details__close-btn')
-        .removeEventListener('click', this.removePopUp);
+      this._clearListeners();
+      this._onPopupClosing();
       document.body.removeChild(this._element);
       document.body.classList.remove('hide-overflow');
     }

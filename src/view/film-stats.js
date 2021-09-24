@@ -1,11 +1,11 @@
 import Smart from '../view/popup/smart';
-import {StatsType} from '../lib/consts';
+import {HOURS_DURATION, StatsType} from '../lib/consts';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {computeUserRating} from '../lib/compute-user-rating';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {getGenresRanks} from '../lib/get-films-by-filter';
+import {getGenresRanks} from '../lib/filter-stats-utils';
 dayjs.extend(duration);
 
 const renderChart = (statisticCtx, films) => {
@@ -90,7 +90,7 @@ const createFilmStatsTemplate = (films, filters, currentFilter) => {
 
   const getFilmsHours = (minutes) => Math.floor(dayjs.duration({minutes}).asHours());
   const hoursDuration = getFilmsHours(totalDuration);
-  const minutesDuration = totalDuration - (hoursDuration * 60);
+  const minutesDuration = totalDuration - (hoursDuration * HOURS_DURATION);
 
   const allRanks = getGenresRanks(films);
   const sortedAllRanks = Object.keys(allRanks).map((key) => [key, allRanks[key]])
